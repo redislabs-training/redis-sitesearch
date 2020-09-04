@@ -11,7 +11,7 @@ from redisearch import Client, Query
 # Creating a client with a given index name
 client = Client("docs")
 log = logging.getLogger(__name__)
-cors = CORS(allow_origins_list=['http://localhost:1313'])
+cors = CORS(allow_origins_list=['http://docs.andrewbrookins.com:1313'])
 
 
 class SearchResource:

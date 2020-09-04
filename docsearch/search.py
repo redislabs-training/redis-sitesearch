@@ -13,7 +13,7 @@ client = Client("docs")
 @click.command()
 def search(query):
     # Dash postfixes confuse the query parser.
-    query = req.get_param('q').rstrip('-*').rstrip('-') or ''
+    query = query.rstrip('-*').rstrip('-') or ''
     q = Query(query).summarize('body', context_len=5).paging(0, 5)
     res = client.search(q)
 

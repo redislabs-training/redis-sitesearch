@@ -1,3 +1,5 @@
 .mypy_cache
 env
 *.egg-info
+*.pyc
+__pycache__*
