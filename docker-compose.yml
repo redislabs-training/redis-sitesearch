@@ -1,0 +1,7 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redislabs/redisearch:latest
+    ports:
+      - "6379:6379"

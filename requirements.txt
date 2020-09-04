@@ -1,0 +1,7 @@
+click==7.1.2
+beautifulsoup4==4.9.1
+redis==3.5.3
+redisearch==1.0.0
+falcon==2.0.0
+gunicorn==20.0.4
+falcon-cors==1.1.7
