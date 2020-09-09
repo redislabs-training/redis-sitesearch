@@ -3,9 +3,9 @@ import logging
 
 import falcon
 from falcon_cors import CORS
-from redisearch import Query
 
 from docsearch.connections import get_redis_connection
+from docsearch.query_parser import parse
 
 client = get_redis_connection()
 log = logging.getLogger(__name__)
@@ -19,11 +19,8 @@ class SearchResource:
     def on_get(self, req, resp):
         """Run a search."""
         # Dash postfixes confuse the query parser.
-        query = req.get_param('q').rstrip('-') or ''
-        if query.endswith('-*'):
-            query = f"{query[:-2]}*"
-
-        q = Query(query).summarize('body', context_len=10).paging(0, 20)
+        query = req.get_param('q') or ''
+        q = parse(query)
         res = client.search(q)
 
         resp.body = json.dumps({

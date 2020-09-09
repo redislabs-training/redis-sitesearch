@@ -11,9 +11,11 @@ from docsearch.models import SearchDocument
 from docsearch.validators import skip_release_notes
 
 ROOT_PAGE = "Redis Labs Documentation"
+
 DEFAULT_VALIDATORS = (
     skip_release_notes,
 )
+
 DEFAULT_SCHEMA = (
     TextField("title", weight=8.0),
     TextField("section_title", weight=2.0),
