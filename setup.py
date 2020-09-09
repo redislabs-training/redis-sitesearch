@@ -31,8 +31,8 @@ setuptools.setup(
     },
     entry_points = {
         'console_scripts': [
-            'load=docsearch.load:load',
-            'search=docsearch.search:search'
+            'load=docsearch.commands.load:load',
+            'search=docsearch.commands.search:search'
         ],
     }
 )

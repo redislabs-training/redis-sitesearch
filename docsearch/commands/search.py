@@ -1,12 +1,9 @@
-import glob
-import sys
-
 import click
-import redis.exceptions
 from redisearch import Client, Query
 
-# Creating a client with a given index name
-client = Client("docs")
+from docsearch.connections import get_redis_connection
+
+client = get_redis_connection()
 
 
 @click.argument("query")

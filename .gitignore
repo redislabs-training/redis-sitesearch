@@ -3,3 +3,6 @@ env
 *.egg-info
 *.pyc
 __pycache__*
+.envredis-docsearch.iml
+redis-docsearch.iml
+.env

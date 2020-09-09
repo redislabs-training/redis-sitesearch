@@ -1,17 +1,18 @@
-import glob
 import json
 import logging
-import sys
 
 import falcon
 from falcon_cors import CORS
-import redis.exceptions
-from redisearch import Client, Query
+from redisearch import Query
 
-# Creating a client with a given index name
-client = Client("docs")
+from docsearch.connections import get_redis_connection
+
+client = get_redis_connection()
 log = logging.getLogger(__name__)
-cors = CORS(allow_origins_list=['http://docs.andrewbrookins.com:1313'])
+cors = CORS(allow_origins_list=[
+    'http://docs.andrewbrookins.com:1313',
+    'http://localhost:8080']
+)
 
 
 class SearchResource:
