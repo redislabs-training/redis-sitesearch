@@ -5,4 +5,5 @@ redisearch==1.0.0
 falcon==2.0.0
 gunicorn==20.0.4
 falcon-cors==1.1.7
-python-dotenv
+python-dotenv==0.14.0
+gevent==20.6.2

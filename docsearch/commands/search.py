@@ -1,9 +1,11 @@
 import click
 
-from docsearch.connections import get_redis_connection
+from docsearch.transformer import transform_documents
+from docsearch.connections import get_search_connection, get_redis_connection
 from docsearch.query_parser import parse
 
-client = get_redis_connection()
+client = get_search_connection()
+redis_client = get_redis_connection()
 
 
 @click.argument("query")
@@ -11,12 +13,13 @@ client = get_redis_connection()
 def search(query):
     q = parse(query)
     res = client.search(q)
+    docs = transform_documents(redis_client, res.docs)
 
     print(f"Hits: {res.total}")
     print()
-    for doc in res.docs:
-        print(f"{doc.root_page} - {doc.parent_page} - {doc.title}")
-        if doc.section_title:
-            print(f"[{doc.section_title}]")
-        print(doc.body)
+    for doc in docs:
+        print(f"{doc['hierarchy'][0]} - {doc['hierarchy'][-1]} - {doc['title']}")
+        if doc['section_title']:
+            print(f"[{doc['section_title']}]")
+        print(doc['body'] or "NO BODY")
         print()

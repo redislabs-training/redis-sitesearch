@@ -4,12 +4,13 @@ import sys
 
 import click
 
-from docsearch.connections import get_redis_connection
+from docsearch.connections import get_search_connection, get_redis_connection
 from docsearch.indexer import Indexer
 
 
-client = get_redis_connection()
-indexer = Indexer(client)
+search_client = get_search_connection()
+redis_client = get_redis_connection()
+indexer = Indexer(search_client, redis_client)
 
 
 @click.option(

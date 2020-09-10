@@ -1,5 +1,5 @@
 runtime: python38
-entrypoint: gunicorn -b :$PORT docsearch.api.search:api
+entrypoint: gunicorn -c gunicorn.conf.py docsearch.api.search:api
 service: docsearch
 
 runtime_config:

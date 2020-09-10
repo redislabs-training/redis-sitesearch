@@ -17,13 +17,18 @@ DEFAULT_VALIDATORS = (
 )
 
 DEFAULT_SCHEMA = (
-    TextField("title", weight=8.0),
-    TextField("section_title", weight=2.0),
-    TextField("root_page"),
-    TextField("parent_page"),
+    TextField("title", weight=1.5),
+    TextField("section_title", weight=1.2),
     TextField("url"),
-    TextField("body", weight=1.2)
+    TextField("body", weight=2),
 )
+
+TYPE_PAGE = "page"
+TYPE_SECTION = "section"
+
+
+def prepare_text(text: str):
+    return text.strip().strip("\n").replace("\n", " ")
 
 
 def extract_parts(doc, h2s):
@@ -49,41 +54,35 @@ def extract_parts(doc, h2s):
             page.append(str(elem))
             elem = next_element(elem)
 
-        body = BeautifulSoup('\n'.join(page), 'html.parser').get_text()
+        body = prepare_text(BeautifulSoup('\n'.join(page), 'html.parser').get_text())
         _id = f"{doc.url}:{doc.title}:{part_title}:{i}"
 
         docs.append(SearchDocument(
             doc_id=_id,
             title=doc.title,
-            root_page=doc.root_page,
-            parent_page=doc.parent_page,
+            hierarchy=doc.hierarchy,
             section_title=part_title or "",
             body=body,
-            url=doc.url))
+            url=doc.url,
+            type=TYPE_SECTION,
+            position=i))
 
     return docs
 
 
-def extract_topology(soup):
+def extract_hierarchy(soup):
     """
-    Extract the hierarchy we need -- root and parent page.
+    Extract the page hierarchy we need from the page's breadcrumbs:
+    root and parent page.
 
-    E.g. for the topology:
+    E.g. for the breadcrumbs:
             RedisInsight > Using RedisInsight > Cluster Management
 
     We want:
-            ["RedisInsight", "Using RedisInsight"]
+            ["RedisInsight", "Using RedisInsight", "Cluster Management"]
     """
-    breadcrumbs = [a.get_text() for a in soup.select("#breadcrumbs a")
-                   if a.get_text() != ROOT_PAGE]
-
-    if not breadcrumbs:
-        return None, None
-
-    root = breadcrumbs[0]
-    parent = breadcrumbs[-1]
-
-    return root, parent
+    return [a.get_text() for a in soup.select("#breadcrumbs a")
+            if a.get_text() != ROOT_PAGE]
 
 
 def prepare_document(file):
@@ -97,7 +96,7 @@ def prepare_document(file):
     soup = BeautifulSoup(html, 'html.parser')
 
     try:
-        title = soup.title.string.split("|")[0].strip()
+        title = prepare_text(soup.title.string.split("|")[0])
     except AttributeError:
         raise (ParseError(f"Failed -- missing title: {file}"))
 
@@ -106,9 +105,9 @@ def prepare_document(file):
     except IndexError:
         raise ParseError(f"Failed -- missing link: {file}")
 
-    root, parent = extract_topology(soup)
+    hierarchy = extract_hierarchy(soup)
 
-    if not root:
+    if not hierarchy:
         raise ParseError(f"Failed -- missing breadcrumbs: {file}")
 
     content = soup.select(".main-content")
@@ -121,30 +120,48 @@ def prepare_document(file):
         content = soup
 
     h2s = content.find_all('h2')
-    body = content.get_text()
+    body = prepare_text(content.get_text())
     doc = SearchDocument(
         doc_id=f"{url}:{title}",
         title=title,
         section_title="",
-        root_page=root,
-        parent_page=parent,
+        hierarchy=hierarchy,
         body=body,
-        url=url)
+        url=url,
+        type=TYPE_PAGE)
+
+    # Index the entire document
+    docs.append(doc)
 
     # If there are headers, break up the document and index each header
     # as a separate document.
     if h2s:
         docs += extract_parts(doc, h2s)
-    else:
-        # Index the entire document
-        docs.append(doc)
 
     return docs
 
 
+def document_to_dict(document: SearchDocument):
+    """
+    Given a SearchDocument, return a dictionary of the fields to index,
+    and options like the ad-hoc score.
+    """
+    doc = asdict(document)
+    if document.type == TYPE_PAGE:
+        # Score pages lower than page sections.
+        doc['score'] = 0.5
+    doc['hierarchy'] = json.dumps(doc['hierarchy'])
+    return doc
+
+
+def add_document(redis_client, search_client, doc):
+    search_client.add_document(**document_to_dict(doc))
+
+
 class Indexer:
-    def __init__(self, redis_client, schema=None, validators=None):
-        self.client = redis_client
+    def __init__(self, search_client, redis_client, schema=None, validators=None):
+        self.search_client = search_client
+        self.redis_client = redis_client
 
         if validators is None:
             self.validators = DEFAULT_VALIDATORS
@@ -157,13 +174,13 @@ class Indexer:
     def setup_index(self):
         # Creating the index definition and schema
         try:
-            self.client.info()
+            self.search_client.info()
         except redis.exceptions.ResponseError:
             pass
         else:
-            self.client.drop_index()
+            self.search_client.drop_index()
 
-        self.client.create_index(self.schema)
+        self.search_client.create_index(self.schema)
 
     def validate(self, doc):
         for v in self.validators:
@@ -207,7 +224,8 @@ class Indexer:
             futures = []
 
             for doc in docs:
-                futures.append(executor.submit(self.client.add_document, **asdict(doc)))
+                futures.append(
+                    executor.submit(add_document, self.redis_client, self.search_client, doc))
 
             for future in concurrent.futures.as_completed(futures):
                 try:
@@ -215,8 +233,8 @@ class Indexer:
                 except redis.exceptions.DataError as e:
                     errors.append(f"Failed -- bad data: {e}")
                     continue
-                except redis.exceptions.ResponseError:
-                    errors.append(f"Failed -- already exists: {e}")
+                except redis.exceptions.ResponseError as e:
+                    errors.append(f"Failed -- response error: {e}")
                     continue
 
         return errors
