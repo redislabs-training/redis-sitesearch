@@ -6,8 +6,8 @@ runtime_config:
   python_version: 3
 
 env_variables:
-  REDIS_HOST: "dracula.dev"
-  REDIS_PASSWORD: "!YH?r%BP,)2xm,H:UU"
+  REDIS_HOST: "YOUR HOST"
+  REDIS_PASSWORD: "YOUR PASSWORD"
 
 # Low-cost test settings -- delete when live.
 manual_scaling:
