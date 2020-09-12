@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import List
 
+TYPE_PAGE = "page"
+TYPE_SECTION = "section"
+
 
 @dataclass(frozen=True)
 class SearchDocument:

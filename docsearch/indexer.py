@@ -7,7 +7,7 @@ from redisearch import TextField
 from bs4 import BeautifulSoup
 
 from docsearch.errors import ParseError
-from docsearch.models import SearchDocument
+from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
 from docsearch.validators import skip_release_notes
 
 ROOT_PAGE = "Redis Labs Documentation"
@@ -22,9 +22,6 @@ DEFAULT_SCHEMA = (
     TextField("url"),
     TextField("body", weight=2),
 )
-
-TYPE_PAGE = "page"
-TYPE_SECTION = "section"
 
 
 def prepare_text(text: str):
@@ -159,7 +156,8 @@ def add_document(redis_client, search_client, doc):
 
 
 class Indexer:
-    def __init__(self, search_client, redis_client, schema=None, validators=None):
+    def __init__(self, search_client, redis_client,
+                 schema=None, validators=None, create_index=True):
         self.search_client = search_client
         self.redis_client = redis_client
 
@@ -169,7 +167,8 @@ class Indexer:
         if schema is None:
             self.schema = DEFAULT_SCHEMA
 
-        self.setup_index()
+        if create_index:
+            self.setup_index()
 
     def setup_index(self):
         # Creating the index definition and schema

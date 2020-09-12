@@ -13,7 +13,7 @@ redis_client = get_redis_connection()
 def search(query):
     q = parse(query)
     res = client.search(q)
-    docs = transform_documents(redis_client, res.docs)
+    docs = transform_documents(res.docs)
 
     print(f"Hits: {res.total}")
     print()

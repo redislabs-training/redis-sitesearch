@@ -17,6 +17,9 @@ cors = CORS(allow_origins_list=[
     'http://localhost:8080']
 )
 
+DEFAULT_NUM = 10
+MAX_NUM = 100
+
 
 class OrderedDefaultDict(OrderedDict):
     def __init__(self, factory, *args, **kwargs):
@@ -32,10 +35,17 @@ class SearchResource:
     def on_get(self, req, resp):
         """Run a search."""
         # Dash postfixes confuse the query parser.
-        query = req.get_param('q') or ''
-        q = parse(query)
+        query = req.get_param('q', default='')
+        start = int(req.get_param('start', default=0))
+
+        try:
+            num = min(int(req.get_param('num', default=DEFAULT_NUM)), MAX_NUM)
+        except ValueError:
+            num = DEFAULT_NUM
+
+        q = parse(query).paging(start, num)
         res = search_client.search(q)
-        docs = transform_documents(redis_client, res.docs)
+        docs = transform_documents(res.docs)
 
         resp.body = json.dumps({
             "total": res.total,
