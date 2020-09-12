@@ -82,30 +82,24 @@ def extract_hierarchy(soup):
             if a.get_text() != ROOT_PAGE]
 
 
-def prepare_document(file):
+def prepare_document(html):
     docs = []
-
-    print(f"parsing file {file}")
-
-    with open(file) as f:
-        html = f.read()
-
     soup = BeautifulSoup(html, 'html.parser')
 
     try:
         title = prepare_text(soup.title.string.split("|")[0])
     except AttributeError:
-        raise (ParseError(f"Failed -- missing title: {file}"))
+        raise (ParseError(f"Failed -- missing title"))
 
     try:
         url = soup.find_all("link", attrs={"rel": "canonical"})[0].attrs['href']
     except IndexError:
-        raise ParseError(f"Failed -- missing link: {file}")
+        raise ParseError(f"Failed -- missing link")
 
     hierarchy = extract_hierarchy(soup)
 
     if not hierarchy:
-        raise ParseError(f"Failed -- missing breadcrumbs: {file}")
+        raise ParseError(f"Failed -- missing breadcrumbs")
 
     content = soup.select(".main-content")
 
@@ -155,6 +149,15 @@ def add_document(redis_client, search_client, doc):
     search_client.add_document(**document_to_dict(doc))
 
 
+def prepare_file(file):
+    print(f"parsing file {file}")
+    with open(file) as f:
+        try:
+            return prepare_document(f.read())
+        except ParseError as e:
+            raise ParseError(f"{e}: {file}")
+
+
 class Indexer:
     def __init__(self, search_client, redis_client,
                  schema=None, validators=None, create_index=True):
@@ -185,7 +188,7 @@ class Indexer:
         for v in self.validators:
             v(doc)
 
-    def prepare_documents(self, files):
+    def prepare_files(self, files):
         docs = []
         errors = []
 
@@ -193,7 +196,7 @@ class Indexer:
             futures = []
 
             for file in files:
-                futures.append(executor.submit(prepare_document, file))
+                futures.append(executor.submit(prepare_file, file))
 
             for future in concurrent.futures.as_completed(futures):
                 try:
@@ -217,7 +220,7 @@ class Indexer:
         return docs, errors
 
     def index_files(self, files):
-        docs, errors = self.prepare_documents(files)
+        docs, errors = self.prepare_files(files)
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = []

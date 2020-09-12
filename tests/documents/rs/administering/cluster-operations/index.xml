@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cluster Operations on Redis Labs Documentation Center</title>
+    <link>/rs/administering/cluster-operations/</link>
+    <description>Recent content in Cluster Operations on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/cluster-operations/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Adding a Node to an Existing Cluster</title>
+      <link>/rs/administering/cluster-operations/adding-node/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/adding-node/</guid>
+      <description>When you install Redis Enterprise Software (RS) on the first node of a cluster, you create the new cluster. After you install the first node, you can add more nodes to the cluster.
+Prerequisites   The clocks on all nodes must always be synchronized.
+If the clock in the node you are trying to join to the cluster is not synchronized with the nodes already in the cluster, the action fails and an error message is shown indicating that you must synchronize the clocks first.</description>
+    </item>
+    
+    <item>
+      <title>Maintenance Mode for Cluster Nodes</title>
+      <link>/rs/administering/cluster-operations/maintenance-mode/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/maintenance-mode/</guid>
+      <description>When you need to do hardware or operating system maintenance on a server that hosts an Redis Enterprise Software (RS) node, it is important that you move all of the shards on that node to another node to protect the data. You can use maintenance mode to handle this process simply and efficiently.
+For example, when you have a 3 node cluster with 4 shards, the status of the cluster is:</description>
+    </item>
+    
+    <item>
+      <title>New Cluster Setup</title>
+      <link>/rs/administering/cluster-operations/new-cluster-setup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/new-cluster-setup/</guid>
+      <description>A Redis Enterprise Software (RS) cluster typically consists of several nodes. For production deployments, Redis Labs recommends an uneven number of nodes, with a minimum of three.
+Note: In a cluster that consists of only one node, some features and capabilities are not enabled, such as database replication that provides high availability.
+To set up a new cluster, you must first install the Redis Enterprise Software package as described in the previous section and then set up the cluster as described below.</description>
+    </item>
+    
+    <item>
+      <title>Removing a Node</title>
+      <link>/rs/administering/cluster-operations/removing-node/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/removing-node/</guid>
+      <description>There are various reasons why you may want to remove a node in Redis Enterprise Software (RS):
+ You no longer need the extra capacity, meaning you want to permanently remove the node. You would like to replace a faulty node with a healthy node. You would like to replace a healthy node with a different node.  The following section explains how each of these actions can be achieved, as well as their impact and considerations.</description>
+    </item>
+    
+    <item>
+      <title>Replacing a node</title>
+      <link>/rs/administering/cluster-operations/replacing-node/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/replacing-node/</guid>
+      <description>If a node in your Redis Enterprise Software (RS)cluster is faulty, its status appears as **Down **in the Status column of the Nodes page, and in the Cluster &amp;gt; Configuration page.
+To replace a faulty node:
+  Acquire a new node that is identical to the old node, install and configure Redis Enterprise Software on it per the install instructions.
+Note: If you are using Redis on Flash, you must make sure the required flash storage is set up on this new node.</description>
+    </item>
+    
+    <item>
+      <title>Stopping a Node with Persistence</title>
+      <link>/rs/administering/cluster-operations/shutting-down-node/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/shutting-down-node/</guid>
+      <description>Because Redis is an in-memory database, when you stop a machine that hosts a Redis Enterprise Software (RS) node that has databases with persistence enabled, either:
+ Redis can delay the machine shutdown as the databases with persistence enabled try to save the data to disk. The length of the delay depends on the number of databases and the size of the data. The operating system can force the node to stop before all of the data is saved to disk.</description>
+    </item>
+    
+    <item>
+      <title>Updating SSL/TLS Certificates</title>
+      <link>/rs/administering/cluster-operations/updating-certificates/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/updating-certificates/</guid>
+      <description>Redis Enterprise Software (RS) uses self-signed certificates out-of-the-box to make sure that the product is secure by default. The self-signed certificates are used to establish encryption-in-transit for the following traffic:
+ Management Web UI (CM) - The certificate for connections to the management web UI REST API - The certificate for REST API calls Proxy - The certificate for connections between clients and database endpoints Syncer - The certificate for Active-Active and Replica Of synchronization between clusters Metrics exporter - The certificate to export metrics to Prometheus  These self-signed certificates are generated on the first node of each RS installation and are copied to all other nodes added to the cluster.</description>
+    </item>
+    
+  </channel>
+</rss>

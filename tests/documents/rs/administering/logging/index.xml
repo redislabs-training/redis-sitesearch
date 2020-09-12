@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Logging and Audit Events on Redis Labs Documentation Center</title>
+    <link>/rs/administering/logging/</link>
+    <description>Recent content in Logging and Audit Events on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/logging/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>rsyslog logging</title>
+      <link>/rs/administering/logging/rsyslog-logging/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/logging/rsyslog-logging/</guid>
+      <description>This document explains the structure of Redis Enterprise Software (RS) log entries that go into rsyslog and how to use these log entries to identify events.
+Logging concepts RS adds to the log different log entries, from various cluster components, for various events and actions that take place in the cluster.
+There might be many different log entries for a specific event that can be perceived externally as a single event.</description>
+    </item>
+    
+    <item>
+      <title>Viewing Redis Slow Log</title>
+      <link>/rs/administering/logging/redis-slow-log/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/logging/redis-slow-log/</guid>
+      <description>On the Database &amp;gt; Slow Log page, you can view Slow Log details for Redis Enterprise Software (RS) databases.
+Redis Slow Log is one of the best tools for debugging and tracing your Redis database, especially if you experience high latency and high CPU usage with Redis operations. Because Redis is based on a single threaded architecture, Redis Slow Log can be much more useful than slow log mechanisms of multi-threaded database systems such as MySQL Slow Query Log.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Reference on Redis Labs Documentation Center</title>
+    <link>/rs/references/</link>
+    <description>Recent content in Reference on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/references/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Benchmark a Redis on Flash Enabled Database</title>
+      <link>/rs/references/memtier-benchmark/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/references/memtier-benchmark/</guid>
+      <description>Redis on Flash (RoF) on Redis Enterprise Software (RS) lets you use more cost-effective Flash memory as a RAM extension for your database. But what does the performance look like as compared to an all-RAM RS database?
+The simple scenarios on this page show you how you can get performance results with the free RS trial version. If you would like assistance with your evaluation or need to test a larger cluster, we&amp;rsquo;d be happy to help.</description>
+    </item>
+    
+    <item>
+      <title>CRDB-CLI Commands</title>
+      <link>/rs/references/crdb-cli-reference/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/references/crdb-cli-reference/</guid>
+      <description>An Active-Active database (also known as CRDB or Conflict-free, Replicated DataBase) replicates your dataset across Redis Enterprise Software (RS) clusters located in geographically distributed regions. Active-Active databases allow read-write access in all locations, making them ideal for distributed applications that require the fastest response times, and also for disaster recovery.
+The Active-Active database on an individual cluster is called an instance. Each cluster that hosts an instance is called a participating cluster.</description>
+    </item>
+    
+    <item>
+      <title>Node Verification Utility (rlcheck)</title>
+      <link>/rs/references/rlcheck/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/references/rlcheck/</guid>
+      <description>rlcheck is a utility that runs various health checks on an Redis Enterprise Software (RS) node and alerts on any issues found. This utility can be useful to confirm a successful installation or to verify that the node is functioning properly.
+You can access rlcheck from the host command-line interface (CLI). The output of rlcheck shows information specific to the host that you run it on.
+To open the rladmin CLI:</description>
+    </item>
+    
+    <item>
+      <title>The RS Command-Line Interface (rladmin)</title>
+      <link>/rs/references/rladmin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/references/rladmin/</guid>
+      <description>Redis Enterprise Software (RS) includes rladmin, a command-line interface (CLI) that you can use to do advanced administrative tasks. Some of these tasks you can also do through the management web UI.
+For example, with the rladmin CLI you can:
+ View the detailed status of the cluster including information about each node, each database, and each shard Failover between a master and slave shard, or a master and slave endpoint Migrate a specific shard or endpoint between nodes Tune specific internal parameters of a database Upgrade the version of a database to the most current version supported by the cluster  Using the rladmin CLI To open the rladmin CLI:</description>
+    </item>
+    
+  </channel>
+</rss>

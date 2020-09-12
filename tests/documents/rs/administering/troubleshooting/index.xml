@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Troubleshooting on Redis Labs Documentation Center</title>
+    <link>/rs/administering/troubleshooting/</link>
+    <description>Recent content in Troubleshooting on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/troubleshooting/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating a Support Package</title>
+      <link>/rs/administering/troubleshooting/creating-support-package/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/troubleshooting/creating-support-package/</guid>
+      <description>If you encounter any issues that you are not able to resolve yourself and need to contact Redis Labs support for assistance, you can create a support package that gathers all essential information to help us debug your issues.
+ Note -  The process of creating the support package can take several minutes and generates load on the system.   Creating a support package To create a support package:</description>
+    </item>
+    
+    <item>
+      <title>Database Metrics Not Collected During Resharding</title>
+      <link>/rs/administering/troubleshooting/database-metrics-blank-during-resharding/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/troubleshooting/database-metrics-blank-during-resharding/</guid>
+      <description>Because data is being moved around across shards during the resharding process, it is impossible to report the values of some of the metrics in an accurate manner. Therefore, several database metrics are not collected, and as a result, the graph is blank when you view the database or shard metrics.
+Examples of metrics that are not collected during the resharding process are:
+ Used memory Memory usage Total keys Write misses/sec Read misses/sec Expired objects/sec Evicted objects/sec Incoming traffic Outgoing traffic  </description>
+    </item>
+    
+    <item>
+      <title>Nodes on Different VLANs</title>
+      <link>/rs/administering/troubleshooting/network-configuration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/troubleshooting/network-configuration/</guid>
+      <description>Nodes in the same cluster must reside on the same VLAN. If you cannot host the nodes on the same VLAN then you must configure all ports between them to be open.</description>
+    </item>
+    
+    <item>
+      <title>Recovering a Failed Cluster</title>
+      <link>/rs/administering/troubleshooting/cluster-recovery/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/troubleshooting/cluster-recovery/</guid>
+      <description>When a Redis Enterprise Software (RS) cluster fails, you must use the cluster configuration file and database data to recover the cluster.
+ Note -  For cluster recovery in a Kubernetes Operator deployment, go to: Redis Enterprise Cluster Recovery for Kubernetes.   Cluster failure can be caused by:
+ A hardware or software failure that causes the cluster to be unresponsive to client requests or administrative actions. More than half of the cluster nodes lose connection with the cluster, resulting in quorum loss.</description>
+    </item>
+    
+    <item>
+      <title>Recovering a Failed Database</title>
+      <link>/rs/administering/troubleshooting/database-recovery/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/troubleshooting/database-recovery/</guid>
+      <description>When a cluster fails or a database is corrupted, you must:
+ Restore the cluster configuration from the CCS files Recover the databases with their previous configuration and data  To restore the data that was in the databases to databases in the new cluster you must restore the database persistence files (backup, AOF, or snapshot files) to the databases. These files are stored in the persistence storage location.
+The database recovery process includes:</description>
+    </item>
+    
+    <item>
+      <title>Replica Of Repeatedly Fails</title>
+      <link>/rs/administering/troubleshooting/replicaof-repeatedly-fails/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/troubleshooting/replicaof-repeatedly-fails/</guid>
+      <description>There might be instances in which the Replica Of process repeatedly fails and restarts itself on Redis Enterprise Software (RS). This can result from the Redis &amp;ldquo;client-output-buffer-limit&amp;rdquo; setting on the source database being configured to a relatively small value, which causes the connection to be dropped.
+To identify this issue you can review the Redis log of the source database and find an entry in the log describing this issue.</description>
+    </item>
+    
+    <item>
+      <title>Testing Client Connectivity</title>
+      <link>/rs/administering/troubleshooting/testing-client-connectivity/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/troubleshooting/testing-client-connectivity/</guid>
+      <description>In various scenarios, such as after creating a new cluster or upgrading the cluster, it is highly advisable to verify client connectivity to the database.
+To test client connectivity:
+ Create a Redis database and get the database endpoint, which contains the cluster name (FQDN). Try to connect to the database endpoint from your client of choice, and execute commands against the database. If the database does not respond, try to connect to the database endpoint by using the IP address rather than the FQDN; if you succeed, it means that the DNS is not properly configured.</description>
+    </item>
+    
+  </channel>
+</rss>

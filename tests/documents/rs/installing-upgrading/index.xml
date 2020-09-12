@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Installing Redis Enterprise Software on Redis Labs Documentation Center</title>
+    <link>/rs/installing-upgrading/</link>
+    <description>Recent content in Installing Redis Enterprise Software on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/installing-upgrading/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Supported Platforms</title>
+      <link>/rs/installing-upgrading/supported-platforms/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/installing-upgrading/supported-platforms/</guid>
+      <description>Redis Enterprise Software (RS) is supported on several operating systems, cloud environments, and virtual environments.
+ Note -  Make sure your system meets these requirements:
+ Only 64-bit operating systems are supported. You must install Redis Enterprise Software directly on the host, not through system cloning. You must install on a clean host with no other applications running so that all RAM is allocated to the OS and RS only.</description>
+    </item>
+    
+    <item>
+      <title>File Locations</title>
+      <link>/rs/installing-upgrading/file-locations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/installing-upgrading/file-locations/</guid>
+      <description>To make sure that Redis Enterprise Software functions properly, make sure that you handle the files in the application directories with care.
+Application directories The directories that Redis Enterprise Software installs into are:
+   Path Description     /opt/redislabs Main installation directory for all Redis Enterprise Software binaries   /opt/redislabs/bin Binaries for all the utilities for command line access and managements such as &amp;ldquo;rladmin&amp;rdquo; or &amp;ldquo;redis-cli&amp;rdquo;   /opt/redislabs/config System configuration files   /opt/redislabs/lib System library files   /opt/redislabs/sbin System binaries for tweaking provisioning    Configuration and data directories The default directories that Redis Enterprise Software uses for data and metadata are:</description>
+    </item>
+    
+    <item>
+      <title>Configuring AWS Instances for Redis Enterprise Software</title>
+      <link>/rs/installing-upgrading/configuring-aws-instances/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/installing-upgrading/configuring-aws-instances/</guid>
+      <description>There are some special considerations that are important when installing and running Redis Enterprise Software (RS) on an AWS instances.
+Storage considerations AWS instances are ephemeral, but your persistent database storage should not be. If you require a persistent storage location for your database, the storage must be located outside of the instance. Therefore, when you set up an instance make sure that it has a properly sized EBS backed volume connected.</description>
+    </item>
+    
+    <item>
+      <title>Offline Installation</title>
+      <link>/rs/installing-upgrading/offline-installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/installing-upgrading/offline-installation/</guid>
+      <description>By default, the installation process requires an Internet connection to enable installing dependency packages and for synchronizing the operating system clock against an NTP server.
+If you install Redis Enterprise Software (RS) on a machine with no Internet connection, you need to perform these two tasks manually, as follows:
+First, you need to install the required dependency packages. When RS is installed on a machine that is not connected to the Internet, the installation process fails and displays an error message informing you it failed to automatically install dependencies.</description>
+    </item>
+    
+    <item>
+      <title>Upgrading Redis Enterprise Software</title>
+      <link>/rs/installing-upgrading/upgrading/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/installing-upgrading/upgrading/</guid>
+      <description>To upgrade the Redis Enterprise Software (RS) on a cluster, you must upgrade each of the nodes and then upgrade each of the databases in the cluster.
+ Warning -   Before you upgrade, you must read the RS 6.0 release notes, including the 6.0 upgrade notes. You must read the release notes for every version that you upgrade to.     Version requirements:
+ To upgrade your cluster to v6.</description>
+    </item>
+    
+    <item>
+      <title>Uninstalling Redis Enterprise Software</title>
+      <link>/rs/installing-upgrading/uninstalling/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/installing-upgrading/uninstalling/</guid>
+      <description>You can uninstall Redis Enterprise Software (RS) from a node to uninstall RS and remove the RS files. By default, the files are in: /opt/redislabs, /etc/opt/redislabs, /var/opt/redislabs
+To uninstall RS from a node, run:
+rl_uninstall.sh </description>
+    </item>
+    
+  </channel>
+</rss>

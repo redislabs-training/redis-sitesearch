@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Settings on Redis Labs Documentation Center</title>
+    <link>/rs/administering/cluster-operations/settings/</link>
+    <description>Recent content in Settings on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/cluster-operations/settings/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Cluster License Keys</title>
+      <link>/rs/administering/cluster-operations/settings/license-keys/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/settings/license-keys/</guid>
+      <description>The cluster key (or license) enables features and capacity within Redis Enterprise Software (RS). You can add or update a cluster key at any time in a cluster lifecycle. When the cluster does not have a cluster key, the cluster is in trial mode.
+Trial mode Trial mode is limited to thirty days and a total of four shards, including master and slave shards. Any new installation starts its thirty-day clock from the day the cluster setup was done (with the first cluster node provisioned).</description>
+    </item>
+    
+    <item>
+      <title>General settings</title>
+      <link>/rs/administering/cluster-operations/settings/general/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/cluster-operations/settings/general/</guid>
+      <description>You can view and set various cluster settings in the Settings &amp;gt; General page.
+Entering a cluster key After purchasing a cluster key and if your account has the &amp;ldquo;Admin&amp;rdquo; role, you can enter the key in the Cluster Key field, either during initial cluster creation or at any time afterward. The key defines various cluster settings, such as the maximum number of shards you can have in the cluster. For more detailed information see Cluster License Keys.</description>
+    </item>
+    
+  </channel>
+</rss>

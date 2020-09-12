@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Networking on Redis Labs Documentation Center</title>
+    <link>/rs/administering/designing-production/networking/</link>
+    <description>Recent content in Networking on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/designing-production/networking/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Multi-IP and IPv6</title>
+      <link>/rs/administering/designing-production/networking/multi-ip-ipv6/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/networking/multi-ip-ipv6/</guid>
+      <description>Redis Enterprise Software (RS) supports server/instances/VMs with multiple IP addresses, as well as IPv6 addresses.
+RS related traffic can be logically and physically divided into internal traffic and external traffic:
+ &amp;ldquo;Internal traffic&amp;rdquo; refers to internal cluster communications, such as communications between the nodes for cluster management purposes. &amp;ldquo;External traffic&amp;rdquo; refers to communications between the clients and the databases, as well as connections to the management UI in the browser.  When only one IP address exists on a machine that serves as an RS node, it is used for both internal and external traffic.</description>
+    </item>
+    
+    <item>
+      <title>Multiple Active Proxy Support</title>
+      <link>/rs/administering/designing-production/networking/multiple-active-proxy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/networking/multiple-active-proxy/</guid>
+      <description>Redis Enterprise Software (RS) provides high-performance data access through a proxy process that manages and optimizes access to shards within the RS cluster. Each node contains a single proxy process. Each proxy can be active and take incoming traffic or it can be passive and wait for failovers.
+RS allows multiple databases to be created. Each database gets an endpoint (a unique URL and port on the FQDN). This endpoint receives all the traffic for all operations for that database.</description>
+    </item>
+    
+    <item>
+      <title>Network Port Configurations</title>
+      <link>/rs/administering/designing-production/networking/port-configurations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/networking/port-configurations/</guid>
+      <description>To make sure that Redis Enterprise Software (RS) servers can pass necessary communications between them, we recommend that all RS servers have all of the ports listed here open between them.
+By default, the cluster assigns ports in the range of 10,000 - 19,999 to database endpoints. If you assign a specific port for a database when you create it, even outside of this range, the cluster only verifies that the assigned port is not already in use.</description>
+    </item>
+    
+    <item>
+      <title>Private and Public Endpoints on Redis Enterprise Software</title>
+      <link>/rs/administering/designing-production/networking/private-public-endpoints/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/networking/private-public-endpoints/</guid>
+      <description>The cluster can be configured to support both private and public IPs to connect to database endpoints through both public and private networks.
+In certain environments, and especially in cloud platforms, an instance can have both:
+ A private IP address that can be used only from within the internal network Public IP addresses that can be used from the public network (Internet)  In this case, it is possible to configure Redis Enterprise Software to expose two sets of database endpoints in order to connect to the database through both the private and the public IP addresses.</description>
+    </item>
+    
+    <item>
+      <title>Using the OSS Cluster API</title>
+      <link>/rs/administering/designing-production/networking/using-oss-cluster-api/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/networking/using-oss-cluster-api/</guid>
+      <description>Redis OSS Cluster API reduces access times and latency with near-linear scalability. The Redis OSS Cluster API provides a simple mechanism for Redis clients to know the cluster topology.
+Clients must first connect to the master node to get the cluster topology, and then they connect directly to the Redis proxy on each node that hosts a master shard.
+ Note -  You must use a client that supports the OSS cluster API to connect to a database that has the OSS cluster API enabled.</description>
+    </item>
+    
+  </channel>
+</rss>

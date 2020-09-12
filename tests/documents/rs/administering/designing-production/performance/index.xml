@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Performance on Redis Labs Documentation Center</title>
+    <link>/rs/administering/designing-production/performance/</link>
+    <description>Recent content in Performance on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/designing-production/performance/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Configuring Shard Placement</title>
+      <link>/rs/administering/designing-production/performance/shard-placement/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/performance/shard-placement/</guid>
+      <description>In Redis Enterprise Software , the location of master and slave shards on the cluster nodes can impact the database and node performance. Master shards and their corresponding slave shards are always placed on separate nodes for data resiliency. The shard placement policy helps to maintain optimal performance and resiliency.
+In addition to the shard placement policy, considerations that determine shard placement are:
+ Separation of master and slave shards Available persistence and Redis on Flash (RoF) storage Rack awareness Memory available to host the database when fully populated  The shard placement policies are:</description>
+    </item>
+    
+    <item>
+      <title>Disk Sizing for Heavy Write Scenarios</title>
+      <link>/rs/administering/designing-production/performance/disk-sizing-heavy-write-scenarios/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/performance/disk-sizing-heavy-write-scenarios/</guid>
+      <description>In extreme write scenarios, when AOF is enabled, the AOF rewrite process may require considerably more disk space for database persistence.
+To estimate the required persistent disk space in such cases, use the formula described below.
+The required persistent disk space for AOF rewrite purposes in extreme write scenarios, assuming identical shard sizes:
+X (1 + 3Y +Y²) where: X = each shard size Y = number of shards
+Following are examples of database configurations and the persistence disk space they would require in this scenario:</description>
+    </item>
+    
+    <item>
+      <title>Performance Optimization</title>
+      <link>/rs/administering/designing-production/performance/optimization/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/performance/optimization/</guid>
+      <description>Redis Enterprise Software (RS) employs various algorithms to optimize performance. As part of this process, RS examines usage characteristics and load and adjusts its run-time configuration accordingly. Depending on your specific usage characteristics and load, it might take RS some time to adjust itself to optimal performance.
+To ensure optimal performance, you must run your workload several times and for a long duration until performance stabilizes.
+In addition, RS can be optimized for two different environments:</description>
+    </item>
+    
+  </channel>
+</rss>

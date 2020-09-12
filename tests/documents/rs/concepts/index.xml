@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Concepts and Architecture on Redis Labs Documentation Center</title>
+    <link>/rs/concepts/</link>
+    <description>Recent content in Concepts and Architecture on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/concepts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Geo-Distributed Active-Active Redis Applications</title>
+      <link>/rs/concepts/intercluster-replication/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/concepts/intercluster-replication/</guid>
+      <description>Developing globally distributed applications can be challenging, as developers have to think about race conditions and complex combinations of events under geo-failovers and cross-region write conflicts. In Redis Enterprise Software (RS), Active-Active databases simplify developing such applications by directly using built-in smarts for handling conflicting writes based on the data type in use. Instead of depending on just simplistic &amp;ldquo;last-writer-wins&amp;rdquo; type conflict resolution, geo-distributed Active-Active databases (formerly known as CRDBs) combines techniques defined in CRDT (conflict-free replicated data types) research with Redis types to provide smart and automatic conflict resolution based on the data types intent.</description>
+    </item>
+    
+    <item>
+      <title>Redis Enterprise Software Compatibility with Open Source Redis</title>
+      <link>/rs/concepts/compatibility/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/concepts/compatibility/</guid>
+      <description>Redis Enterprise Software (RS) is fully compatible with open source Redis. Redis Labs contributes extensively to the open source Redis project and employs it inside of RS. As a rule, Redis Labs adheres to the open source&amp;rsquo;s specifications and makes every effort to update RS with the latest version of Redis.
+Redis commands Any standard Redis client can be used with RS. That said, some of Redis functionality is not applicable in the context of RS, as follows:</description>
+    </item>
+    
+    <item>
+      <title>Shard Placement Policy</title>
+      <link>/rs/concepts/shard-placement-policy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/concepts/shard-placement-policy/</guid>
+      <description>In Redis Enterprise Software (RS), the location of master and slave shards on the cluster nodes can impact the database and node performance. Master shards and their corresponding slave shards are always placed on separate nodes for data resiliency. The shard placement policy helps to maintain optimal performance and resiliency.
+In addition to the shard placement policy, considerations that determine shard placement are:
+ Separation of master and slave shards Available persistence and Redis on Flash (RoF) storage Rack awareness Memory available to host the database when fully populated  The shard placement policies are:</description>
+    </item>
+    
+    <item>
+      <title>Terminology in Redis Enterprise Software</title>
+      <link>/rs/concepts/terminology/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/concepts/terminology/</guid>
+      <description>Here are explanations of some of the terms used in Redis Enterprise Software (RS).
+Node A node is a physical machine, virtual machine, container or cloud instance on which the RS installation package was installed and the setup process was run in order to make the machine part of the cluster.
+Each node is a container for running multiple open source Redis instances, referred to as &amp;ldquo;shards&amp;rdquo;.
+The recommended configuration for a production cluster is an uneven number of nodes, with a minimum of three.</description>
+    </item>
+    
+  </channel>
+</rss>

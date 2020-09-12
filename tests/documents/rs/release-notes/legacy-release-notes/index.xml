@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Previous Releases on Redis Labs Documentation Center</title>
+    <link>/rs/release-notes/legacy-release-notes/</link>
+    <description>Recent content in Previous Releases on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/release-notes/legacy-release-notes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Redis Enterprise Software 5.2.2 (August 2018)</title>
+      <link>/rs/release-notes/legacy-release-notes/rs-5-2-2-august-2018/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rs-5-2-2-august-2018/</guid>
+      <description>Redis Enterprise Software (RS) 5.2.2 is now available.
+RS 5.2.2 is a minor version that includes important fixes and minor enhancements to Redis Enterprise 5.2.
+Overview If you are upgrading from a previous version, make sure to review the upgrade instructions before beginning the upgrade process. You can upgrade to RS 5.2.2 from RS 4.5 and above. If you have a version older than 4.5, you should first upgrade to version 5.</description>
+    </item>
+    
+    <item>
+      <title>Redis Enterprise Software Release Notes 5.3 BETA (July 2018)</title>
+      <link>/rs/release-notes/legacy-release-notes/rs-5-3-beta-july-2018/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rs-5-3-beta-july-2018/</guid>
+      <description>Redis Enterprise Software (RS) 5.3 is now available.
+RS 5.3 is a preview version that includes all the capabilities of Redis Enterprise 5.2, plus support for Redis 5.0 with the new data type, which is called Streams.
+New features RS 5.3 adds support for Redis 5.0 and is based on its latest Release Candidate (RC3). Redis 5.0 exposes the new Redis Streams data type, which provides a super fast in-memory abstraction of an append-only log.</description>
+    </item>
+    
+    <item>
+      <title>Redis Enterprise Software Release Notes 5.2 (June 2018)</title>
+      <link>/rs/release-notes/legacy-release-notes/rs-5-2-june-2018/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rs-5-2-june-2018/</guid>
+      <description>Redis Enterprise Software (RS) 5.2 is now available. Key features include new data types and Causal Consistency for active-active (also known as the Redis CRDT or CRDB Conflict-free Replicated Database), as well as enhanced security features.
+Overview If you are upgrading from a previous version, make sure to review the upgrade instructions before beginning the upgrade process. You can upgrade to RS 5.2 from RS 4.5 and above. If you have a version older than 4.</description>
+    </item>
+    
+    <item>
+      <title>Redis Enterprise Software 5.0.2 (2018 March)</title>
+      <link>/rs/release-notes/legacy-release-notes/release-notes-redis-enterprise-software-v5-0-2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/release-notes-redis-enterprise-software-v5-0-2/</guid>
+      <description>Redis Enterprise Software 5.0.2 is now available. Key features include functional and performance updates for CRDB, changes to module deployment, and general fixes.
+Overview If you are upgrading from a previous version, make sure to review the upgrade instructions before beginning the upgrade process.
+You can upgrade to RS 5.0.2 from RS 4.4.2 and above. If you have a version older than 4.4.2, you must first upgrade to at least 5.</description>
+    </item>
+    
+    <item>
+      <title>Redis Enterprise Pack 5.0 Release Notes (November 2017)</title>
+      <link>/rs/release-notes/legacy-release-notes/redis-enterprise-5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/redis-enterprise-5/</guid>
+      <description>Redis Enterprise Software 5.0 is now available. Key features include Geo-Distributed Active-Active Conflict-free Replicated Databases (CRDB), LDAP integration, Redis Module integration, and support for the Redis Cluster API.
+Overview If you are upgrading from a previous version, make sure to review the upgrade instructions before beginning the upgrade process.
+You can upgrade to RS 5.0 from RS 4.4.2 and above. If you have a version older than this, you must first upgrade to at least 4.</description>
+    </item>
+    
+    <item>
+      <title>Redis Enterprise Pack 4.5 Release Notes (May 2017)</title>
+      <link>/rs/release-notes/legacy-release-notes/redis-pack-4-5-0-may-2017/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/redis-pack-4-5-0-may-2017/</guid>
+      <description>If you are upgrading from a previous version, make sure to review the upgrade instructions before beginning the upgrade process.
+You can upgrade to this version from any 4.4 version. If you have a version older than 4.4 you must first upgrade to 4.4 or higher, and only then upgrade to this version.
+New features The new discovery service with supportfor Redis Sentinel API The Discovery Service provides an IP-based connection management service used when connecting to Redis Enterprise Pack databases.</description>
+    </item>
+    
+    <item>
+      <title>RLEC 4.4 Release Notes (December 2016)</title>
+      <link>/rs/release-notes/legacy-release-notes/rlec-4-4-dec-2016/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rlec-4-4-dec-2016/</guid>
+      <description>If you are upgrading from a previous version, make sure to review the upgrade instructions before beginning the upgrade process.
+You can upgrade to this version from any 4.3 version. If you have a version older than 4.3 you must first upgrade to 4.3 and only then upgrade to this version.
+New features  Databases can now be configured to have multiple proxies for improved performance. Note that when you upgrade the cluster to this version and then upgrade existing databases, the databases will be updated to use the Single proxy policy and Dense shard placement policy.</description>
+    </item>
+    
+    <item>
+      <title>RLEC 4.3.0-230 Release Notes (August 2, 2016)</title>
+      <link>/rs/release-notes/legacy-release-notes/rlec-4-3-aug-2016/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rlec-4-3-aug-2016/</guid>
+      <description>If you are upgrading from a previous version, make sure to review the upgrade instructions before running through the upgrade process.
+You can upgrade to this version from any 4.2 version. If you have a version older than 4.2 you should first upgrade to 4.2 and only then upgrade to this version.
+New features  Various improvements to internal performance and stability were implemented. RLEC Flash functionality added. For additional details, refer to Redis on Flash and contact support@redislabs.</description>
+    </item>
+    
+    <item>
+      <title>RLEC 4.2.1-30 Release Notes (October 18, 2015)</title>
+      <link>/rs/release-notes/legacy-release-notes/rlec-4-2-october-2015/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rlec-4-2-october-2015/</guid>
+      <description>If you are upgrading from a previous version, make sure to review the upgrade instructions before running through the upgrade process.
+New features  rsyslog logging support - RLEC now writes by default to syslog, which enables monitoring through rsyslog. Profile support for tuning cloud and non-cloud environments &amp;ndash; enables the administrator to configure RLEC to run with different performance profiles that are optimized for either cloud or non-cloud environments. For additional details, refer to the Performance optimization section.</description>
+    </item>
+    
+    <item>
+      <title>RLEC 4.0.0-49 Release Notes (June 18, 2015)</title>
+      <link>/rs/release-notes/legacy-release-notes/rlec-4-0-june-2015/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rlec-4-0-june-2015/</guid>
+      <description>If you are upgrading from a previous version, make sure to review the upgrade instructions before running through the upgrade process.
+In addition, when running the install.sh script to upgrade the software, you might be prompted to approve changes to a configuration file named ccs-redis.conf. It is crucial that you choose Yes when asked whether to update this file.
+New features  Support for Red Hat Enterprise Linux (RHEL) and CentOS 6.</description>
+    </item>
+    
+    <item>
+      <title>RLEC 0.99.5-24 Release Notes (February 15, 2015)</title>
+      <link>/rs/release-notes/legacy-release-notes/rlec-0-99-february-2015/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rlec-0-99-february-2015/</guid>
+      <description>If you are upgrading from a previous version, make sure to review the upgrade instructions before running through the upgrade process.
+If you are upgrading from version 0.99.5-11:
+ You must restart the services after the upgrade by running the following command with user root (sudo su). From the operating system&amp;rsquo;s CLI, run the following command: cnm_ctl restart After the upgrade, rladmin status command will report that the databases are from an old version.</description>
+    </item>
+    
+    <item>
+      <title>RLEC 0.99.5-11 Release Notes (January 5, 2015)</title>
+      <link>/rs/release-notes/legacy-release-notes/rlec-0-99-5-11-january-2015/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/release-notes/legacy-release-notes/rlec-0-99-5-11-january-2015/</guid>
+      <description>New features Initial release, everything is new!
+Changes Initial release, no changes!
+Fixed issues None.
+Known issues  Issue: When taking a node offline or removing a node, if the node being taken offline or removed is currently serving as the web server for the web browser being used to view the management UI, the management UI appears down while the node is down. Workaround: If you are using the cluster name in order to connect to the management UI in the browser, and the cluster name is registered in your external DNS or you are using the mDNS option, then the DNS entries will be updated to point to another node in the cluster after a few seconds and the UI will open properly.</description>
+    </item>
+    
+  </channel>
+</rss>

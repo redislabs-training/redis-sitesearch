@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>User Management and Access Control on Redis Labs Documentation Center</title>
+    <link>/rs/administering/access-control/</link>
+    <description>Recent content in User Management and Access Control on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/access-control/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>User Roles and Access Control</title>
+      <link>/rs/administering/access-control/user-roles/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/access-control/user-roles/</guid>
+      <description>Role-Based Access Control (RBAC) lets you scale your Redis deployments while simplifying the complexity of managing a cluster with many databases, users, and access control lists. With RBAC, you can create a role and apply it to many users to define their access to multiple databases in the cluster.
+In access control &amp;gt; roles, you can configure Redis Enterprise Software (RS) user roles with:
+ Management roles that define user access to the RS web UI and API for the cluster Data access control with Redis ACLs that define the commands and keys that users can access in database connections  Cluster management roles Each user role is assigned a management role that defines the access the user with that role has in the RS web UI and API for the cluster.</description>
+    </item>
+    
+  </channel>
+</rss>

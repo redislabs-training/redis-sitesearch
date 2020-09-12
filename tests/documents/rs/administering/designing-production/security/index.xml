@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Security on Redis Labs Documentation Center</title>
+    <link>/rs/administering/designing-production/security/</link>
+    <description>Recent content in Security on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/administering/designing-production/security/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Configuring TLS Authentication and Encryption</title>
+      <link>/rs/administering/designing-production/security/tls-configuration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/security/tls-configuration/</guid>
+      <description>To prevent unauthorized access to your data, Redis Enterprise Software (RS) databases support the TLS protocol (the more secure successor to SSL) that includes:
+ Encryption - Makes sure that the traffic can only be read by the sender and recipient. Authentication - The server or client makes sure that it communicates with an authorized entity.  When you enable TLS for a database or Active-Active database, encryption is enforced on either all communications or only communications between clusters, and RS sends its certificate to clusters and clients for authentication to the database or Active-Active database.</description>
+    </item>
+    
+    <item>
+      <title>Integrating LDAP Authentication</title>
+      <link>/rs/administering/designing-production/security/ldap-integration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/security/ldap-integration/</guid>
+      <description>Redis Enterprise Software (RS) can integrate with your identity provider using LDAP authentication. After you configure the LDAP connection, you can give LDAP users access to the RS web UI according to the permissions that you assign.
+saslauthd is the process that handles LDAP authentication requests to RS.
+ Note -  LDAP authentication is not yet supported for Redis ACL Users.   To configure LDAP authentication for RS web UI users on a running cluster:</description>
+    </item>
+    
+    <item>
+      <title>Securing Redis Client Connections</title>
+      <link>/rs/administering/designing-production/security/client-connections/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/security/client-connections/</guid>
+      <description>If you configure it, Redis Enterprise Software (RS) can use industry-standard encryption to protect your data in transit between a Redis client and RS. For this purpose, RS uses transport layer security (TLS) protocol, which is the more secure successor to SSL.
+To enable TLS you must configure the RS cluster nodes, the database, and the client, as detailed below.
+Configuration of the RS nodes By default, each cluster node has a different set of self-signed certificates.</description>
+    </item>
+    
+    <item>
+      <title>User Login Lockout for Security Compliance</title>
+      <link>/rs/administering/designing-production/security/login-lockout/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/administering/designing-production/security/login-lockout/</guid>
+      <description>To help reduce the risk of a brute force attacks on Redis Enterprise Software (RS), RS includes user login restrictions. You can customize the restrictions to align with the security policy of your organization. Every failed login is shown in the logs.
+ Note -  Customers, such as large organizations, that use LDAP to manage external authentication must set these restrictions in the LDAP service.   User login lockout The parameters for the user login lockout are:</description>
+    </item>
+    
+  </channel>
+</rss>

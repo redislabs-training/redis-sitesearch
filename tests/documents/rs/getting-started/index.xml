@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Getting Started with Redis Enterprise Software on Redis Labs Documentation Center</title>
+    <link>/rs/getting-started/</link>
+    <description>Recent content in Getting Started with Redis Enterprise Software on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/getting-started/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Getting Started with Redis on Flash (RoF)</title>
+      <link>/rs/getting-started/getting-started-redis-flash/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/getting-started/getting-started-redis-flash/</guid>
+      <description>The steps to set up a Redis Enterprise Software cluster using Redis on Flash with a single node are:
+ Step 1: Install Redis Enterprise Software or launch with Docker container Step 2: Set up a Redis Enterprise Software cluster with Redis on Flash Step 3: Create a new Redis on Flash database Step 4: Connect to your new database  If you are looking for more detailed installation instructions you can visit the installing and upgrading section of the technical documentation.</description>
+    </item>
+    
+    <item>
+      <title>Getting Started with Redis Enterprise Active-Active Databases</title>
+      <link>/rs/getting-started/getting-started-active-active/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/getting-started/getting-started-active-active/</guid>
+      <description>In this guide, we&amp;rsquo;ll set up an Active-Active database, formerly known as CRDB (Conflict-free Replicated DataBase) spanning across two Redis Enterprise Software clusters for test and development environments. Here are the steps:
+ Step 1: Run two Redis Enterprise Software (RS) Docker containers Step 2: Set up each container as a cluster Step 3: Create a new Redis Enterprise Active-Active database Step 4: Test connectivity to the Active-Active database  To run an Active-Active database on installations from the RS download package, set up two RS installations and continue from Step 2.</description>
+    </item>
+    
+    <item>
+      <title>Getting Started with Redis Enterprise Software using Docker</title>
+      <link>/rs/getting-started/getting-started-docker/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/getting-started/getting-started-docker/</guid>
+      <description>For testing purposes, you can run Redis Enterprise Software (RS) on Docker containers on Linux, Windows, or MacOS. The Redis Enterprise Software container represents a node in an RS Cluster. When deploying RS using Docker, there are a couple of common topologies:
+Topology #1: The simplest topology is to run a single-node RS Cluster with a single container in a single host machine. This is best for local development or functional testing.</description>
+    </item>
+    
+    <item>
+      <title>Benchmarking Redis Enterprise</title>
+      <link>/rs/getting-started/memtier-benchmark/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/getting-started/memtier-benchmark/</guid>
+      <description>If you need to do a quick performance benchmark of Redis Enterprise, we have a tool just for this; memtier_benchmark.
+Prerequisites:
+ Redis Enterprise Software installed A cluster configured A database created  If you need a quick setup for the prerequisites, please go here.
+It is recommended to run memtier_benchmark on a separate node that is not part of the cluster being tested. If you run it on a node of the cluster, be mindful that it affects the performance of both the cluster and memtier_benchmark.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developing Applications with Active-Active Databases on Redis Labs Documentation Center</title>
+    <link>/rs/developing/crdbs/</link>
+    <description>Recent content in Developing Applications with Active-Active Databases on Redis Labs Documentation Center</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="/rs/developing/crdbs/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Developing with Hashes in an Active-Active database</title>
+      <link>/rs/developing/crdbs/developing-hashes-crdb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/developing/crdbs/developing-hashes-crdb/</guid>
+      <description>Hashes are great for structured data that contain a map of fields and values. They are used for managing distributed user or app session state, user preferences, form data and so on. Hash fields contain string type and string types operate just like the standard Redis string types when it comes to CRDTs. Fields in hashes can be initialized as a string using HSET or HMSET or can be used to initialize counter types that are numeric integers using HINCRBY or floats using HINCRBYFLOAT.</description>
+    </item>
+    
+    <item>
+      <title>Developing with HyperLogLog in an Active-Active database</title>
+      <link>/rs/developing/crdbs/developing-hll-crdb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/developing/crdbs/developing-hll-crdb/</guid>
+      <description>HyperLogLog is an algorithm that addresses the count-distinct problem. To do this it approximates the numbers of items in a set. Determining the exact cardinality of a set requires memory according to the cardinality of the set. Because it estimates the cardinality by probability, the HyperLogLog algorithm can run with more reasonable memory requirements.
+HyperLogLog in Redis Open source Redis implements HyperLogLog (HLL) as a native data-structure. It supports adding elements (PFADD) to an HLL, counting elements (PFCOUNT) of HLLs, and merging of (PFMERGE) HLLs.</description>
+    </item>
+    
+    <item>
+      <title>Developing with Lists in an Active-Active Database</title>
+      <link>/rs/developing/crdbs/developing-lists-crdb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/developing/crdbs/developing-lists-crdb/</guid>
+      <description>Redis Lists are simply lists of strings, sorted by insertion order. It is possible to add elements to a Redis List that push new elements to the head (on the left) or to the tail (on the right) of the list. Redis Lists can be used to easily implement queues (using LPUSH and RPOP, for example) and stacks (using LPUSH and LPOP, for example).
+Lists in Active-Active databases are just the same as regular Redis Lists.</description>
+    </item>
+    
+    <item>
+      <title>Developing with Sets in an Active-Active database</title>
+      <link>/rs/developing/crdbs/developing-sets-crdb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/developing/crdbs/developing-sets-crdb/</guid>
+      <description>Redis Sets are an unordered collection of Strings. It is possible to add, remove, and test for the existence of members with Redis commands. A Redis set maintains a unique collection of elements. Sets can be great for maintaining a list of events (click streams), users (in a group conversation), products (in recommendation lists), engagements (likes, shares) and so on.
+Sets in Active-Active databases behave the same and maintain additional metadata to achieve an &amp;ldquo;OR-Set&amp;rdquo; behavior to handle concurrent conflicting writes.</description>
+    </item>
+    
+    <item>
+      <title>Developing with Sorted Sets in an Active-Active database</title>
+      <link>/rs/developing/crdbs/developing-sorted-sets-crdb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/developing/crdbs/developing-sorted-sets-crdb/</guid>
+      <description>Note -  Redis Geospatial (Geo) is based on Sorted Sets, so the same Active-Active database development instructions apply to Geo.   Similar to Redis Sets, Redis Sorted Sets are non-repeating collections of Strings. The difference between the two is that every member of a Sorted Set is associated with a score used to order the Sorted Set from lowest to highest. While members are unique, they may have the same score.</description>
+    </item>
+    
+    <item>
+      <title>Developing with Strings in an Active-Active database</title>
+      <link>/rs/developing/crdbs/strings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/developing/crdbs/strings/</guid>
+      <description>Strings have particular unique characteristics in an Active-Active database. First off, they are the only data type that Last Write Wins (LWW) applies to. As part of that, a wall-clock timestamp (OS Time) is in the metadata of any operation on a String. If Redis Enterprise Software cannot determine the order of operations, the value with the higher timestamp wins. This is the only case where OS time is used to resolve a conflict.</description>
+    </item>
+    
+    <item>
+      <title>Streams with Active-Active databases</title>
+      <link>/rs/developing/crdbs/developing-streams-crdb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/rs/developing/crdbs/developing-streams-crdb/</guid>
+      <description>A Redis Stream is a data structure that acts like an append-only log. Each stream entry consists of:
+ A unique, monotonically increasing ID A payload consisting of a series key-value pairs  You add entries to a stream with the XADD command. You access stream entries using the XRANGE, XREADGROUP, and XREAD commands (however, see the caveat about XREAD below).
+Streams and Active-Active Active-Active databases allow you to write to the same logical stream from more than one region.</description>
+    </item>
+    
+  </channel>
+</rss>
