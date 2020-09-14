@@ -1,6 +1,7 @@
 import concurrent.futures
 import json
 from dataclasses import asdict
+from typing import List
 
 import redis.exceptions
 from redisearch import TextField
@@ -145,17 +146,14 @@ def document_to_dict(document: SearchDocument):
     return doc
 
 
-def add_document(redis_client, search_client, doc):
+def add_document(search_client, doc):
     search_client.add_document(**document_to_dict(doc))
 
 
 def prepare_file(file):
     print(f"parsing file {file}")
     with open(file) as f:
-        try:
-            return prepare_document(f.read())
-        except ParseError as e:
-            raise ParseError(f"{e}: {file}")
+        return prepare_document(f.read())
 
 
 class Indexer:
@@ -202,7 +200,7 @@ class Indexer:
                 try:
                     docs_for_file = future.result()
                 except ParseError as e:
-                    errors.append(str(e))
+                    errors.append(f"{e}: {file}")
                     continue
 
                 if not docs_for_file:
@@ -212,14 +210,14 @@ class Indexer:
                     for doc in docs_for_file:
                         self.validate(doc)
                 except ParseError as e:
-                    errors.append(str(e))
+                    errors.append(f"{e}: {file}")
                     continue
 
                 docs += docs_for_file
 
         return docs, errors
 
-    def index_files(self, files):
+    def index_files(self, files: List[str]) -> List[str]:
         docs, errors = self.prepare_files(files)
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -227,7 +225,7 @@ class Indexer:
 
             for doc in docs:
                 futures.append(
-                    executor.submit(add_document, self.redis_client, self.search_client, doc))
+                    executor.submit(add_document, self.search_client, doc))
 
             for future in concurrent.futures.as_completed(futures):
                 try:
