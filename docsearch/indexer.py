@@ -1,7 +1,7 @@
 import concurrent.futures
 import json
 from dataclasses import asdict
-from typing import List, Any, Dict, Tuple
+from typing import List, Tuple, Callable
 
 import redis.exceptions
 from redis import Redis
@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup, element
 
 from docsearch.errors import ParseError
 from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
+from docsearch.scorers import boost_sections
 from docsearch.validators import skip_release_notes
 
 ROOT_PAGE = "Redis Labs Documentation"
@@ -18,22 +19,36 @@ DEFAULT_VALIDATORS = (
     skip_release_notes,
 )
 
+DEFAULT_SCORERS = (
+    boost_sections,
+)
+
 DEFAULT_SCHEMA = (
     TextField("title", weight=1.5),
     TextField("section_title", weight=1.2),
-    TextField("url"),
     TextField("body", weight=2),
+    TextField("url"),
 )
+
+ScorerList = List[Callable[[SearchDocument, float], float]]
 
 
 def prepare_text(text: str) -> str:
     return text.strip().strip("\n").replace("\n", " ")
 
 
-def extract_parts(doc, h2s: List[element.Tag]):
+def extract_parts(doc, h2s: List[element.Tag]) -> List[SearchDocument]:
+    """
+    Extract SearchDocuments from H2 elements in a SearchDocument.
+
+    Given a list of H2 elements in a page, we extract the HTML content for
+    that "part" of the page by grabbing all of the sibling elements and
+    converting them to text.
+    """
     docs = []
 
     def next_element(elem):
+        """Get sibling elements until we exhaust them."""
         while elem is not None:
             elem = elem.next_sibling
             if hasattr(elem, 'name'):
@@ -53,7 +68,8 @@ def extract_parts(doc, h2s: List[element.Tag]):
             page.append(str(elem))
             elem = next_element(elem)
 
-        body = prepare_text(BeautifulSoup('\n'.join(page), 'html.parser').get_text())
+        body = prepare_text(
+            BeautifulSoup('\n'.join(page), 'html.parser').get_text())
         _id = f"{doc.url}:{doc.title}:{part_title}:{i}"
 
         docs.append(SearchDocument(
@@ -85,6 +101,13 @@ def extract_hierarchy(soup):
 
 
 def prepare_document(html: str) -> List[SearchDocument]:
+    """
+    Break an HTML string up into a list of SearchDocuments.
+
+    If the document has any H2 elements, it is broken up into
+    sub-documents, one per H2, in addition to a 'page' document
+    that we index with the entire content of the page.
+    """
     docs = []
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -134,21 +157,34 @@ def prepare_document(html: str) -> List[SearchDocument]:
     return docs
 
 
-def document_to_dict(document: SearchDocument):
+def document_to_dict(document: SearchDocument, scorers: ScorerList):
     """
     Given a SearchDocument, return a dictionary of the fields to index,
     and options like the ad-hoc score.
+
+    Every callable in "scorers" is given a chance to influence the ad-hoc
+    score of the document.
+
+    At query time, RediSearch will multiply the ad-hoc score by the TF*IDF
+    score of a document to produce the final score.
     """
+    score = 1.0
+    for scorer in scorers:
+        score = scorer(document, score)
     doc = asdict(document)
-    if document.type == TYPE_PAGE:
-        # Score pages lower than page sections.
-        doc['score'] = 0.5
+    doc['score'] = score
     doc['hierarchy'] = json.dumps(doc['hierarchy'])
     return doc
 
 
-def add_document(search_client, doc: SearchDocument):
-    search_client.add_document(**document_to_dict(doc))
+def add_document(search_client, doc: SearchDocument, scorers: ScorerList):
+    """
+    Add a document to the search index.
+
+    This is the moment we convert a SearchDocument into a Python
+    dictionary and send it to RediSearch.
+    """
+    search_client.add_document(**document_to_dict(doc, scorers))
 
 
 def prepare_file(file) -> List[SearchDocument]:
@@ -159,12 +195,16 @@ def prepare_file(file) -> List[SearchDocument]:
 
 class Indexer:
     def __init__(self, search_client: Client, redis_client: Redis,
-                 schema=None, validators=None, create_index=True):
+                 schema=None, validators=None, scorers=None,
+                 create_index=True):
         self.search_client = search_client
         self.redis_client = redis_client
 
         if validators is None:
             self.validators = DEFAULT_VALIDATORS
+
+        if scorers is None:
+            self.scorers = DEFAULT_SCORERS
 
         if schema is None:
             self.schema = DEFAULT_SCHEMA
@@ -229,7 +269,7 @@ class Indexer:
 
             for doc in docs:
                 futures.append(
-                    executor.submit(add_document, self.search_client, doc))
+                    executor.submit(add_document, self.search_client, doc, self.scorers))
 
             for future in concurrent.futures.as_completed(futures):
                 try:
