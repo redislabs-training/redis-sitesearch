@@ -1,11 +1,12 @@
 import concurrent.futures
 import json
 from dataclasses import asdict
-from typing import List
+from typing import List, Any, Dict, Tuple
 
 import redis.exceptions
-from redisearch import TextField
-from bs4 import BeautifulSoup
+from redis import Redis
+from redisearch import TextField, Client
+from bs4 import BeautifulSoup, element
 
 from docsearch.errors import ParseError
 from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
@@ -25,11 +26,11 @@ DEFAULT_SCHEMA = (
 )
 
 
-def prepare_text(text: str):
+def prepare_text(text: str) -> str:
     return text.strip().strip("\n").replace("\n", " ")
 
 
-def extract_parts(doc, h2s):
+def extract_parts(doc, h2s: List[element.Tag]):
     docs = []
 
     def next_element(elem):
@@ -83,7 +84,7 @@ def extract_hierarchy(soup):
             if a.get_text() != ROOT_PAGE]
 
 
-def prepare_document(html):
+def prepare_document(html: str) -> List[SearchDocument]:
     docs = []
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -146,18 +147,18 @@ def document_to_dict(document: SearchDocument):
     return doc
 
 
-def add_document(search_client, doc):
+def add_document(search_client, doc: SearchDocument):
     search_client.add_document(**document_to_dict(doc))
 
 
-def prepare_file(file):
+def prepare_file(file) -> List[SearchDocument]:
     print(f"parsing file {file}")
     with open(file) as f:
         return prepare_document(f.read())
 
 
 class Indexer:
-    def __init__(self, search_client, redis_client,
+    def __init__(self, search_client: Client, redis_client: Redis,
                  schema=None, validators=None, create_index=True):
         self.search_client = search_client
         self.redis_client = redis_client
@@ -182,13 +183,13 @@ class Indexer:
 
         self.search_client.create_index(self.schema)
 
-    def validate(self, doc):
+    def validate(self, doc: SearchDocument):
         for v in self.validators:
             v(doc)
 
-    def prepare_files(self, files):
-        docs = []
-        errors = []
+    def prepare_files(self, files: List[str]) -> Tuple[List[SearchDocument], List[str]]:
+        docs: List[SearchDocument] = []
+        errors: List[str] = []
 
         with concurrent.futures.ProcessPoolExecutor() as executor:
             futures = []
@@ -206,6 +207,9 @@ class Indexer:
                 if not docs_for_file:
                     continue
 
+                # If any document we generated for a file fails validation, we
+                # intentionally skip the entire file -- the "continue" here
+                # applies to the loop over completed futures.
                 try:
                     for doc in docs_for_file:
                         self.validate(doc)
