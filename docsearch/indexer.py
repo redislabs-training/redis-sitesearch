@@ -24,9 +24,9 @@ DEFAULT_SCORERS = (
 )
 
 DEFAULT_SCHEMA = (
-    TextField("title", weight=1.5),
+    TextField("title", weight=5),
     TextField("section_title", weight=1.2),
-    TextField("body", weight=2),
+    TextField("body"),
     TextField("url"),
 )
 

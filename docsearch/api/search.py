@@ -14,6 +14,7 @@ redis_client = get_redis_connection()
 log = logging.getLogger(__name__)
 cors = CORS(allow_origins_list=[
     'http://docs.andrewbrookins.com:1313',
+    'https://docs.redislabs.com',
     'http://localhost:8080']
 )
 
