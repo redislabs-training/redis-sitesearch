@@ -8,8 +8,8 @@ PORT = os.environ['PORT']
 WORKERS = multiprocessing.cpu_count() * 2 + 1
 
 
-pidfile = '/tmp/hello-http-tcp.pid'
-errorlog = '/tmp/gunicorn.log'
+errorlog = "-"
+accesslog = "-"
 loglevel = 'warning'
 bind = f':{PORT}'
 daemon = False

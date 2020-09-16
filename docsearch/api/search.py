@@ -18,7 +18,7 @@ cors = CORS(allow_origins_list=[
     'http://localhost:8080']
 )
 
-DEFAULT_NUM = 10
+DEFAULT_NUM = 20
 MAX_NUM = 100
 
 
