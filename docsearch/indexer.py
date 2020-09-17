@@ -189,7 +189,7 @@ def add_document(search_client, doc: SearchDocument, scorers: ScorerList):
 
 def prepare_file(file) -> List[SearchDocument]:
     print(f"parsing file {file}")
-    with open(file) as f:
+    with open(file, encoding="utf-8") as f:
         return prepare_document(f.read())
 
 

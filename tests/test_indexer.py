@@ -19,12 +19,11 @@ FILE_RELEASE_NOTES = "release_notes.html"
 def indexer():
     """
     This fixture indexes a file using a RediSearch mock -- so that
-    we only record the calls made to the client. Then we yield
-    the mock to tests as the fixture.
+    we only record the calls made to the client.
 
-    By doing this, we allow tests to focus only on verifying
-    the documents that the Indexer sent to Redis (even though,
-    in fact, no documents were sent).
+    By using a mock, we can focus on verifying the structure of the documents
+    that the Indexer sent to Redis (even though, in fact, no documents were
+    sent).
     """
     mock_redis_client = mock.MagicMock()
     mock_search_client = mock.MagicMock()
