@@ -29,7 +29,7 @@ setuptools.setup(
     extras_require={
         "dev": dev_requires
     },
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'load=docsearch.commands.load:load',
             'search=docsearch.commands.search:search'

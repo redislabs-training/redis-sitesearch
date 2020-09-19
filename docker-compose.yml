@@ -3,5 +3,32 @@ version: "3.8"
 services:
   redis:
     image: redislabs/redisearch:latest
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
     ports:
       - "6379:6379"
+    command: ["redis-server", "--requirepass ${REDIS_PASSWORD}", "--loadmodule", "/usr/lib/redis/modules/redisearch.so"]
+
+  app:
+    build: .
+    depends_on:
+      - "redis"
+    environment:
+      PORT: 8080
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_HOST: "redis"
+    entrypoint: "gunicorn -c gunicorn.conf.py docsearch.api.search:api"
+    ports:
+      - "8080:8080"
+
+  indexer:
+    build: .
+    depends_on:
+      - "redis"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_HOST: "redis"
+
+  test:
+    build: .
+    entrypoint: "pytest"

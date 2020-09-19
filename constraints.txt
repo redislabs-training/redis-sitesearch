@@ -1,0 +1,2 @@
+--no-binary falcon falcon==2.0.0
+git+https://github.com/RediSearch/redisearch-py.git@master#egg=redisearch
