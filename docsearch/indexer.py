@@ -179,12 +179,7 @@ class DocumentParser():
         return docs
 
     def parse(self, url, html):
-        docs_for_page = []
-
-        try:
-            docs_for_page = self.prepare_document(url, html)
-        except ParseError as e:
-            log.error("%s: %s", e, url)
+        docs_for_page = self.prepare_document(url, html)
 
         for doc in docs_for_page:
             self.validate(doc)

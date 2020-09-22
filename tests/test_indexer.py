@@ -4,6 +4,7 @@ from unittest import mock
 from bs4 import BeautifulSoup
 import pytest
 
+from docsearch.errors import ParseError
 from docsearch.indexer import Indexer, DocumentParser
 
 DOCS_DIR = os.path.join(
@@ -24,7 +25,25 @@ def indexer():
 
 
 @pytest.fixture()
-def index_file(indexer):
+def parse_file(indexer):
+    """
+    This fixture parses a file with DocumentParser.
+
+    The fixture is a callable that takes the filename of a document
+    and returns the SearchDocuments parsed from the HTML in the file.
+    """
+    def fn(filename):
+        file = os.path.join(DOCS_DIR, filename)
+        with open(file, encoding='utf-8') as f:
+            html = f.read()
+
+        return DocumentParser().parse("example.com/test", html)
+
+    return fn
+
+
+@pytest.fixture()
+def index_file(indexer, parse_file):
     """
     This fixture indexes a file using a RediSearch mock -- so that
     we only record the calls made to the client.
@@ -33,15 +52,8 @@ def index_file(indexer):
     object used, so that tests can introspect it.
     """
     def fn(filename):
-        file = os.path.join(DOCS_DIR, filename)
-        with open(file, encoding='utf-8') as f:
-            html = f.read()
-
-        docs = DocumentParser().parse("example.com/test", html)
-
-        for doc in docs:
+        for doc in parse_file(filename):
             indexer.index_document(doc)
-
         return indexer
 
     return fn
@@ -112,36 +124,22 @@ def test_indexer_indexes_page_section_documents(index_file):
         indexer.search_client.add_document.assert_any_call(**doc)
 
 
-def test_indexer_skips_pages_without_breadcrumbs(indexer):
-    file = os.path.join(DOCS_DIR, FILE_WITHOUT_BREADCRUMBS)
-    errors, mock_search_client = indexer(file)
-    print(f'Failed -- missing breadcrumbs: {file}')
-    assert errors == [f'Failed -- missing breadcrumbs: {file}']
-    assert mock_search_client.add_document.called is False
+def test_document_parser_skips_pages_without_breadcrumbs(parse_file):
+    with pytest.raises(ParseError):
+        parse_file(FILE_WITHOUT_BREADCRUMBS)
 
 
-def test_indexer_skips_pages_without_title(indexer):
-    file = os.path.join(DOCS_DIR, FILE_WITHOUT_TITLE)
-    errors, mock_search_client = indexer(file)
-    assert errors == [f'Failed -- missing title: {file}']
-    assert mock_search_client.add_document.called is False
+def test_document_parser_skips_pages_without_title(parse_file):
+    with pytest.raises(ParseError):
+        parse_file(FILE_WITHOUT_TITLE)
 
 
-def test_indexer_skips_pages_without_link(indexer):
-    file = os.path.join(DOCS_DIR, FILE_WITHOUT_LINK)
-    errors, mock_search_client = indexer(file)
-    assert errors == [f'Failed -- missing link: {file}']
-    assert mock_search_client.add_document.called is False
+def test_document_parser_skips_release_notes(parse_file):
+    with pytest.raises(ParseError):
+        parse_file(FILE_RELEASE_NOTES)
 
 
-def test_indexer_skips_release_notes(indexer):
-    file = os.path.join(DOCS_DIR, FILE_RELEASE_NOTES)
-    errors, mock_search_client = indexer(file)
-    assert errors == [f'Skipping release notes: {file}']
-    assert mock_search_client.add_document.called is False
-
-
-def test_extracts_hierarchy(indexer):
+def test_document_parser_extracts_one_page():
     html = BeautifulSoup("""
     <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
           <span class="links">
@@ -149,10 +147,10 @@ def test_extracts_hierarchy(indexer):
           </span>
         </div>
     """, 'html.parser')
-    assert indexer.extract_hierarchy(html) == ["Platforms"]
+    assert DocumentParser().extract_hierarchy(html) == ["Platforms"]
 
 
-def test_hiearchy_extractor_multiple_pages(indexer):
+def test_document_parser_extracts_multiple_pages():
     html = BeautifulSoup("""
         <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
           <span class="links">
@@ -160,14 +158,11 @@ def test_hiearchy_extractor_multiple_pages(indexer):
           </span>
         </div>
     """, 'html.parser')
-    assert indexer.extract_hierarchy(html) == ["Redis Enterprise Cloud", "How Tos"]
+    assert DocumentParser().extract_hierarchy(html) == ["Redis Enterprise Cloud", "How Tos"]
 
 
-def test_parsing_index_page(indexer):
-    file = os.path.join(DOCS_DIR, FILE_WITH_AN_INDEX)
-    with open(file, encoding='utf-8') as f:
-        html = f.read()
-    docs = DocumentParser().parse('google.com/test', html)
-
+def test_parsing_page_with_links_in_h2s_returns_body_content(parse_file):
+    """A regression test."""
+    docs = parse_file(FILE_WITH_AN_INDEX)
     for doc in docs:
         assert doc.body is not None
