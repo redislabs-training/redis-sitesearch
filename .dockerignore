@@ -1,0 +1,4 @@
+env/*
+.pytest_cache/*
+.vscode/*
+*.egg-info

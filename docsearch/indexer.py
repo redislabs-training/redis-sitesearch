@@ -1,18 +1,20 @@
-import concurrent.futures
 import json
 import logging
 import multiprocessing
-import threading
 from dataclasses import asdict
 from queue import Queue
-from typing import List, Tuple, Callable, Union
+from threading import Thread
+from typing import List, Callable
 
 import redis.exceptions
 import scrapy
 from bs4 import BeautifulSoup, element
-from redis import Redis
 from redisearch import TextField, Client
+from scrapy import signals
 from scrapy.linkextractors import LinkExtractor
+from scrapy.crawler import CrawlerProcess
+from scrapy.signalmanager import dispatcher
+
 
 from docsearch.errors import ParseError
 from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
@@ -20,24 +22,23 @@ from docsearch.scorers import boost_sections
 from docsearch.validators import skip_release_notes
 
 ROOT_PAGE = "Redis Labs Documentation"
-
 DEFAULT_VALIDATORS = (
     skip_release_notes,
 )
-
 DEFAULT_SCORERS = (
     boost_sections,
 )
-
 DEFAULT_SCHEMA = (
     TextField("title", weight=5),
     TextField("section_title", weight=1.2),
     TextField("body"),
     TextField("url"),
 )
+MAX_THREADS = multiprocessing.cpu_count() * 5
 
 ScorerList = List[Callable[[SearchDocument, float], float]]
 Extractor = Callable[[str], List[str]]
+
 log = logging.getLogger(__name__)
 
 
@@ -140,13 +141,13 @@ class DocumentParser():
 
         try:
             title = self.prepare_text(soup.title.string.split("|")[0])
-        except AttributeError:
-            raise (ParseError(f"Failed -- missing title"))
+        except AttributeError as e:
+            raise ParseError("Failed -- missing title") from e
 
         hierarchy = self.extract_hierarchy(soup)
 
         if not hierarchy:
-            raise ParseError(f"Failed -- missing breadcrumbs")
+            raise ParseError("Failed -- missing breadcrumbs")
 
         content = soup.select(".main-content")
 
@@ -210,7 +211,7 @@ class DocumentationSpider(scrapy.Spider):
                  if l.url.startswith(self.url)]
         yield from response.follow_all(links, callback=self.parse)
 
-    def parse(self, response):
+    def parse(self, response, **kwargs):
         docs_for_page = []
 
         try:
@@ -277,9 +278,9 @@ class Indexer:
         try:
             self.add_document(doc)
         except redis.exceptions.DataError as e:
-            log.error("Failed -- bad data: %s", e, doc.url)
+            log.error("Failed -- bad data: %s, %s", e, doc.url)
         except redis.exceptions.ResponseError as e:
-            log.error(f"Failed -- response error: {e}", e, doc.url)
+            log.error("Failed -- response error: %s, %s", e, doc.url)
 
     def setup_index(self):
         # Creating the index definition and schema
@@ -291,3 +292,37 @@ class Indexer:
             self.search_client.drop_index()
 
         self.search_client.create_index(self.schema)
+
+    def index(self):
+        docs_to_process = Queue()
+
+        def crawler_results(signal, sender, item: SearchDocument, response, spider):
+            docs_to_process.put(item)
+
+        def index_document():
+            while True:
+                doc: SearchDocument = docs_to_process.get()
+                try:
+                    self.index_document(doc)
+                except Exception as e:
+                    log.error("Unexpected error while indexing doc %s, error: %s", doc.doc_id, e)
+                docs_to_process.task_done()
+
+        def start_indexing():
+            if docs_to_process.empty():
+                return
+            docs_to_process.join()
+
+        for _ in range(MAX_THREADS):
+            Thread(target=index_document, daemon=True).start()
+
+        dispatcher.connect(crawler_results, signal=signals.item_scraped)
+        dispatcher.connect(start_indexing, signal=signals.engine_stopped)
+
+        process = CrawlerProcess(settings={
+            'CONCURRENT_REQUESTS_PER_DOMAIN': 20,
+            'HTTP_CACHE_ENABLED': True,
+            'LOG_LEVEL': 'ERROR'
+        })
+        process.crawl(DocumentationSpider)
+        process.start()

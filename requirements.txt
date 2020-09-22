@@ -8,5 +8,7 @@ falcon-cors==1.1.7
 python-dotenv==0.14.0
 gevent==20.6.2
 Cython==0.29.21
-scrapy
+rq==1.5.2
+rq-scheduler==0.10.0
+scrapy==2.3.0
 falcon

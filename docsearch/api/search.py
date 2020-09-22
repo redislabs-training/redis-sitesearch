@@ -3,6 +3,7 @@ import logging
 from collections import OrderedDict
 
 import falcon
+import redis
 from falcon_cors import CORS
 
 from docsearch.transformer import transform_documents
@@ -45,11 +46,20 @@ class SearchResource:
             num = DEFAULT_NUM
 
         q = parse(query).paging(start, num)
-        res = search_client.search(q)
+
+        try:
+            res = search_client.search(q)
+        except redis.exceptions.ResponseError as e:
+            log.error("Search query failed: %s", e)
+            total = 0
+            docs = []
+        else:
+            docs = transform_documents(res.docs)
+
         docs = transform_documents(res.docs)
 
         resp.body = json.dumps({
-            "total": res.total,
+            "total": total,
             "results": docs
         })
 
