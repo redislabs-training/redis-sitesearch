@@ -4,7 +4,6 @@ from collections import OrderedDict
 
 import falcon
 import redis
-from falcon_cors import CORS
 
 from docsearch.transformer import transform_documents
 from docsearch.connections import get_search_connection, get_redis_connection
@@ -13,11 +12,6 @@ from docsearch.query_parser import parse
 search_client = get_search_connection()
 redis_client = get_redis_connection()
 log = logging.getLogger(__name__)
-cors = CORS(allow_origins_list=[
-    'http://docs.andrewbrookins.com:1313',
-    'https://docs.redislabs.com',
-    'http://localhost:8080']
-)
 
 DEFAULT_NUM = 20
 MAX_NUM = 100
@@ -62,7 +56,3 @@ class SearchResource:
             "total": total,
             "results": docs
         })
-
-
-api = falcon.API(middleware=[cors.middleware])
-api.add_route('/search', SearchResource())
