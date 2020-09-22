@@ -1,12 +1,18 @@
 import concurrent.futures
 import json
+import logging
+import multiprocessing
+import threading
 from dataclasses import asdict
-from typing import List, Tuple, Callable
+from queue import Queue
+from typing import List, Tuple, Callable, Union
 
 import redis.exceptions
+import scrapy
+from bs4 import BeautifulSoup, element
 from redis import Redis
 from redisearch import TextField, Client
-from bs4 import BeautifulSoup, element
+from scrapy.linkextractors import LinkExtractor
 
 from docsearch.errors import ParseError
 from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
@@ -31,174 +37,203 @@ DEFAULT_SCHEMA = (
 )
 
 ScorerList = List[Callable[[SearchDocument, float], float]]
+Extractor = Callable[[str], List[str]]
+log = logging.getLogger(__name__)
 
 
-def prepare_text(text: str) -> str:
-    return text.strip().strip("\n").replace("\n", " ")
+def next_element(elem):
+    """Get sibling elements until we exhaust them."""
+    while elem is not None:
+        elem = elem.next_sibling
+        if hasattr(elem, 'name'):
+            return elem
 
 
-def extract_parts(doc, h2s: List[element.Tag]) -> List[SearchDocument]:
-    """
-    Extract SearchDocuments from H2 elements in a SearchDocument.
+class DocumentParser():
+    validators = DEFAULT_VALIDATORS
 
-    Given a list of H2 elements in a page, we extract the HTML content for
-    that "part" of the page by grabbing all of the sibling elements and
-    converting them to text.
-    """
-    docs = []
+    def extract_hierarchy(self, soup):
+        """
+        Extract the page hierarchy we need from the page's breadcrumbs:
+        root and parent page.
 
-    def next_element(elem):
-        """Get sibling elements until we exhaust them."""
-        while elem is not None:
-            elem = elem.next_sibling
-            if hasattr(elem, 'name'):
-                return elem
+        E.g. for the breadcrumbs:
+                RedisInsight > Using RedisInsight > Cluster Management
 
-    for i, tag in enumerate(h2s):
-        # Sometimes we stick the title in as a link...
-        if tag and tag.string is None:
-            tag = tag.find("a")
+        We want:
+                ["RedisInsight", "Using RedisInsight", "Cluster Management"]
+        """
+        hierarchy = []
+        elem = soup.select("#breadcrumbs a")
 
-        part_title = tag.get_text() if tag else ""
+        if not elem:
+            raise ParseError("Could not find breadcrumbs")
 
-        page = []
-        elem = next_element(tag)
-
-        while elem and elem.name != 'h2':
-            page.append(str(elem))
+        elem = elem[0]
+        while elem:
+            try:
+                text = elem.get_text()
+            except AttributeError:
+                text = str(elem)
+            text = text.strip()
+            if text and text != ">":
+                hierarchy.append(text)
             elem = next_element(elem)
 
-        body = prepare_text(
-            BeautifulSoup('\n'.join(page), 'html.parser').get_text())
-        _id = f"{doc.url}:{doc.title}:{part_title}:{i}"
+        return [title for title in hierarchy if title != ROOT_PAGE]
 
-        docs.append(SearchDocument(
-            doc_id=_id,
-            title=doc.title,
-            hierarchy=doc.hierarchy,
-            section_title=part_title or "",
+    def extract_parts(self, doc, h2s: List[element.Tag]) -> List[SearchDocument]:
+        """
+        Extract SearchDocuments from H2 elements in a SearchDocument.
+
+        Given a list of H2 elements in a page, we extract the HTML content for
+        that "part" of the page by grabbing all of the sibling elements and
+        converting them to text.
+        """
+        docs = []
+
+        for i, tag in enumerate(h2s):
+            origin = tag
+
+            # Sometimes we stick the title in as a link...
+            if tag and tag.string is None:
+                tag = tag.find("a")
+
+            part_title = tag.get_text() if tag else ""
+
+            page = []
+            elem = next_element(origin)
+
+            while elem and elem.name != 'h2':
+                page.append(str(elem))
+                elem = next_element(elem)
+
+            body = self.prepare_text(
+                BeautifulSoup('\n'.join(page), 'html.parser').get_text())
+            _id = f"{doc.url}:{doc.title}:{part_title}:{i}"
+
+            docs.append(SearchDocument(
+                doc_id=_id,
+                title=doc.title,
+                hierarchy=doc.hierarchy,
+                section_title=part_title or "",
+                body=body,
+                url=doc.url,
+                type=TYPE_SECTION,
+                position=i))
+
+        return docs
+
+    def prepare_text(self, text: str) -> str:
+        return text.strip().strip("\n").replace("\n", " ")
+
+    def prepare_document(self, url: str, html: str) -> List[SearchDocument]:
+        """
+        Break an HTML string up into a list of SearchDocuments.
+
+        If the document has any H2 elements, it is broken up into
+        sub-documents, one per H2, in addition to a 'page' document
+        that we index with the entire content of the page.
+        """
+        docs = []
+        soup = BeautifulSoup(html, 'html.parser')
+
+        try:
+            title = self.prepare_text(soup.title.string.split("|")[0])
+        except AttributeError:
+            raise (ParseError(f"Failed -- missing title"))
+
+        hierarchy = self.extract_hierarchy(soup)
+
+        if not hierarchy:
+            raise ParseError(f"Failed -- missing breadcrumbs")
+
+        content = soup.select(".main-content")
+
+        # Try to index only the content div. If a page lacks
+        # that div, index the entire thing.
+        if content:
+            content = content[0]
+        else:
+            content = soup
+
+        h2s = content.find_all('h2')
+        body = self.prepare_text(content.get_text())
+        doc = SearchDocument(
+            doc_id=f"{url}:{title}",
+            title=title,
+            section_title="",
+            hierarchy=hierarchy,
             body=body,
-            url=doc.url,
-            type=TYPE_SECTION,
-            position=i))
+            url=url,
+            type=TYPE_PAGE)
 
-    return docs
+        # Index the entire document
+        docs.append(doc)
 
+        # If there are headers, break up the document and index each header
+        # as a separate document.
+        if h2s:
+            docs += self.extract_parts(doc, h2s)
 
-def extract_hierarchy(soup):
-    """
-    Extract the page hierarchy we need from the page's breadcrumbs:
-    root and parent page.
+        return docs
 
-    E.g. for the breadcrumbs:
-            RedisInsight > Using RedisInsight > Cluster Management
+    def parse(self, url, html):
+        docs_for_page = []
 
-    We want:
-            ["RedisInsight", "Using RedisInsight", "Cluster Management"]
-    """
-    return [a.get_text() for a in soup.select("#breadcrumbs a")
-            if a.get_text() != ROOT_PAGE]
+        try:
+            docs_for_page = self.prepare_document(url, html)
+        except ParseError as e:
+            log.error("%s: %s", e, url)
 
+        for doc in docs_for_page:
+            self.validate(doc)
 
-def prepare_document(html: str) -> List[SearchDocument]:
-    """
-    Break an HTML string up into a list of SearchDocuments.
+        return docs_for_page
 
-    If the document has any H2 elements, it is broken up into
-    sub-documents, one per H2, in addition to a 'page' document
-    that we index with the entire content of the page.
-    """
-    docs = []
-    soup = BeautifulSoup(html, 'html.parser')
-
-    try:
-        title = prepare_text(soup.title.string.split("|")[0])
-    except AttributeError:
-        raise (ParseError(f"Failed -- missing title"))
-
-    try:
-        url = soup.find_all("link", attrs={"rel": "canonical"})[0].attrs['href']
-    except IndexError:
-        raise ParseError(f"Failed -- missing link")
-
-    hierarchy = extract_hierarchy(soup)
-
-    if not hierarchy:
-        raise ParseError(f"Failed -- missing breadcrumbs")
-
-    content = soup.select(".main-content")
-
-    # Try to index only the content div. If a page lacks
-    # that div, index the entire thing.
-    if content:
-        content = content[0]
-    else:
-        content = soup
-
-    h2s = content.find_all('h2')
-    body = prepare_text(content.get_text())
-    doc = SearchDocument(
-        doc_id=f"{url}:{title}",
-        title=title,
-        section_title="",
-        hierarchy=hierarchy,
-        body=body,
-        url=url,
-        type=TYPE_PAGE)
-
-    # Index the entire document
-    docs.append(doc)
-
-    # If there are headers, break up the document and index each header
-    # as a separate document.
-    if h2s:
-        docs += extract_parts(doc, h2s)
-
-    return docs
+    def validate(self, doc: SearchDocument):
+        for v in self.validators:
+            v(doc)
 
 
-def document_to_dict(document: SearchDocument, scorers: ScorerList):
-    """
-    Given a SearchDocument, return a dictionary of the fields to index,
-    and options like the ad-hoc score.
+class DocumentationSpider(scrapy.Spider):
+    name = "documentation"
+    url = "https://docs.redislabs.com/"
+    doc_parser_class = DocumentParser
 
-    Every callable in "scorers" is given a chance to influence the ad-hoc
-    score of the document.
+    def __init__(self, *args, **kwargs):
+        self.doc_parser = self.doc_parser_class()
+        super().__init__(*args, **kwargs)
 
-    At query time, RediSearch will multiply the ad-hoc score by the TF*IDF
-    score of a document to produce the final score.
-    """
-    score = 1.0
-    for scorer in scorers:
-        score = scorer(document, score)
-    doc = asdict(document)
-    doc['score'] = score
-    doc['hierarchy'] = json.dumps(doc['hierarchy'])
-    return doc
+    @property
+    def start_urls(self):
+        return [self.url]
 
+    def follow_links(self, response):
+        extractor = LinkExtractor(deny=r'\/release-notes\/')
+        links = [l for l in extractor.extract_links(response)
+                 if l.url.startswith(self.url)]
+        yield from response.follow_all(links, callback=self.parse)
 
-def add_document(search_client, doc: SearchDocument, scorers: ScorerList):
-    """
-    Add a document to the search index.
+    def parse(self, response):
+        docs_for_page = []
 
-    This is the moment we convert a SearchDocument into a Python
-    dictionary and send it to RediSearch.
-    """
-    search_client.add_document(**document_to_dict(doc, scorers))
+        try:
+            docs_for_page = self.doc_parser.parse(response.url, response.body)
+        except ParseError as e:
+            log.error("%s: %s", e, response.url)
+        else:
+            for doc in docs_for_page:
+                yield doc
 
-
-def prepare_file(file) -> List[SearchDocument]:
-    print(f"parsing file {file}")
-    with open(file, encoding="utf-8") as f:
-        return prepare_document(f.read())
+        yield from self.follow_links(response)
 
 
 class Indexer:
-    def __init__(self, search_client: Client, redis_client: Redis,
-                 schema=None, validators=None, scorers=None,
-                 create_index=True):
+    def __init__(self, search_client: Client, schema=None, validators=None,
+                 scorers=None, create_index=True,
+                 *args, **kwargs):
         self.search_client = search_client
-        self.redis_client = redis_client
 
         if validators is None:
             self.validators = DEFAULT_VALIDATORS
@@ -212,6 +247,45 @@ class Indexer:
         if create_index:
             self.setup_index()
 
+        super().__init__(*args, **kwargs)
+
+    def document_to_dict(self, document: SearchDocument):
+        """
+        Given a SearchDocument, return a dictionary of the fields to index,
+        and options like the ad-hoc score.
+
+        Every callable in "scorers" is given a chance to influence the ad-hoc
+        score of the document.
+
+        At query time, RediSearch will multiply the ad-hoc score by the TF*IDF
+        score of a document to produce the final score.
+        """
+        score = 1.0
+        for scorer in self.scorers:
+            score = scorer(document, score)
+        doc = asdict(document)
+        doc['score'] = score
+        doc['hierarchy'] = json.dumps(doc['hierarchy'])
+        return doc
+
+    def add_document(self, doc: SearchDocument):
+        """
+        Add a document to the search index.
+
+        This is the moment we convert a SearchDocument into a Python
+        dictionary and send it to RediSearch.
+        """
+        self.search_client.add_document(**self.document_to_dict(doc),
+                                        replace=True)
+
+    def index_document(self, doc: SearchDocument):
+        try:
+            self.add_document(doc)
+        except redis.exceptions.DataError as e:
+            log.error("Failed -- bad data: %s", e, doc.url)
+        except redis.exceptions.ResponseError as e:
+            log.error(f"Failed -- response error: {e}", e, doc.url)
+
     def setup_index(self):
         # Creating the index definition and schema
         try:
@@ -222,63 +296,3 @@ class Indexer:
             self.search_client.drop_index()
 
         self.search_client.create_index(self.schema)
-
-    def validate(self, doc: SearchDocument):
-        for v in self.validators:
-            v(doc)
-
-    def prepare_files(self, files: List[str]) -> Tuple[List[SearchDocument], List[str]]:
-        docs: List[SearchDocument] = []
-        errors: List[str] = []
-
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            futures = []
-
-            for file in files:
-                futures.append(executor.submit(prepare_file, file))
-
-            for future in concurrent.futures.as_completed(futures):
-                try:
-                    docs_for_file = future.result()
-                except ParseError as e:
-                    errors.append(f"{e}: {file}")
-                    continue
-
-                if not docs_for_file:
-                    continue
-
-                # If any document we generated for a file fails validation, we
-                # intentionally skip the entire file -- the "continue" here
-                # applies to the loop over completed futures.
-                try:
-                    for doc in docs_for_file:
-                        self.validate(doc)
-                except ParseError as e:
-                    errors.append(f"{e}: {file}")
-                    continue
-
-                docs += docs_for_file
-
-        return docs, errors
-
-    def index_files(self, files: List[str]) -> List[str]:
-        docs, errors = self.prepare_files(files)
-
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = []
-
-            for doc in docs:
-                futures.append(
-                    executor.submit(add_document, self.search_client, doc, self.scorers))
-
-            for future in concurrent.futures.as_completed(futures):
-                try:
-                    future.result()
-                except redis.exceptions.DataError as e:
-                    errors.append(f"Failed -- bad data: {e}")
-                    continue
-                except redis.exceptions.ResponseError as e:
-                    errors.append(f"Failed -- response error: {e}")
-                    continue
-
-        return errors

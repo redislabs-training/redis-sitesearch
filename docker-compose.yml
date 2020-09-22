@@ -28,6 +28,7 @@ services:
     environment:
       REDIS_PASSWORD: "${REDIS_PASSWORD}"
       REDIS_HOST: "redis"
+    entrypoint: "index https://docs.redislabs.com/"
 
   test:
     build: .

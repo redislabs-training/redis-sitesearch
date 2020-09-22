@@ -8,4 +8,5 @@ falcon-cors==1.1.7
 python-dotenv==0.14.0
 gevent==20.6.2
 Cython==0.29.21
+scrapy
 falcon

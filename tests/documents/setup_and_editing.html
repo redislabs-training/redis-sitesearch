@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<html>
+  <head>
+          <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      
+      <link rel="canonical" href="https://docs.redislabs.com/latest/rv/administration/setup_and_editing/" />
+<meta name="generator" content="Hugo 0.48" />
+      <title>Setup and Editing | Redis Labs Documentation Center</title>
+      <link rel="shortcut icon" href="../../../images/icon_logo/favicon-32x32.png" type="image/x-icon" />
+      <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+      <link href="../../../css/nucleus.css" rel="stylesheet">
+      <link href="../../../theme-flex/style.css" rel="stylesheet">
+      <link href="../../../css/bootstrap.min.css" rel="stylesheet">
+      <link href="../../../css/foundation-icons.css" rel="stylesheet">
+      <script src="../../../theme-flex/modernizr-custom.js"></script>
+      <script src="../../../theme-flex/classie.js"></script>
+      <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700, 700i" rel="stylesheet">
+      <script src="../../../js/jquery-2.x.min.js"></script>
+      <script src="../../../theme-flex/jquery.nice-select.min.js"></script>
+      <script src="../../../theme-flex/custom.js"></script>
+      <script type="text/javascript">
+            var baseurl = "\/\/docs.redislabs.com\/5.2";
+      </script>
+      
+  
+    
+<script>(function (w, d, s, l, i) {
+    w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+            new Date().getTime(), event: 'gtm.js'
+    }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+            'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-TKZ6J9R');</script>
+
+  
+  
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-92003007-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-92003007-1');
+</script>
+
+  
+
+      
+      
+
+  </head>
+  <body data-url="/rv/administration/setup_and_editing/">
+    
+  
+    
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKZ6J9R" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  
+
+<header>
+  <div class="logo">
+    
+	
+  
+    <p><a href="https://redislabs.com"><img src="../../../images/icon_logo/redis-logo.svg" alt="Redis Labs" /></a></p>
+
+  
+
+  </div>
+    <nav class="shortcuts">
+            <li class="" role="">
+                <a href="https://redislabs.com/resources/documentation/"  rel="noopener">
+                  <label>Docs</label>
+                </a>
+            </li>
+            <li class="" role="">
+                <a href="https://university.redislabs.com"  rel="noopener">
+                  <label>University</label>
+                </a>
+            </li>
+            <li class="" role="">
+                <a href="https://redislabs.com/?s="  rel="noopener">
+                  <label>Search</label>
+                </a>
+            </li>
+            <li class="" role="">
+                <a href="https://app.redislabs.com/#/login?"  rel="noopener">
+                  <label>Login</label>
+                </a>
+            </li>
+            <li class="" role="">
+                <a href="https://redislabs.com/get-started/"  rel="noopener">
+                  <label>Get Started</label>
+                </a>
+            </li>
+    </nav>
+  <button class="hamburger hamburger--spring hamburger-desktop" type="button">
+    <span class="hamburger-box">
+      <span class="hamburger-inner">Menu</span>
+    </span>
+  </button>
+
+  <button id="showRightPush" class="hamburger hamburger--spring hamburger-mobile" type="button">
+    <span class="hamburger-box">
+      <span class="hamburger-inner">Menu Mobile</span>
+    </span>
+  </button>
+
+  <div class="reveal large" id="navModal">
+    <nav class="main_navigation" role="navigation">
+    <div class="nav-wrapper">
+        <div class="nav-column">
+            <h6>Products</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30711" class="nav-head clickable menu-item menu-item-type-custom menu-item-object-custom menu-item-30711"><a
+                        href="../../../redis-enterprise/">Redis Enterprise</a></li>
+                <li id="menu-item-30710" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30710"><a
+                        href="../../../redis-enterprise/">Advantages</a></li>
+                <li id="menu-item-30698" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30698"><a
+                        href="https://redislabs.com/redis-enterprise/technology/">Technology</a></li>
+                <li id="menu-item-30884" class="nav-head menu-item menu-item-type-custom menu-item-object-custom menu-item-30884"><a>Deployments</a></li>
+                <li id="menu-item-30712" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30712"><a
+                        href="../../../redis-enterprise/deployments/">Overview</a></li>
+                <li id="menu-item-30705" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30705"><a
+                        href="https://redislabs.com/redis-enterprise/cloud/">Cloud (Hosted)</a></li>
+                <li id="menu-item-30703" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30703"><a
+                        href="https://redislabs.com/redis-enterprise/vpc/">VPC (Managed)</a></li>
+                <li id="menu-item-30704" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30704"><a
+                        href="https://redislabs.com/redis-enterprise/software/">Software</a></li>
+                <li id="menu-item-30713" class="nav-head menu-item menu-item-type-custom menu-item-object-custom menu-item-30713"><a>More</a></li>
+                <li id="menu-item-31172" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31172"><a
+                        href="https://redislabs.com/redis-enterprise/redis-modules/">Redis Modules</a></li>
+                <li id="menu-item-30707" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30707"><a
+                        href="https://redislabs.com/redis-enterprise/connectors/">Connectors</a></li>
+                <li id="menu-item-30709" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30709"><a
+                        href="https://redislabs.com/redis-enterprise/memcached/">Memcached</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-column">
+            <h6>Pricing</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30846" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30846"><a
+                        href="../../../pricing">Selection Guide</a></li>
+                <li id="menu-item-30849" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30849"><a
+                        href="https://redislabs.com/redis-enterprise/cloud/cloud-pricing/">Cloud (Hosted)</a></li>
+                <li id="menu-item-30847" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30847"><a
+                        href="https://redislabs.com/redis-enterprise/vpc/vpc-pricing/">VPC (Managed)</a></li>
+                <li id="menu-item-30848" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30848"><a
+                        href="https://redislabs.com/redis-enterprise/software/software-pricing/">Software</a></li>
+            </ul>
+        </div>
+        <div class="nav-column">
+            <h6>Solutions</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30856" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30856"><a
+                        href="https://redislabs.com/solutions/personalization/">Personalization</a></li>
+                <li id="menu-item-30857" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30857"><a
+                        href="https://redislabs.com/solutions/fraud-detection/">Fraud Mitigation</a></li>
+                <li id="menu-item-30852" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30852"><a
+                        href="https://redislabs.com/solutions/social-apps/">Social Apps</a></li>
+                <li id="menu-item-30853" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30853"><a
+                        href="https://redislabs.com/solutions/metering/">Metering</a></li>
+                <li id="menu-item-30854" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30854"><a
+                        href="https://redislabs.com/solutions/ecommerce/">Ecommerce</a></li>
+                <li id="menu-item-39629" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-39629"><a
+                        href="https://redislabs.com/solutions/industries/redis-financial-services/">Financial Services</a></li>
+                <li id="menu-item-31190" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31190"><a
+                        href="https://redislabs.com/solutions/search/">Search</a></li>
+                <li id="menu-item-32324" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32324"><a
+                        href="https://redislabs.com/solutions/iot/">IoT</a></li>
+                <li id="menu-item-30851" class="nav-head menu-item menu-item-type-custom menu-item-object-custom menu-item-30851"><a
+                        href="#">More</a></li>
+                <li id="menu-item-30855" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30855"><a
+                        href="https://redislabs.com/solutions/use-cases/">Use Cases</a></li>
+                <li id="menu-item-30859" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30859"><a
+                        href="https://redislabs.com/solutions/partner-integrations/">Integrations</a></li>
+            </ul>
+        </div>
+        <div class="nav-column">
+            <h6>Customers</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-37105" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-37105"><a
+                        href="https://redislabs.com/redis-enterprise/customers/">Case Studies</a></li>
+                <li id="menu-item-37106" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-37106"><a
+                        href="https://redislabs.com/solutions/industries/">Industries</a></li>
+            </ul>
+            <p>&nbsp;</p>
+            <h6>Partners</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30908" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30908"><a
+                        href="../../../partners">Partner Center</a></li>
+                <li id="menu-item-30906" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30906"><a
+                        href="https://redislabs.com/partners/find-a-partner/">Find a Partner</a></li>
+                <li id="menu-item-30907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30907"><a
+                        href="https://redislabs.com/partners/become-a-partner/">Become a Partner</a></li>
+            </ul>
+        </div>
+      <div class="nav-column">
+        <h6>Resources</h6>
+          <ul class="no-bullet">
+              <li id="menu-item-30909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30909"><a
+                        href="https://redislabs.com/resources/">Resource Center</a></li>
+              <li id="menu-item-30920" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30920"><a
+                        href="https://redislabs.com/resources/blog/">Company Blog</a></li>
+              <li id="menu-item-30921" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30921"><a
+                        href="https://redislabs.com/resources/webinars/">Webinars</a></li>
+              <li id="menu-item-30910" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30910"><a
+                        href="https://redislabs.com/resources/videos/">Videos</a></li>
+              <li id="menu-item-30913" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30913"><a
+                        href="https://redislabs.com/resources/benchmarks/">Benchmarks</a></li>
+              <li id="menu-item-30914" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30914"><a
+                        href="https://redislabs.com/resources/datasheets/">Datasheets</a></li>
+              <li id="menu-item-30915" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30915"><a
+                        href="https://redislabs.com/resources/whitepapers/">Whitepapers</a></li>
+              <li id="menu-item-30916" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30916"><a
+                        href="https://redislabs.com/resources/faqs/">FAQs</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30916"><a href="https://redislabs.com/redis-for-dummies/">Redis For Dummies</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30916"><a href="https://redislabs.com/community/ebook/">Redis e-Book</a></li>
+              <li id="menu-item-30917" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30917"><a
+                        href="https://redislabs.com/resources/documentation/">Documentation</a></li>
+              <li id="menu-item-39311" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-39311"><a
+                        target="_blank" href="https://university.redislabs.com/">University</a></li>
+              <li id="menu-item-30918" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30918"><a
+                        href="https://redislabs.com/resources/how-to-redis-enterprise/">How To</a></li>
+              <li id="menu-item-37488" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-37488"><a
+                        href="https://redislabs.com/resources/redis-clients/">Redis Clients</a></li>
+          </ul>
+        </div>
+      <div class="nav-column">
+        <h6>Company</h6>
+          <ul class="no-bullet">
+              <li id="menu-item-30895" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30895"><a
+                        href="https://redislabs.com/company/">About Us</a></li>
+              <li id="menu-item-30896" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30896"><a
+                        href="https://redislabs.com/company/team/">Team</a></li>
+              <li id="menu-item-30897" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30897"><a
+                        href="https://redislabs.com/company/careers/">Careers</a></li>
+              <li id="menu-item-30988" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-30988"><a
+                        href="https://redislabs.com/company/newsroom/">Newsroom</a></li>
+              <li id="menu-item-30891" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30891"><a
+                        href="https://redislabs.com/company/events/">Corporate Events</a></li>
+              <li id="menu-item-30893" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30893"><a
+                        href="https://redislabs.com/company/contact/">Contact Us</a></li>
+              <li id="menu-item-30894" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30894"><a
+                        href="https://redislabs.com/company/support/">Support</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30894"><a href="https://redislabs.com/company/compliance-and-privacy/">Compliance</a></li>
+              <li id="menu-item-30898" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30898"><a
+                        target="_blank" href="https://status.redislabs.com/">Service Status</a></li>
+          </ul>
+        </div>
+      <div class="nav-column">
+        <h6>Community</h6>
+          <ul class="no-bullet">
+              <li id="menu-item-32248" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32248"><a
+                        href="https://redislabs.com/why-redis/">Why Redis</a></li>
+              <li id="menu-item-30904" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30904"><a
+                        href="https://redislabs.com/community/oss-projects/">OSS Projects</a></li>
+              <li id="menu-item-30903" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30903"><a
+                        href="https://redislabs.com/community/redis-modules-hub/">Modules Hub</a></li>
+              <li id="menu-item-30902" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30902"><a
+                        href="https://redislabs.com/community/redis-best-practices/">Best Practices</a></li>
+              <li id="menu-item-30899" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30899"><a
+                        href="https://redislabs.com/community/community-events/">Community Events</a></li>
+              <li id="menu-item-40614" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-40614"><a
+                        href="https://redislabs.com/community/redis-stars/">Redis Stars</a></li>
+              <li id="menu-item-30901" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30901"><a
+                        href="https://redislabs.com/community/presentations/">Tech Presentations</a></li>
+              <li id="menu-item-30900" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30900"><a
+                        href="https://redislabs.com/community/tech-blog/">Tech Blog</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30900"><a href="https://redislabs.com/community/licenses/">Licenses</a></li>
+          </ul>
+        </div>
+    </div>
+</nav>
+<button class="close-button" data-close="" aria-label="Close modal" type="button">
+    <span aria-hidden="true">×</span>
+</button>
+
+  </div>
+</header>
+<a id="top"></a>
+<article>
+    
+    <aside>
+      <ul class="menu">
+    <li data-nav-id="/rs/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/">Redis Enterprise Software (RS)</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/technology-behind-redis-enterprise/" class="dd-item">
+        <div>
+          <a href="../../../rs/technology-behind-redis-enterprise/">
+            The Technology Behind Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/new-features-redis-enterprise/" class="dd-item">
+        <div>
+          <a href="../../../rs/new-features-redis-enterprise/">
+            What&#39;s new in Redis Enterprise Software 5.0?
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/getting-started/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/getting-started/">Getting Started with Redis Enterprise Software (RS)</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/getting-started/quick-setup/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/quick-setup/">
+            Quick Setup of Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/getting-started/creating-database/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/getting-started/creating-database/">Creating a Database</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/getting-started/creating-database/crdbs/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/creating-database/crdbs/">
+            Getting Started with Redis Enterprise CRDBs (conflict-free replicated databases)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/getting-started/creating-database/redis-flash/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/creating-database/redis-flash/">
+            Quick Setup of a Redis on Flash Database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/getting-started/creating-database/rebloom/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/creating-database/rebloom/">
+            ReBloom Quick Start Tutorial
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/getting-started/creating-database/rejson-quick-start/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/creating-database/rejson-quick-start/">
+            ReJSON Quick Start Tutorial
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/getting-started/creating-database/redisearch/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/creating-database/redisearch/">
+            RediSearch Quick Start Tutorial
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/getting-started/docker/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/getting-started/docker/">Working with Redis Enterprise Software (RS) with Docker Containers</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/getting-started/docker/getting-started-docker/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/docker/getting-started-docker/">
+            Getting Started with Redis Enterprise Software using Docker
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/getting-started/pcf/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/pcf/">
+            Redis Enterprise Software for Pivotal Cloud Foundry (PCF)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/getting-started/memtier-benchmark/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/memtier-benchmark/">
+            Benchmarking Redis Enterprise
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/getting-started/k8s-openshift/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/k8s-openshift/">
+            Getting Started with Kubernetes and OpenShift
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/getting-started/getting-started-kubernetes/" class="dd-item">
+        <div>
+          <a href="../../../rs/getting-started/getting-started-kubernetes/">
+            Getting Started with Redis Enterprise Software using Kubernetes
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/concepts/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/concepts/">Concepts and Architecture</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+    <li data-nav-id="/rs/concepts/kubernetes-architecture/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/concepts/kubernetes-architecture/">Kubernetes Architecture</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/concepts/kubernetes-architecture/redis-labs-kubernetes-architecture-overview/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/kubernetes-architecture/redis-labs-kubernetes-architecture-overview/">
+            Redis Labs Kubernetes Architecture – Overview
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/kubernetes-architecture/k8s-operator-based-deployments/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/kubernetes-architecture/k8s-operator-based-deployments/">
+            Redis Enterprise K8s Operator-based deployments – Overview
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/concepts/data-access/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/concepts/data-access/">Data Access Architecture</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/concepts/data-access/consistency-durability/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/data-access/consistency-durability/">
+            Consistency and Durability
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/data-access/persistence/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/data-access/persistence/">
+            Database Persistence with Redis Enterprise Software
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/data-access/discovery-service/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/data-access/discovery-service/">
+            Discovery Service
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/data-access/oss-cluster-api/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/data-access/oss-cluster-api/">
+            OSS Cluster API Architecture
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/concepts/intercluster-replication/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/intercluster-replication/">
+            Geo-Distributed Active-Active Redis Applications with Conflict-free Replicated Databases (CRDB)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/concepts/high-availability/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/concepts/high-availability/">High Availability</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/concepts/high-availability/clustering/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/high-availability/clustering/">
+            Database clustering
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/high-availability/replication/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/high-availability/replication/">
+            Database replication
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/high-availability/rack-zone-awareness/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/high-availability/rack-zone-awareness/">
+            Rack-zone awareness in Redis Enterprise Software
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/concepts/memory-architecture/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/concepts/memory-architecture/">Memory Architecture in Redis Enterprise Software</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/concepts/memory-architecture/memory-management/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/memory-architecture/memory-management/">
+            Memory Mangement with Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/memory-architecture/redis-flash/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/memory-architecture/redis-flash/">
+            Redis on Flash
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/concepts/rebalancing-shard-placement/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/rebalancing-shard-placement/">
+            Rebalancing and Shard Placement
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/compatibility/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/compatibility/">
+            Redis Enterprise Software Compatibility with Open Source Redis
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/concepts/terminology/" class="dd-item">
+        <div>
+          <a href="../../../rs/concepts/terminology/">
+            Terminology in Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/developing/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/developing/">Developing for Redis Enterprise</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+    <li data-nav-id="/rs/developing/crdbs/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/developing/crdbs/">Developing Applications with Geo-replicated CRDBs on Redis Enterprise Software (RS)</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/developing/crdbs/developing-hashes-crdb/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/crdbs/developing-hashes-crdb/">
+            Developing with Hashes in a CRDB
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/crdbs/developing-lists-crdb/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/crdbs/developing-lists-crdb/">
+            Developing with Lists in a CRDB
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/crdbs/developing-sets-crdb/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/crdbs/developing-sets-crdb/">
+            Developing with Sets in a CRDB
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/crdbs/developing-sorted-sets-crdb/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/crdbs/developing-sorted-sets-crdb/">
+            Developing with Sorted Sets in a CRDB
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/crdbs/strings/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/crdbs/strings/">
+            Developing with Strings in a CRDB
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/developing/modules/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/developing/modules/">Developing with Redis Modules in Redis Enterprise Software (RS)</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/developing/modules/rejson/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/modules/rejson/">
+            Developing Applications with ReJSON
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/modules/redisearch/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/modules/redisearch/">
+            Developing Fast Search and Query with In-Memory Indexing
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/modules/bloom-filters/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/modules/bloom-filters/">
+            Developing with Bloom Filters
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/modules/installing/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/modules/installing/">
+            Installing a Module
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/developing/modules/upgrading/" class="dd-item">
+        <div>
+          <a href="../../../rs/developing/modules/upgrading/">
+            Upgrading a Module in Redis Enterprise Software
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/">Administering Redis Enterprise</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+    <li data-nav-id="/rs/administering/kubernetes/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/kubernetes/">Kubernetes</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/kubernetes/kubernetes-operator-deployment-persistent-volumes/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/kubernetes/kubernetes-operator-deployment-persistent-volumes/">
+            Kubernetes Operator Deployment – Persistent Volumes
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/kubernetes/sizing-scaling-redis-enterprise-cluster-kubernetes-deployment/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/kubernetes/sizing-scaling-redis-enterprise-cluster-kubernetes-deployment/">
+            Sizing and scaling a Redis Enterprise Cluster Kubernetes deployment
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/kubernetes/upgrading-redis-enterprise-cluster-kubernetes-deployment-operator/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/kubernetes/upgrading-redis-enterprise-cluster-kubernetes-deployment-operator/">
+            Upgrading a Redis Enterprise Cluster – Kubernetes Deployment with Operator
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/cluster-operations/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/cluster-operations/">Cluster Operations</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/cluster-operations/adding-node/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/adding-node/">
+            Adding a Node to an Existing Cluster
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/new-cluster-setup/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/new-cluster-setup/">
+            New Cluster Setup
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/removing-node/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/removing-node/">
+            Removing a Node
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/replacing-node/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/replacing-node/">
+            Replacing a node
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/administering/cluster-operations/settings/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/cluster-operations/settings/">Settings</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/cluster-operations/settings/license-keys/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/settings/license-keys/">
+            Cluster License Keys
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/settings/general/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/settings/general/">
+            General settings
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/settings/alerts/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/settings/alerts/">
+            Managing Cluster Alerts in Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/shutting-down-node/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/shutting-down-node/">
+            Shutting Down a Node
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/updating-certificates/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/updating-certificates/">
+            Updating SSL/TLS certificates
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/cluster-metrics/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/cluster-metrics/">
+            Viewing cluster metrics on Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/cluster-operations/node-metrics/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/cluster-operations/node-metrics/">
+            Viewing node metrics
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/database-operations/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/database-operations/">Database Operations</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/database-operations/causal-consistency-crdb/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/causal-consistency-crdb/">
+            Causal Consistency in a Conflict-free Replicated Database (CRDB)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/create-crdb/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/create-crdb/">
+            Create a Geo-Replicated Conflict-free Replicated Database (CRDB)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/creating-database/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/creating-database/">
+            Creating a Redis Enterprise Software (RS) database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/alerting/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/alerting/">
+            Database alerting
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/memory-limit/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/memory-limit/">
+            Database memory limits in Redis Enterprise Software
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/deleting-database/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/deleting-database/">
+            Delete a Database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/delete-crdb/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/delete-crdb/">
+            Deleting a Conflict-free Replicated Database (CRDB)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/eviction-policy/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/eviction-policy/">
+            Eviction policies
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/exporting-data/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/exporting-data/">
+            Exporting Data from Redis Enterprise
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/importing-data/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/importing-data/">
+            Importing Data into Redis Enterprise
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/administering-database-operations-importing-data/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/administering-database-operations-importing-data/">
+            Importing Data into your CRDB
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/administering/database-operations/metrics/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/database-operations/metrics/">Metrics</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/database-operations/metrics/database-metrics/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/metrics/database-metrics/">
+            Database metrics
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/metrics/shard-metrics/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/metrics/shard-metrics/">
+            Shards metrics
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/database-backup/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/database-backup/">
+            Periodic Backups
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/database-operations/updating-configurations/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/database-operations/updating-configurations/">
+            Updating database configuration
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/designing-production/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/designing-production/">Designing for Production</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/designing-production/hardware-requirements/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/hardware-requirements/">
+            Hardware requirements
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/administering/designing-production/networking/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/designing-production/networking/">Networking</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/designing-production/networking/multi-ip-ipv6/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/networking/multi-ip-ipv6/">
+            Multi-IP and IPv6
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/networking/multiple-active-proxy/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/networking/multiple-active-proxy/">
+            Multiple Active Proxy Support
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/networking/port-configurations/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/networking/port-configurations/">
+            Network port configurations
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/networking/private-public-endpoints/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/networking/private-public-endpoints/">
+            Private and Public Endpoints on Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/networking/using-oss-cluster-api/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/networking/using-oss-cluster-api/">
+            Using the OSS Cluster API
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/designing-production/performance/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/designing-production/performance/">Performance</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/designing-production/performance/disk-sizing-heavy-write-scenarios/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/performance/disk-sizing-heavy-write-scenarios/">
+            Disk Sizing for Heavy Write Scenarios
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/performance/optimization/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/performance/optimization/">
+            Performance Optimization
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/persistent-ephemeral-storage/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/persistent-ephemeral-storage/">
+            Persistent and ephemeral storage
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/supported-clients-browsers/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/supported-clients-browsers/">
+            Supported Clients and Web Browsers
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/supported-platforms/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/supported-platforms/">
+            Supported Platforms
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/designing-production/synchronizing-clocks/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/designing-production/synchronizing-clocks/">
+            Synchronizing cluster node clocks
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/installing-upgrading/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/installing-upgrading/">Installing and upgrading</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/installing-upgrading/configuring-aws-instances/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/configuring-aws-instances/">
+            Configuring AWS Instances for Redis Enterprise Software
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/administering/installing-upgrading/configuring/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/installing-upgrading/configuring/">Configuring the Installation</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/installing-upgrading/configuring/centos-rhel-7-firewall/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/configuring/centos-rhel-7-firewall/">
+            CentOS / RHEL 7 firewall configuration
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/configuring/change-location-socket-files/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/configuring/change-location-socket-files/">
+            Change Location of Socket Files
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/configuring/mdns/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/configuring/mdns/">
+            Client prerequisites for mDNS
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/configuring/linux-swap/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/configuring/linux-swap/">
+            Configuring Swap in Linux for Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/administering/installing-upgrading/configuring/cluster-name-dns-connection-management/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/installing-upgrading/configuring/cluster-name-dns-connection-management/">DNS Setup</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/installing-upgrading/configuring/cluster-name-dns-connection-management/configuring-aws-route53-dns-redis-enterprise/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/configuring/cluster-name-dns-connection-management/configuring-aws-route53-dns-redis-enterprise/">
+            Configuring AWS Route53
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/file-locations/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/file-locations/">
+            File Locations
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/downloading-installing/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/downloading-installing/">
+            Installing the setup package
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/offline-installation/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/offline-installation/">
+            Offline Installation
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/uninstalling/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/uninstalling/">
+            Uninstalling Redis Enterprise Software
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/installing-upgrading/upgrading/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/installing-upgrading/upgrading/">
+            Upgrading Redis Enterprise Software
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/intercluster-replication/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/intercluster-replication/">Intercluster Replication</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/intercluster-replication/crdbs/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/intercluster-replication/crdbs/">
+            Administering CRDBs
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/intercluster-replication/replica-of/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/intercluster-replication/replica-of/">
+            Unidirectional Replication with Replica of
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/logging/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/logging/">Logging and Audit Events</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/logging/redis-slow-log/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/logging/redis-slow-log/">
+            Viewing Redis Slow Log
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/logging/rsyslog-logging/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/logging/rsyslog-logging/">
+            rsyslog logging
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/monitoring-metrics/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/monitoring-metrics/">Monitoring and Metrics</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/monitoring-metrics/definitions/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/monitoring-metrics/definitions/">
+            Metrics Definitions
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/monitoring-metrics/nagios-plugin/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/monitoring-metrics/nagios-plugin/">
+            Nagios plugin for Redis Enterprise Software (RS)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/monitoring-metrics/prometheus-integration/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/monitoring-metrics/prometheus-integration/">
+            Redis Enterprise Software Integration with Prometheus
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/administering/product-lifecycle/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/product-lifecycle/">
+            Redis Enterprise Software Product Lifecycle
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rs/administering/security/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/security/">Security</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/security/account-management/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/security/account-management/">
+            Account Management
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/security/ldap-integration/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/security/ldap-integration/">
+            Integrating LDAP Authentication
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/security/client-connections/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/security/client-connections/">
+            Securing Redis Client Connections
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/administering/troubleshooting/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/administering/troubleshooting/">Troubleshooting</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/administering/troubleshooting/cluster-recovery/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/troubleshooting/cluster-recovery/">
+            Cluster Recovery
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/troubleshooting/creating-support-package/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/troubleshooting/creating-support-package/">
+            Creating a support package
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/troubleshooting/database-metrics-blank-during-resharding/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/troubleshooting/database-metrics-blank-during-resharding/">
+            Database metrics are blank during resharding
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/troubleshooting/network-configuration/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/troubleshooting/network-configuration/">
+            Network configuration
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/troubleshooting/replicaof-repeatedly-fails/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/troubleshooting/replicaof-repeatedly-fails/">
+            ReplicaOf Repeatedly Fails
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/administering/troubleshooting/testing-client-connectivity/" class="dd-item">
+        <div>
+          <a href="../../../rs/administering/troubleshooting/testing-client-connectivity/">
+            Testing client connectivity
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/faqs/" class="dd-item
+        ">
+      <div>
+      <a href="../../../rs/faqs/">FAQs</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/rs/references/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/references/">Developer References</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+    <li data-nav-id="/rs/references/cli-reference/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/references/cli-reference/">CLI References</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/references/cli-reference/memtier-benchmark/" class="dd-item">
+        <div>
+          <a href="../../../rs/references/cli-reference/memtier-benchmark/">
+            Benchmark a Redis on Flash Enabled Database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/references/cli-reference/rladmin/" class="dd-item">
+        <div>
+          <a href="../../../rs/references/cli-reference/rladmin/">
+            rladmin command-line interface
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/references/cli-reference/rlcheck/" class="dd-item">
+        <div>
+          <a href="../../../rs/references/cli-reference/rlcheck/">
+            rlcheck - Node Verification Utility
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rs/references/procedures-previous-releases/" class="dd-item">
+        <div>
+          <a href="../../../rs/references/procedures-previous-releases/">
+            Procedures for Previous Releases
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rs/release-notes/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rs/release-notes/">Release Notes</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rs/release-notes/rs-5-2-2-august-2018/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rs-5-2-2-august-2018/">
+            Redis Enterprise Software 5.2.2 (August 2018)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rs-5-3-beta-july-2018/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rs-5-3-beta-july-2018/">
+            Redis Enterprise Software Release Notes 5.3 BETA (July 2018)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rs-5-2-june-2018/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rs-5-2-june-2018/">
+            Redis Enterprise Software Release Notes 5.2 (June 2018)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/release-notes-redis-enterprise-software-v5-0-2/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/release-notes-redis-enterprise-software-v5-0-2/">
+            Redis Enterprise Software 5.0.2 (2018 March)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/redis-enterprise-5/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/redis-enterprise-5/">
+            Redis Enterprise Pack 5.0 Release Notes (November 2017)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/redis-pack-4-5-0-may-2017/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/redis-pack-4-5-0-may-2017/">
+            Redis Enterprise Pack 4.5 Release Notes (May 2017)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rlec-4-4-dec-2016/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rlec-4-4-dec-2016/">
+            RLEC 4.4 Release Notes (December 2016)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rlec-4-3-aug-2016/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rlec-4-3-aug-2016/">
+            RLEC 4.3.0-230 Release Notes (August 2, 2016)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rlec-4-2-october-2015/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rlec-4-2-october-2015/">
+            RLEC 4.2.1-30 Release Notes (October 18, 2015)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rlec-4-0-june-2015/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rlec-4-0-june-2015/">
+            RLEC 4.0.0-49 Release Notes (June 18, 2015)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rlec-0-99-february-2015/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rlec-0-99-february-2015/">
+            RLEC 0.99.5-24 Release Notes (February 15, 2015)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rs/release-notes/rlec-0-99-5-11-january-2015/" class="dd-item">
+        <div>
+          <a href="../../../rs/release-notes/rlec-0-99-5-11-january-2015/">
+            RLEC 0.99.5-11 Release Notes (January 5, 2015)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rc/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rc/">Redis Enterprise Cloud (RC)</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rc/quick-setup-redis-cloud/" class="dd-item">
+        <div>
+          <a href="../../../rc/quick-setup-redis-cloud/">
+            Quick Setup of Redis Enterprise Cloud
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rc/concepts/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rc/concepts/">Concepts behind Redis Enterprise Cloud</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rc/concepts/clustering-redis-cloud/" class="dd-item">
+        <div>
+          <a href="../../../rc/concepts/clustering-redis-cloud/">
+            Clustering Redis Databases with Redis Enterprise Cloud
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/concepts/data-eviction-policies/" class="dd-item">
+        <div>
+          <a href="../../../rc/concepts/data-eviction-policies/">
+            Data Eviction Policies
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/concepts/data-persistence-redis-cloud/" class="dd-item">
+        <div>
+          <a href="../../../rc/concepts/data-persistence-redis-cloud/">
+            Data Persistence with Redis Enterprise Cloud
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rc/securing-redis-cloud-connections/" class="dd-item">
+        <div>
+          <a href="../../../rc/securing-redis-cloud-connections/">
+            Securing Connections with SSL/TLS
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rc/administration/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rc/administration/">Administration</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+    <li data-nav-id="/rc/administration/configure/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rc/administration/configure/">Configuration</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rc/administration/configure/monitoring-alerting-metrics/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/configure/monitoring-alerting-metrics/">
+            Monitoring Redis Enterprise Cloud Performance
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/configure/backups/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/configure/backups/">
+            Redis Enterprise Cloud Database Backups
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/configure/security/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/configure/security/">
+            Securing Your Redis Enterprise Cloud Database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rc/administration/setup-and-editing/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rc/administration/setup-and-editing/">Setup</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rc/administration/setup-and-editing/changing-subscription-plan/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/setup-and-editing/changing-subscription-plan/">
+            Changing Redis Enterprise Cloud Subscription Plans
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/setup-and-editing/creating-databases/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/setup-and-editing/creating-databases/">
+            Creating Databases on Redis Enterprise Cloud (RC)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/setup-and-editing/create-subscription/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/setup-and-editing/create-subscription/">
+            Creating a Redis Enterprise Cloud Subscription
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/setup-and-editing/delete-databases/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/setup-and-editing/delete-databases/">
+            Deleting Redis Enterprise Cloud (RC) Databases
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/setup-and-editing/viewing-subscription/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/setup-and-editing/viewing-subscription/">
+            Viewing a Subscription
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/setup-and-editing/viewing-editing-database/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/setup-and-editing/viewing-editing-database/">
+            Viewing and Editing Databases
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rc/administration/account-team-settings/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/account-team-settings/">
+            Account and Team Settings
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/billing-history/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/billing-history/">
+            Billing History
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/payment-methods/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/payment-methods/">
+            Payment Methods
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/setup-editing/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/setup-editing/">
+            Setup and Editing of Redis Enterprise Cloud Resources
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/system-logs/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/system-logs/">
+            System Logs
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/administration/usage-reports/" class="dd-item">
+        <div>
+          <a href="../../../rc/administration/usage-reports/">
+            Usage Reports
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rc/how-to/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rc/how-to/">How Tos</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rc/how-to/aws-zone-mapping/" class="dd-item">
+        <div>
+          <a href="../../../rc/how-to/aws-zone-mapping/">
+            AWS Zone Mapping
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/how-to/importing-dataset-redis-cloud/" class="dd-item">
+        <div>
+          <a href="../../../rc/how-to/importing-dataset-redis-cloud/">
+            Importing Data Into Your Redis Enterprise Cloud Database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/how-to/multiple-accounts/" class="dd-item">
+        <div>
+          <a href="../../../rc/how-to/multiple-accounts/">
+            Member of multiple accounts
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/how-to/flush-db/" class="dd-item">
+        <div>
+          <a href="../../../rc/how-to/flush-db/">
+            Using flushall Command on Redis Enterprise Cloud
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rc/how-to/all-memcached-cloud/" class="dd-item">
+        <div>
+          <a href="../../../rc/how-to/all-memcached-cloud/">
+            Using flush_all for Memcached Cloud
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rc/faqs/" class="dd-item
+        ">
+      <div>
+      <a href="../../../rc/faqs/">FAQs</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rv/" class="dd-item parent haschildren
+        ">
+      <div>
+      <a href="../../../rv/">Redis Enterprise VPC (RV)</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+    <li data-nav-id="/rv/faqs/" class="dd-item
+        ">
+      <div>
+      <a href="../../../rv/faqs/">FAQs</a><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+    </li>
+    <li data-nav-id="/rv/administration/" class="dd-item parent haschildren
+        ">
+      <div>
+      <a href="../../../rv/administration/">Administration</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+    <li data-nav-id="/rv/administration/configuration/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rv/administration/configuration/">Configuring Redis Enterprise VPC Resources</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rv/administration/configuration/backups/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/configuration/backups/">
+            Database Backups on Redis Enterprise VPC (RV)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/configuration/monitoring-performance/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/configuration/monitoring-performance/">
+            Monitoring Performance in Redis Enterprise VPC
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/configuration/securing-your-database/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/configuration/securing-your-database/">
+            Securing Your Database in Redis Enterprise VPC (RV)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rv/administration/billing-history/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/billing-history/">
+            Billing History
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/payment-methods/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/payment-methods/">
+            Payment Methods
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+    <li data-nav-id="/rv/administration/setup_and_editing/" class="dd-item parent active haschildren
+        ">
+      <div>
+      <a href="../../../rv/administration/setup_and_editing/">Setup and Editing</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rv/administration/setup_and_editing/creating-databases/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/setup_and_editing/creating-databases/">
+            Creating Databases on Redis Enterprise VPC (RV)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/setup_and_editing/creating-cloud-account/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/setup_and_editing/creating-cloud-account/">
+            Creating a Redis Enterprise VPC (RV) Cloud Account
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/setup_and_editing/creating-subscription/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/setup_and_editing/creating-subscription/">
+            Creating a Subscription in Redis Enterprise VPC (RV)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/setup_and_editing/deleting-database/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/setup_and_editing/deleting-database/">
+            Deleting a Database in Redis Enterprise VPC (RV)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/setup_and_editing/viewing-editing-databases/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/setup_and_editing/viewing-editing-databases/">
+            View and Edit a Database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/setup_and_editing/view-edit-cloud-account/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/setup_and_editing/view-edit-cloud-account/">
+            View and Edit a Redis Enterprise VPC (RV) Cloud Account
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rv/administration/system-logs/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/system-logs/">
+            System Logs
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/account-team-settings/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/account-team-settings/">
+            Account and Team Settings
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/administration/usage-reports/" class="dd-item">
+        <div>
+          <a href="../../../rv/administration/usage-reports/">
+            Usage Reports
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rv/concepts/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rv/concepts/">Concepts</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rv/concepts/clustering/" class="dd-item">
+        <div>
+          <a href="../../../rv/concepts/clustering/">
+            Clustering Redis Databases with Redis Enterprise VPC
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/concepts/data-eviction-policies/" class="dd-item">
+        <div>
+          <a href="../../../rv/concepts/data-eviction-policies/">
+            Data Eviction Policies
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/concepts/data-persistence/" class="dd-item">
+        <div>
+          <a href="../../../rv/concepts/data-persistence/">
+            Data Persistence with Redis Enterprise VPC
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/rv/how-to/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="../../../rv/how-to/">How Tos</a><i class="fa fa-angle-right fa-lg category-icon"></i><i class="fa fa-circle-thin read-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/rv/how-to/creating-aws-user-redis-enterprise-vpc/" class="dd-item">
+        <div>
+          <a href="../../../rv/how-to/creating-aws-user-redis-enterprise-vpc/">
+            Creating an AWS User for Redis Enterprise VPC
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+      <li data-nav-id="/rv/how-to/importing-data-database/" class="dd-item">
+        <div>
+          <a href="../../../rv/how-to/importing-data-database/">
+            Importing Data Into Your Redis Enterprise VPC Database
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+      <li data-nav-id="/rv/quick-setup/" class="dd-item">
+        <div>
+          <a href="../../../rv/quick-setup/">
+            Quick Setup of Redis Enterprise VPC (RV)
+          </a><i class="fa fa-circle-thin read-icon"></i>
+        </div>
+    </li>
+        </ul>
+    </li>
+
+
+
+
+      </ul>
+      <section>
+      </section>
+    </aside>
+    <section class="page">
+        <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+          <span class="links">
+          
+
+
+
+
+
+
+
+
+
+
+ <a href='../../../'>Redis Labs Documentation</a> <span>></span> <a href='../../../rv/'>Redis Enterprise VPC (RV)</a> <span>></span> <a href='../../../rv/administration/'>Administration</a> <span>></span> Setup and Editing
+
+ 
+
+ 
+
+ 
+
+   
+          </span>
+        </div>
+      <div>
+        <div class="searchcontainer">
+          <i class="icon-Search searchicon"></i>
+          <input class="searchbox" data-search-input id="search-by" type="text" placeholder="Search in documentation">
+        </div>
+        <script type="text/javascript" src="../../../js/lunr.min.js"></script>
+        <script type="text/javascript" src="../../../js/auto-complete.js"></script>
+        <link href="../../../css/auto-complete.css" rel="stylesheet">
+        
+        <script type="text/javascript" src="../../../js/search.js"></script>
+      </div>
+
+      <div class="chevrons">
+        <div id="navigation">
+<div class="edit-link"><a href="https://github.com/RedisLabs/redislabs-docs/edit/5.2-build/content/rv/administration/setup_and_editing/_index.md" class="github-link" target="blank"><i class="icon-Edit"></i>
+            <span>Edit on GitHub</span></a></div>
+        <div class="nav-links"><a class="nav-prev-next" href="../../../rv/administration/payment-methods/" title="Payment Methods"><i class="icon-ArrowLeft"></i></a>
+    <a class="nav-prev-next" href="../../../rv/administration/setup_and_editing/creating-databases/" title="Creating Databases on Redis Enterprise VPC (RV)" style="margin-right: 0px;"><i class="icon-ArrowRight"></i></a></div></div>
+
+      </div>
+      
+
+      <div class="nav-select">
+          <center>
+          <select onchange="javascript:location.href = this.value;">
+          
+    <option value="//docs.redislabs.com/5.2/rs/" >
+   Redis Enterprise Software (RS)</option>
+    <option value="//docs.redislabs.com/5.2/rc/" >
+   Redis Enterprise Cloud (RC)</option>
+    <option value="//docs.redislabs.com/5.2/rv/" >
+   Redis Enterprise VPC (RV)</option> 
+    <option value="//docs.redislabs.com/5.2/rv/faqs/" >
+  - 
+   FAQs</option>
+    <option value="//docs.redislabs.com/5.2/rv/administration/" >
+  - 
+   Administration</option> 
+    <option value="//docs.redislabs.com/5.2/rv/administration/configuration/" >
+  -- 
+   Configuring Redis Enterprise VPC Resources</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/billing-history/" >-- Billing History</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/payment-methods/" >-- Payment Methods</option>
+    <option value="//docs.redislabs.com/5.2/rv/administration/setup_and_editing/"  selected>
+  -- 
+   Setup and Editing</option> 
+      <option value="//docs.redislabs.com/5.2/rv/administration/setup_and_editing/creating-databases/" >--- Creating Databases on Redis Enterprise VPC (RV)</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/setup_and_editing/creating-cloud-account/" >--- Creating a Redis Enterprise VPC (RV) Cloud Account</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/setup_and_editing/creating-subscription/" >--- Creating a Subscription in Redis Enterprise VPC (RV)</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/setup_and_editing/deleting-database/" >--- Deleting a Database in Redis Enterprise VPC (RV)</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/setup_and_editing/viewing-editing-databases/" >--- View and Edit a Database</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/setup_and_editing/view-edit-cloud-account/" >--- View and Edit a Redis Enterprise VPC (RV) Cloud Account</option>
+  
+      <option value="//docs.redislabs.com/5.2/rv/administration/system-logs/" >-- System Logs</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/account-team-settings/" >-- Account and Team Settings</option>
+      <option value="//docs.redislabs.com/5.2/rv/administration/usage-reports/" >-- Usage Reports</option>
+  
+    <option value="//docs.redislabs.com/5.2/rv/concepts/" >
+  - 
+   Concepts</option>
+    <option value="//docs.redislabs.com/5.2/rv/how-to/" >
+  - 
+   How Tos</option>
+      <option value="//docs.redislabs.com/5.2/rv/quick-setup/" >- Quick Setup of Redis Enterprise VPC (RV)</option>
+  
+
+
+
+      </select>
+      </center>
+      </div>
+
+      <h1>Setup and Editing</h1>
+
+
+
+    
+
+    
+      <div class="main-content">
+          <div class="main-content-left">
+            
+
+
+
+<ul class="children children-h2">
+
+<span><h2>
+		<a href="../../../rv/administration/setup_and_editing/creating-databases/" >Creating Databases on Redis Enterprise VPC (RV)</a></h2>
+<p>Once you have a subscription, you can easily create a database in Redis Enterprise VPC by following these steps:
+ Select Databases from the top right menu in Redis Enterprise VPC. Click on the + button to add a database to a Subscription. Protocol - Select whether the database will be Redis or Memcached Enter a Database Name that is up to 40 characters long; Enter a Memory Limit. Please take in mind that replication is on.</p>
+</span>
+
+<span><h2>
+		<a href="../../../rv/administration/setup_and_editing/creating-cloud-account/" >Creating a Redis Enterprise VPC (RV) Cloud Account</a></h2>
+<p>An RV Cloud Account contains all necessary credentials and information for an account with your cloud provider. This Cloud Account enables RV to create, manage, and monitor Cloud resources automatically on your behalf.
+Once a Cloud Account is set up you can reuse it with several subscriptions.
+Create a new Cloud Account To create an RV Cloud Account, please select Cloud Accounts from the right side menu. Please follow our instructions on how to set up a user for RV to use on your AWS account.</p>
+</span>
+
+<span><h2>
+		<a href="../../../rv/administration/setup_and_editing/creating-subscription/" >Creating a Subscription in Redis Enterprise VPC (RV)</a></h2>
+<p>A Redis Enterprise VPC (RV) subscription consists of a selected cloud provider (and respective region, e.g. &quot;AWS - US-West-2&quot;), architectural model, memory limit and feature set. You can have multiple subscriptions in different providers and regions, all easily managed from a single console.
+Prerequisites:
+ AWS Account - RV is deployed into your AWS environment under a special account you create specifically for it. Cloud Account - RV relies on a user in AWS' Identity and Account Management (IAM) with specific privileges in order to create, maintain, and manage your RV cluster and databases.</p>
+</span>
+
+<span><h2>
+		<a href="../../../rv/administration/setup_and_editing/deleting-database/" >Deleting a Database in Redis Enterprise VPC (RV)</a></h2>
+<p>Deleting a database is just as easy as creating one. Make sure that you are truly done with the database, as once you delete the database it cannot be recovered (except from your backups).
+Note: only users that are defined as Owners on the RV account can delete a database.
+Steps:
+ Navigate to the Databases page from the RV menu Click on the database you wish to delete from the list of your databases.</p>
+</span>
+
+<span><h2>
+		<a href="../../../rv/administration/setup_and_editing/viewing-editing-databases/" >View and Edit a Database</a></h2>
+<p>To view your database, select Databases from the menu. You will see a list of your databases grouped by Subscription.
+In this view, you see pertinent information about each database and some of its features. Since a Subscription can have multiple databases, you can add one to a Subscription by clicking on the &quot;+&quot; button below each Subscription table.
+On the View Database page you will see four important icons next to the title of the page:</p>
+</span>
+
+<span><h2>
+		<a href="../../../rv/administration/setup_and_editing/view-edit-cloud-account/" >View and Edit a Redis Enterprise VPC (RV) Cloud Account</a></h2>
+<p>To view or edit your existing cloud accounts please select Cloud Accounts from the right side menu.
+Select the relevant Cloud Account and click on that account's Edit button.
+In edit mode please enter or update the following details:
+ Account Name - Give the account a name so you could recognize him AWS_ACCESS_KEY_ID - RV user's AWS access key AWS_SECRET_ACCESS_KEY - RV user's AWS secret key AWS Console User - RV AWS UI console user AWS Console password - RV AWS UI console user's password IAM Users sign-in link - This is the link you use to log into the AWS console (e.</p>
+</span>
+</ul>
+
+
+
+
+
+
+
+
+          </div>
+          <div class="main-content-right">
+            
+
+
+
+
+
+<style>
+.main-content-right {
+  display: none !important;
+}
+.main-content-left {
+  max-width: 100% !important;
+}
+</style>
+
+
+          </div>
+      </div>
+      <div class="main-content-bottom">
+          <div class="post-bottom"><div class="extra-links-gooter">
+        <div class="edit-link"><a href="https://github.com/RedisLabs/redislabs-docs/edit/5.2-build/content/rv/administration/setup_and_editing/_index.md" class="github-link" target="blank"><i class="icon-Edit"></i>
+            <span>Edit on GitHub</span></a>
+        </div>
+        <div class="go-top-link">
+                <a href="#top" class="got-to-top">Top&nbsp;<i class="icon-Top"></i></a>
+        </div>
+    </div>    
+        <div class="nav-links-footer">
+            <div class="nav-links-footer-left">
+                <a class="nav-prev-next" href="../../../rv/administration/payment-methods/" title="Payment Methods"><i class="icon-ArrowLeft"></i><span>Previous:</span>Payment Methods</a>
+            </div>
+    <div class="nav-links-footer-right">
+                <a class="nav-prev-next" href="../../../rv/administration/setup_and_editing/creating-databases/" title="Creating Databases on Redis Enterprise VPC (RV)"><span>Next:</span>&nbsp;Creating Databases on Redis Enterprise VPC (RV)&nbsp;&nbsp;&nbsp;<i class="icon-ArrowRight"></i></a>
+            </div>
+        </div></div>
+      </div>
+    
+    </section>
+</article>
+
+<footer>
+    <div class="reveal large" id="navModal">
+        <nav class="main_navigation" role="navigation">
+    <div class="nav-wrapper">
+        <div class="nav-column">
+            <h6>Products</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30711" class="nav-head clickable menu-item menu-item-type-custom menu-item-object-custom menu-item-30711"><a
+                        href="../../../redis-enterprise/">Redis Enterprise</a></li>
+                <li id="menu-item-30710" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30710"><a
+                        href="../../../redis-enterprise/">Advantages</a></li>
+                <li id="menu-item-30698" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30698"><a
+                        href="https://redislabs.com/redis-enterprise/technology/">Technology</a></li>
+                <li id="menu-item-30884" class="nav-head menu-item menu-item-type-custom menu-item-object-custom menu-item-30884"><a>Deployments</a></li>
+                <li id="menu-item-30712" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30712"><a
+                        href="../../../redis-enterprise/deployments/">Overview</a></li>
+                <li id="menu-item-30705" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30705"><a
+                        href="https://redislabs.com/redis-enterprise/cloud/">Cloud (Hosted)</a></li>
+                <li id="menu-item-30703" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30703"><a
+                        href="https://redislabs.com/redis-enterprise/vpc/">VPC (Managed)</a></li>
+                <li id="menu-item-30704" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30704"><a
+                        href="https://redislabs.com/redis-enterprise/software/">Software</a></li>
+                <li id="menu-item-30713" class="nav-head menu-item menu-item-type-custom menu-item-object-custom menu-item-30713"><a>More</a></li>
+                <li id="menu-item-31172" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31172"><a
+                        href="https://redislabs.com/redis-enterprise/redis-modules/">Redis Modules</a></li>
+                <li id="menu-item-30707" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30707"><a
+                        href="https://redislabs.com/redis-enterprise/connectors/">Connectors</a></li>
+                <li id="menu-item-30709" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30709"><a
+                        href="https://redislabs.com/redis-enterprise/memcached/">Memcached</a></li>
+            </ul>
+        </div>
+
+        <div class="nav-column">
+            <h6>Pricing</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30846" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30846"><a
+                        href="../../../pricing">Selection Guide</a></li>
+                <li id="menu-item-30849" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30849"><a
+                        href="https://redislabs.com/redis-enterprise/cloud/cloud-pricing/">Cloud (Hosted)</a></li>
+                <li id="menu-item-30847" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30847"><a
+                        href="https://redislabs.com/redis-enterprise/vpc/vpc-pricing/">VPC (Managed)</a></li>
+                <li id="menu-item-30848" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30848"><a
+                        href="https://redislabs.com/redis-enterprise/software/software-pricing/">Software</a></li>
+            </ul>
+        </div>
+        <div class="nav-column">
+            <h6>Solutions</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30856" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30856"><a
+                        href="https://redislabs.com/solutions/personalization/">Personalization</a></li>
+                <li id="menu-item-30857" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30857"><a
+                        href="https://redislabs.com/solutions/fraud-detection/">Fraud Mitigation</a></li>
+                <li id="menu-item-30852" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30852"><a
+                        href="https://redislabs.com/solutions/social-apps/">Social Apps</a></li>
+                <li id="menu-item-30853" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30853"><a
+                        href="https://redislabs.com/solutions/metering/">Metering</a></li>
+                <li id="menu-item-30854" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30854"><a
+                        href="https://redislabs.com/solutions/ecommerce/">Ecommerce</a></li>
+                <li id="menu-item-39629" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-39629"><a
+                        href="https://redislabs.com/solutions/industries/redis-financial-services/">Financial Services</a></li>
+                <li id="menu-item-31190" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31190"><a
+                        href="https://redislabs.com/solutions/search/">Search</a></li>
+                <li id="menu-item-32324" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32324"><a
+                        href="https://redislabs.com/solutions/iot/">IoT</a></li>
+                <li id="menu-item-30851" class="nav-head menu-item menu-item-type-custom menu-item-object-custom menu-item-30851"><a
+                        href="#">More</a></li>
+                <li id="menu-item-30855" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30855"><a
+                        href="https://redislabs.com/solutions/use-cases/">Use Cases</a></li>
+                <li id="menu-item-30859" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30859"><a
+                        href="https://redislabs.com/solutions/partner-integrations/">Integrations</a></li>
+            </ul>
+        </div>
+        <div class="nav-column">
+            <h6>Customers</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-37105" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-37105"><a
+                        href="https://redislabs.com/redis-enterprise/customers/">Case Studies</a></li>
+                <li id="menu-item-37106" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-37106"><a
+                        href="https://redislabs.com/solutions/industries/">Industries</a></li>
+            </ul>
+            <p>&nbsp;</p>
+            <h6>Partners</h6>
+            <ul class="no-bullet">
+                <li id="menu-item-30908" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30908"><a
+                        href="../../../partners">Partner Center</a></li>
+                <li id="menu-item-30906" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30906"><a
+                        href="https://redislabs.com/partners/find-a-partner/">Find a Partner</a></li>
+                <li id="menu-item-30907" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30907"><a
+                        href="https://redislabs.com/partners/become-a-partner/">Become a Partner</a></li>
+            </ul>
+        </div>
+      <div class="nav-column">
+        <h6>Resources</h6>
+          <ul class="no-bullet">
+              <li id="menu-item-30909" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30909"><a
+                        href="https://redislabs.com/resources/">Resource Center</a></li>
+              <li id="menu-item-30920" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30920"><a
+                        href="https://redislabs.com/resources/blog/">Company Blog</a></li>
+              <li id="menu-item-30921" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30921"><a
+                        href="https://redislabs.com/resources/webinars/">Webinars</a></li>
+              <li id="menu-item-30910" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30910"><a
+                        href="https://redislabs.com/resources/videos/">Videos</a></li>
+              <li id="menu-item-30913" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30913"><a
+                        href="https://redislabs.com/resources/benchmarks/">Benchmarks</a></li>
+              <li id="menu-item-30914" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30914"><a
+                        href="https://redislabs.com/resources/datasheets/">Datasheets</a></li>
+              <li id="menu-item-30915" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30915"><a
+                        href="https://redislabs.com/resources/whitepapers/">Whitepapers</a></li>
+              <li id="menu-item-30916" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30916"><a
+                        href="https://redislabs.com/resources/faqs/">FAQs</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30916"><a href="https://redislabs.com/redis-for-dummies/">Redis For Dummies</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30916"><a href="https://redislabs.com/community/ebook/">Redis e-Book</a></li>
+              <li id="menu-item-30917" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30917"><a
+                        href="https://redislabs.com/resources/documentation/">Documentation</a></li>
+              <li id="menu-item-39311" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-39311"><a
+                        target="_blank" href="https://university.redislabs.com/">University</a></li>
+              <li id="menu-item-30918" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30918"><a
+                        href="https://redislabs.com/resources/how-to-redis-enterprise/">How To</a></li>
+              <li id="menu-item-37488" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-37488"><a
+                        href="https://redislabs.com/resources/redis-clients/">Redis Clients</a></li>
+          </ul>
+        </div>
+      <div class="nav-column">
+        <h6>Company</h6>
+          <ul class="no-bullet">
+              <li id="menu-item-30895" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30895"><a
+                        href="https://redislabs.com/company/">About Us</a></li>
+              <li id="menu-item-30896" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30896"><a
+                        href="https://redislabs.com/company/team/">Team</a></li>
+              <li id="menu-item-30897" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30897"><a
+                        href="https://redislabs.com/company/careers/">Careers</a></li>
+              <li id="menu-item-30988" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-30988"><a
+                        href="https://redislabs.com/company/newsroom/">Newsroom</a></li>
+              <li id="menu-item-30891" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30891"><a
+                        href="https://redislabs.com/company/events/">Corporate Events</a></li>
+              <li id="menu-item-30893" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30893"><a
+                        href="https://redislabs.com/company/contact/">Contact Us</a></li>
+              <li id="menu-item-30894" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30894"><a
+                        href="https://redislabs.com/company/support/">Support</a></li>
+                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30894"><a href="https://redislabs.com/company/compliance-and-privacy/">Compliance</a></li>
+              <li id="menu-item-30898" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-30898"><a
+                        target="_blank" href="https://status.redislabs.com/">Service Status</a></li>
+          </ul>
+        </div>
+      <div class="nav-column">
+        <h6>Community</h6>
+          <ul class="no-bullet">
+              <li id="menu-item-32248" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32248"><a
+                        href="https://redislabs.com/why-redis/">Why Redis</a></li>
+              <li id="menu-item-30904" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30904"><a
+                        href="https://redislabs.com/community/oss-projects/">OSS Projects</a></li>
+              <li id="menu-item-30903" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30903"><a
+                        href="https://redislabs.com/community/redis-modules-hub/">Modules Hub</a></li>
+              <li id="menu-item-30902" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30902"><a
+                        href="https://redislabs.com/community/redis-best-practices/">Best Practices</a></li>
+              <li id="menu-item-30899" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30899"><a
+                        href="https://redislabs.com/community/community-events/">Community Events</a></li>
+              <li id="menu-item-40614" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-40614"><a
+                        href="https://redislabs.com/community/redis-stars/">Redis Stars</a></li>
+              <li id="menu-item-30901" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30901"><a
+                        href="https://redislabs.com/community/presentations/">Tech Presentations</a></li>
+              <li id="menu-item-30900" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30900"><a
+                        href="https://redislabs.com/community/tech-blog/">Tech Blog</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30900"><a href="https://redislabs.com/community/licenses/">Licenses</a></li>
+          </ul>
+        </div>
+    </div>
+</nav>
+<button class="close-button" data-close="" aria-label="Close modal" type="button">
+    <span aria-hidden="true">×</span>
+</button>
+
+    </div>
+
+    <div class="btm_footer">
+        <ul class="footer-action">
+    <li><div class="small-12 medium-4 large-3 columns copyright medium-text-right">
+        <p class="source-org"><a href="../../../terms">TERMS</a> &nbsp;|&nbsp; <a href="../../../privacy">PRIVACY</a> &nbsp;|&nbsp; <a href="https://redis.io" target="_blank" style="text-transform: none;">redis.io</a></p>
+    </div></li>
+    <li><div class="social small-only-text-center" style="margin-top: -.7em;">
+		  
+        <a href="https://twitter.com/redislabs" target="_blank"><i class="fi-social-twitter"></i></a>
+        <a href="https://plus.google.com/+Redislabs" target="_blank"><i class="fi-social-google-plus"></i></a>
+        <a href="https://www.linkedin.com/company/redis-labs-inc" target="_blank"><i class="fi-social-linkedin"></i></a>
+        <a href="https://www.facebook.com/RedisLabs" target="_blank"><i class="fi-social-facebook"></i></a>
+        <a href="https://www.youtube.com/channel/UCD78lHSwYqMlyetR0_P4Vig" target="_blank"><i class="fi-social-youtube"></i></a>
+        <a href="https://www.glassdoor.com/Overview/Working-at-Redis-Labs-EI_IE928722.11,21.htm" target="_blank"><img src="https://redislabs.com/wp-content/themes/redislabs/assets/images/glassdoor.svg" width="28px"></a>
+        <a href="https://www.instagram.com/redislabsofficial/" target="_blank"><img src="https://redislabs.com/wp-content/themes/redislabs/assets/images/instagram.svg" width="28px"></a>
+      </div></li>
+    <li><p class="source-org copyright">
+        <span>© 2018 Redis Labs</span>
+    </p></li>
+</ul>
+
+    </div>
+</footer>
+
+<div class="search-box" style="display: none">
+    <form role="search" method="get" class="search-form" action="https://redislabs.com/">
+        <input type="search" class="search-field" placeholder="Search..." value="" name="s" title="Search for:">
+        <div class="input-group-button">
+            <input type="submit" class="search-submit button" value="Search"><a data-close="" aria-label="Close modal"
+                class="close button secondary hollow"><span aria-hidden="true">×</span></a>
+        </div>
+    </form>
+</div>
+
+
+<nav id="ml-menu" class="menu cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right">
+    <div class="menu__wrap">
+        <ul data-menu="main" class="menu__level" tabindex="-1" role="menu" aria-label="All">
+            <li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-1" aria-owns="submenu-1"
+                    href="#">Products</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-2" aria-owns="submenu-2"
+                    href="#">Pricing</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-3" aria-owns="submenu-3"
+                    href="#">Solutions</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-3" aria-owns="submenu-4"
+                    href="#">Partners</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-4" aria-owns="submenu-5"
+                    href="#">Resources</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-4" aria-owns="submenu-6"
+                    href="#">Company</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-4" aria-owns="submenu-7"
+                    href="#">Community</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://university.redislabs.com/">Redis
+                    University</a></li>
+        </ul>
+        
+        <ul data-menu="submenu-1" id="submenu-1" class="menu__level" tabindex="-1" role="menu" aria-label="Products">
+            <li class="menu__item menu__title" role="menuitem"><a class="menu__link__title" href="https://redislabs.com/redis-enterprise/">Redis
+                    Enterprise</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/">Advantages</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/technology/">Technology</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/customers/">Customers</a></li>
+            <li class="menu__item menu__title" role="menuitem"><a class="menu__link__title" href="https://redislabs.com/redis-enterprise/deployments/">Deployments</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/deployments/">Overview</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/cloud/">Cloud
+                    (Hosted)</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/vpc/">VPC
+                    (Managed)</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/software/">Software</a></li>
+            <li class="menu__item menu__title" role="menuitem"><a class="menu__link__title" href="#">More</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/redis-modules/">Redis
+                    Modules</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/connectors/">Connectors</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/memcached/">Memcached</a></li>
+        </ul>
+        
+        <ul data-menu="submenu-2" id="submenu-2" class="menu__level" tabindex="-1" role="menu" aria-label="Pricing">
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/pricing/">Selection
+                    Guide</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/cloud/cloud-pricing/">Cloud
+                    (Hosted)</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/vpc/vpc-pricing/">VPC
+                    (Managed)</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/redis-enterprise/software/software-pricing/">Software</a></li>
+        </ul>
+        
+        <ul data-menu="submenu-3" id="submenu-3" class="menu__level" tabindex="-1" role="menu" aria-label="Solutions">
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/solutions/">Overview</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/personalization/">Personalization</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/fraud-detection/">Fraud
+                    Mitigation</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/social-apps/">Social
+                    Apps</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/metering/">Metering</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/ecommerce/">Ecommerce</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/industries/redis-financial-services/">Financial
+                    Services</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/search/">Search</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/iot/">IoT</a></li>
+            <li class="menu__item menu__title" role="menuitem"><a class="menu__link__title" href="#">More</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/use-cases/">Use
+                    Cases</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/industries/">Industries</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/solutions/partner-integrations/">Integrations</a></li>
+        </ul>
+        
+      <ul data-menu="submenu-4" id="submenu-4" class="menu__level" tabindex="-1" role="menu" aria-label="Partners">
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/partners/">Partner
+                    Center</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/partners/find-a-partner/">Find
+                    a Partner</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/partners/become-a-partner/">Become
+                    a Partner</a></li>
+        </ul>
+        
+        <ul data-menu="submenu-5" id="submenu-5" class="menu__level" tabindex="-1" role="menu" aria-label="Resources">
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/">Resource
+                    Center</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/blog/">Company
+                    Blog</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/webinars/">Webinars</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/videos/">Videos</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/benchmarks/">Benchmarks</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/datasheets/">Datasheets</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/whitepapers/">Whitepapers</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/faqs/">FAQs</a></li>
+            <li class="menu__item"><a href="https://redislabs.com/redis-for-dummies/">Redis For Dummies</a></li>
+            <li class="menu__item"><a href="https://redislabs.com/community/ebook/">Redis e-Book</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/documentation/">Documentation</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/how-to-redis-enterprise/">How
+                    To</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/resources/redis-clients/">Redis
+                    Clients</a></li>
+        </ul>
+        
+        <ul data-menu="submenu-6" id="submenu-6" class="menu__level" tabindex="-1" role="menu" aria-label="Resources">
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/company">About Us</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/company/team/">Team</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/company/careers/">Careers</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/company/newsroom/">Newsroom</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/company/events/">Corporate
+                    Events</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/company/contact/">Contact
+                    Us</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/company/support/">Support</a></li>
+            <li class="menu__item"><a href="https://redislabs.com/company/compliance-and-privacy/">Compliance</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://status.redislabs.com/">Service
+                    Status</a></li>
+      </ul>
+
+        
+        <ul data-menu="submenu-7" id="submenu-7" class="menu__level" tabindex="-1" role="menu" aria-label="Resources">
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/why-redis/">Why
+                    Redis</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/community/oss-projects/">OSS
+                    Projects</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/community/redis-modules-hub/">Modules
+                    Hub</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/community/redis-best-practices/">Best
+                    Practices</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/community/community-events/">Community
+                    Events</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/community/presentations/">Tech
+                    Presentations</a></li>
+            <li class="menu__item" role="menuitem"><a class="menu__link" href="https://redislabs.com/community/tech-blog/">Tech
+                    Blog</a></li>
+            <li class="menu__item" role="menuitem"><a href="https://redislabs.com/community/licenses/">Licenses</a></li>
+      </ul>
+
+
+  </div>
+</nav>
+
+<script src="../../../js/clipboard.min.js"></script>
+
+<link href="../../../css/featherlight.min.css" rel="stylesheet">
+<script src="../../../js/featherlight.min.js"></script>
+
+
+
+<script src="../../../theme-flex/script.js"></script>
+
+
+
+    
+    
+
+    
+
+  </body>
+</html>

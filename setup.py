@@ -31,7 +31,7 @@ setuptools.setup(
     },
     entry_points={
         'console_scripts': [
-            'load=docsearch.commands.load:load',
+            'index=docsearch.commands.index:index',
             'search=docsearch.commands.search:search'
         ],
     }

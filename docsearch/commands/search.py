@@ -18,8 +18,9 @@ def search(query):
     print(f"Hits: {res.total}")
     print()
     for doc in docs:
-        print(f"{doc['hierarchy'][0]} - {doc['hierarchy'][-1]} - {doc['title']}")
+        print(f"{doc['hierarchy']} - {doc['title']}")
         if doc['section_title']:
             print(f"[{doc['section_title']}]")
+        print(doc['url'])
         print(doc['body'] or "NO BODY")
         print()
