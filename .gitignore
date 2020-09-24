@@ -7,3 +7,4 @@ __pycache__*
 redis-docsearch.iml
 .env
 app.yaml
+data

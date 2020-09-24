@@ -10,4 +10,4 @@ Cython==0.29.21
 rq==1.5.2
 rq-scheduler==0.10.0
 scrapy==2.3.0
-tornado==6.0.4
+gevent==20.6.2

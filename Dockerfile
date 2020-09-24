@@ -3,6 +3,7 @@ FROM redislabs/redisearch:latest
 ARG REDIS_PASSWORD=password
 ARG REDIS_HOST=localhost
 ARG PORT=8080
+ARG API_KEY=key
 
 # Install Python 3.8
 
@@ -31,7 +32,7 @@ RUN pip3 install -r requirements.txt -c constraints.txt
 
 COPY . /src
 
-RUN pip3 install -U ".[dev]" -c constraints.txt
+RUN pip3 install . -c constraints.txt
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
@@ -40,5 +41,6 @@ EXPOSE 8080/tcp
 ENV REDIS_PASSWORD ${REDIS_PASSWORD}
 ENV REDIS_HOST ${REDIS_HOST}
 ENV PORT ${PORT}
+ENV API_KEY ${API_KEY}
 
 ENTRYPOINT ["/usr/bin/supervisord"]
