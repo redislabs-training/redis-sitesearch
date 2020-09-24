@@ -48,9 +48,10 @@ class SearchResource:
             total = 0
             docs = []
         else:
-            docs = transform_documents(res.docs)
+            docs = res.docs
+            total = res.total
 
-        docs = transform_documents(res.docs)
+        docs = transform_documents(docs)
 
         resp.body = json.dumps({
             "total": total,

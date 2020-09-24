@@ -23,10 +23,15 @@ RUN make altinstall
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.8 get-pip.py
 RUN pip3 install --upgrade pip
 
-COPY . /src
+# Separate pip install for requirements to avoid docker reinstalling every build
+COPY requirements.txt /src/requirements.txt
+COPY constraints.txt /src/constraints.txt
 WORKDIR /src
+RUN pip3 install -r requirements.txt -c constraints.txt
 
-RUN pip3 install -Ue ".[dev]" -c constraints.txt
+COPY . /src
+
+RUN pip3 install -U ".[dev]" -c constraints.txt
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
@@ -36,4 +41,4 @@ ENV REDIS_PASSWORD ${REDIS_PASSWORD}
 ENV REDIS_HOST ${REDIS_HOST}
 ENV PORT ${PORT}
 
-CMD ["/usr/bin/supervisord"]
+ENTRYPOINT ["/usr/bin/supervisord"]

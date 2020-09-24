@@ -6,9 +6,8 @@ falcon==2.0.0
 gunicorn==20.0.4
 falcon-cors==1.1.7
 python-dotenv==0.14.0
-gevent==20.6.2
 Cython==0.29.21
 rq==1.5.2
 rq-scheduler==0.10.0
 scrapy==2.3.0
-falcon
+tornado==6.0.4

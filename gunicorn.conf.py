@@ -14,5 +14,5 @@ loglevel = 'warning'
 bind = f':{PORT}'
 daemon = False
 workers = WORKERS
-worker_class = 'gevent'
+worker_class = 'sync'
 threads = 4

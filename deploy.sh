@@ -1,12 +1,11 @@
 #!/bin/bash
 
 HASH=`git rev-parse --short HEAD`
-TAG=docsearch-app:$HASH
-IMAGE="gcr.io/redislabs-university/$TAG"
+TAG="gcr.io/redislabs-university/docsearch-app:$HASH"
 
-echo "Building $IMAGE..."
-docker build -t $TAG --build-arg "REDIS_PASSWORD=$REDIS_PASSWORD" .
+echo "Building $TAG..."
+docker build -t $TAG --build-arg REDIS_PASSWORD=$REDIS_PASSWORD .
 
 echo "Updating compute engine container"
-docker push $IMAGE
-gcloud compute instances update-container docsearch-west --container-image $IMAGE
+docker push $TAG
+gcloud compute instances update-container docsearch-app-west --container-image $TAG

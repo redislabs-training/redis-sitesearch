@@ -22,4 +22,3 @@ scheduler.cron(
     '0 */12 * * *',
     func=index,
 )
-
