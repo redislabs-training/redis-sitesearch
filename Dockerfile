@@ -25,12 +25,13 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.8 get-pip
 RUN pip3 install --upgrade pip
 
 # Hack to avoid docker reinstalling every build
-COPY . /src
 COPY requirements.txt /src/requirements.txt
 COPY constraints.txt /src/constraints.txt
 
 WORKDIR /src
 RUN pip3 install -r requirements.txt -c constraints.txt
+
+COPY . /src
 RUN pip3 install .
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
