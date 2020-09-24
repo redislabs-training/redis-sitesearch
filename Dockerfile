@@ -24,15 +24,14 @@ RUN make altinstall
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.8 get-pip.py
 RUN pip3 install --upgrade pip
 
-# Separate pip install for requirements to avoid docker reinstalling every build
+# Hack to avoid docker reinstalling every build
+COPY . /src
 COPY requirements.txt /src/requirements.txt
 COPY constraints.txt /src/constraints.txt
+
 WORKDIR /src
 RUN pip3 install -r requirements.txt -c constraints.txt
-
-COPY . /src
-
-RUN pip3 install . -c constraints.txt
+RUN pip3 install .
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
