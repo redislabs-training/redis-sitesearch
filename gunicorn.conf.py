@@ -15,4 +15,5 @@ bind = f':{PORT}'
 daemon = False
 workers = WORKERS
 worker_class = 'gevent'
-threads = 4
+threads = WORKERS * 5
+worker_connections = 3000

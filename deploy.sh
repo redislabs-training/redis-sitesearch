@@ -18,25 +18,21 @@ gcloud beta compute --project=redislabs-university instance-templates \
     --container-image $TAG \
     --machine-type=e2-medium \
     --network=projects/redislabs-university/global/networks/docsearch \
-    --network-tier=PREMIUM
-    --metadata=google-logging-enabled=true
+    --network-tier=PREMIUM \
+    --metadata=google-logging-enabled=true \
     --can-ip-forward \
     --maintenance-policy=MIGRATE \
     --service-account=$SERVICE_ACCOUNT \
     --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
-    --image=cos-stable-81-12871-1196-0
+    --image=cos-stable-81-12871-1196-0 \
     --image-project=cos-cloud \
-    --boot-disk-size=10GB
+    --boot-disk-size=10GB \
     --boot-disk-type=pd-standard \
-    --boot-disk-device-name=$US_WEST_DISK
-    --no-shielded-secure-boot \
-    --shielded-vtpm
-    --shielded-integrity-monitoring \
+    --boot-disk-device-name=$US_WEST_DISK \
     --container-image=$TAG \
     --container-restart-policy=always \
     --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
-    --labels=container-vm=cos-stable-81-12871-1196-0 \
-    --reservation-affinity=any
+    --labels=container-vm=cos-stable-81-12871-1196-0
 
 echo "Start rolling update"
 gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-1 \
