@@ -52,11 +52,10 @@ class IndexerResource:
         try:
             job = Job.fetch(JOB_ID, connection=redis_client)
         except NoSuchJobError:
-            found = False
+            pass
         else:
-            found = True
+            job.cancel()
 
-        if not found or job.get_status() == 'failed':
-            job = queue.enqueue(tasks.index, job_id=JOB_ID, job_timeout=FIFTEEN_MINUTES)
+        job = queue.enqueue(tasks.index, job_id=JOB_ID, job_timeout=FIFTEEN_MINUTES)
 
         resp.body = json.dumps({"job_id": JOB_ID, "status": job.get_status()})
