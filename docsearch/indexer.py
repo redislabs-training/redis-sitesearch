@@ -18,7 +18,7 @@ from scrapy.signalmanager import dispatcher
 
 from docsearch.errors import ParseError
 from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
-from docsearch.scorers import boost_sections
+from docsearch.scorers import boost_pages, boost_top_level_pages
 from docsearch.validators import skip_release_notes
 
 ROOT_PAGE = "Redis Labs Documentation"
@@ -26,7 +26,8 @@ DEFAULT_VALIDATORS = (
     skip_release_notes,
 )
 DEFAULT_SCORERS = (
-    boost_sections,
+    boost_pages,
+    boost_top_level_pages
 )
 DEFAULT_SCHEMA = (
     TextField("title", weight=5),
