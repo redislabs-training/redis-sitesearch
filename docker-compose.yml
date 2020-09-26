@@ -7,9 +7,8 @@ services:
       - "6379:6379"
       - "8080:8080"
     volumes:
-      - ./data:/data
+      - $PWD/data:/data
 
   test:
     build: .
     entrypoint: "pytest"
-
