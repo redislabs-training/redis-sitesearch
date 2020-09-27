@@ -37,6 +37,6 @@ class HealthCheckResource:
             resp.status = falcon.HTTP_503
             return
 
-        if info.num_docs == 0:
+        if info['num_docs'] == 0:
             self._start_indexing()
             resp.status = falcon.HTTP_503
