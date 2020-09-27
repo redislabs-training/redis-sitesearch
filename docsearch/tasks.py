@@ -11,6 +11,11 @@ search_client = get_search_connection()
 redis_client = get_redis_connection()
 scheduler = Scheduler(connection=redis_client)
 
+JOB_ID = 'index'
+JOB_NOT_QUEUED = 'not_queued'
+JOB_STARTED = 'started'
+INDEXING_TIMEOUT = 60*15  # Fifteen minutes
+
 
 def index():
     indexer = Indexer(search_client)

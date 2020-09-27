@@ -3,6 +3,7 @@ from falcon_cors import CORS
 
 from .search import SearchResource
 from .indexer import IndexerResource
+from .health import HealthCheckResource
 
 cors = CORS(allow_origins_list=[
     'http://docs.andrewbrookins.com:1313',
@@ -14,3 +15,4 @@ cors = CORS(allow_origins_list=[
 api = falcon.API(middleware=[cors.middleware])
 api.add_route('/search', SearchResource())
 api.add_route('/indexer', IndexerResource())
+api.add_route('/health', HealthCheckResource())

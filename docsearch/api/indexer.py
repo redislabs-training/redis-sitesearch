@@ -9,7 +9,7 @@ from rq.exceptions import NoSuchJobError
 from rq.registry import StartedJobRegistry
 
 from docsearch.connections import get_search_connection, get_redis_connection
-from docsearch import tasks
+from docsearch.tasks import JOB_ID, JOB_STARTED, JOB_NOT_QUEUED, index, INDEXING_TIMEOUT
 
 # rq expects to work with raw bytes from redis
 redis_client = get_redis_connection(decode_responses=False)
@@ -20,10 +20,6 @@ queue = Queue(connection=redis_client)
 registry = StartedJobRegistry('default', connection=redis_client)
 
 API_KEY = os.environ['API_KEY']
-JOB_ID = 'index'
-JOB_NOT_QUEUED = 'not_queued'
-JOB_STARTED = 'started'
-FIFTEEN_MINUTES = 60*15
 
 
 class IndexerResource:
@@ -56,6 +52,6 @@ class IndexerResource:
         else:
             job.cancel()
 
-        job = queue.enqueue(tasks.index, job_id=JOB_ID, job_timeout=FIFTEEN_MINUTES)
+        job = queue.enqueue(index, job_id=JOB_ID, job_timeout=INDEXING_TIMEOUT)
 
         resp.body = json.dumps({"job_id": JOB_ID, "status": job.get_status()})
