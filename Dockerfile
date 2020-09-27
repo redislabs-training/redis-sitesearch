@@ -2,13 +2,13 @@ FROM redislabs/redisearch:latest
 
 ARG REDIS_PASSWORD=password
 ARG REDIS_HOST=localhost
-ARG PORT=8080
+ARG PORT=8081
 ARG API_KEY=key
 
 # Install Python 3.8
 
 RUN apt-get update
-RUN apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev git supervisor
+RUN apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev git supervisor nginx
 
 WORKDIR /
 RUN curl -O https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tar.xz && tar -xf Python-3.8.5.tar.xz
@@ -35,6 +35,7 @@ COPY . /src
 RUN pip3 install .
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 8080/tcp
 

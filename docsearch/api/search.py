@@ -2,7 +2,6 @@ import json
 import logging
 from collections import OrderedDict
 
-import falcon
 import redis
 
 from docsearch.transformer import transform_documents

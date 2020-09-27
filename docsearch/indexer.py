@@ -30,7 +30,7 @@ DEFAULT_SCORERS = (
     boost_top_level_pages
 )
 DEFAULT_SCHEMA = (
-    TextField("title", weight=5),
+    TextField("title", weight=10),
     TextField("section_title", weight=1.2),
     TextField("body"),
     TextField("url"),
@@ -51,7 +51,7 @@ def next_element(elem):
             return elem
 
 
-class DocumentParser():
+class DocumentParser:
     validators = DEFAULT_VALIDATORS
 
     def extract_hierarchy(self, soup):
