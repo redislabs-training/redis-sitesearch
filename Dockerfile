@@ -26,10 +26,9 @@ RUN pip3 install --upgrade pip
 
 # Hack to avoid docker reinstalling every build
 COPY requirements.txt /src/requirements.txt
-COPY constraints.txt /src/constraints.txt
 
 WORKDIR /src
-RUN pip3 install -r requirements.txt -c constraints.txt
+RUN pip3 install -r requirements.txt
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf
