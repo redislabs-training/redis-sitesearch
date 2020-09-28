@@ -24,6 +24,7 @@ class HealthCheckResource:
             info = search_client.info()
         except ResponseError as e:
             log.error("Health check failed: %s", e)
+            queue.enqueue(index, job_id=JOB_ID, job_timeout=INDEXING_TIMEOUT)
             resp.status = falcon.HTTP_503
             return
 
