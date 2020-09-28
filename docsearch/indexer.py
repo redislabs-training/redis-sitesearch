@@ -194,15 +194,32 @@ class DocumentParser:
             v(doc)
 
 
-class DocumentationSpider(scrapy.Spider):
+class DocumentationSpiderBase(scrapy.Spider):
+    """
+    A base-class for spiders. Each base class should define the `url`
+    class attribute, or else Scrapy won't spider anything.
+
+    This can be done programmatically:
+
+        RedisDocsSpider = type(
+            'RedisDocsSpider',
+            (DocumentationSpiderBase,),
+            {"url": "http://example.com"})
+    """
     name = "documentation"
     doc_parser_class = DocumentParser
+    url = None
+
+    @property
+    def start_urls(self):
+        return [self.url]
 
     def __init__(self, *args, **kwargs):
         self.doc_parser = self.doc_parser_class()
         super().__init__(*args, **kwargs)
 
     def follow_links(self, response):
+        # TODO multi-site: make deny patterns configurable
         extractor = LinkExtractor(deny=r'\/release-notes\/')
         links = [l for l in extractor.extract_links(response)
                  if l.url.startswith(self.url)]
@@ -214,7 +231,7 @@ class DocumentationSpider(scrapy.Spider):
         try:
             docs_for_page = self.doc_parser.parse(response.url, response.body)
         except ParseError as e:
-            log.error("%s: %s", e, response.url)
+            log.error("Document parser error -- %s: %s", e, response.url)
         else:
             for doc in docs_for_page:
                 yield doc
@@ -230,7 +247,7 @@ class Indexer:
         self.search_client = search_client
 
         if search_client is None:
-            search_client = get_search_connection()
+            self.search_client = get_search_connection()
 
         if validators is None:
             self.validators = DEFAULT_VALIDATORS
@@ -299,6 +316,10 @@ class Indexer:
     def index(self):
         docs_to_process = Queue()
 
+        Spider = type(
+            'Spider', (DocumentationSpiderBase,),
+            {"url": self.url})
+
         def crawler_results(signal, sender, item: SearchDocument, response, spider):
             docs_to_process.put(item)
 
@@ -323,9 +344,9 @@ class Indexer:
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)
 
         process = CrawlerProcess(settings={
-            'CONCURRENT_REQUESTS_PER_DOMAIN': 20,
+            'CONCURRENT_REQUESTS_PER_DOMAIN': 100,
             'HTTP_CACHE_ENABLED': True,
             'LOG_LEVEL': 'ERROR'
         })
-        process.crawl(DocumentationSpider, start_urls=[self.url])
+        process.crawl(Spider)
         process.start()

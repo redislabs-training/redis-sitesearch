@@ -2,7 +2,7 @@ import logging
 
 from rq_scheduler import Scheduler
 
-from docsearch.connections import get_search_connection, get_rq_redis_client
+from docsearch.connections import get_rq_redis_client
 from docsearch.indexer import Indexer
 
 
@@ -14,11 +14,13 @@ JOB_ID = 'index'
 JOB_NOT_QUEUED = 'not_queued'
 JOB_STARTED = 'started'
 INDEXING_TIMEOUT = 60*15  # Fifteen minutes
+SITES = ["https://docs.redislabs.com/"]  # TODO multi-site: store in redis
 
 
 def index():
-    indexer = Indexer("http://example.com")
-    indexer.index()
+    for url in SITES:
+        indexer = Indexer(url)
+        indexer.index()
     return True
 
 
