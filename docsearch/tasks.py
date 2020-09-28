@@ -13,7 +13,7 @@ scheduler = Scheduler(connection=redis_client)
 JOB_ID = 'index'
 JOB_NOT_QUEUED = 'not_queued'
 JOB_STARTED = 'started'
-INDEXING_TIMEOUT = 60*15  # Fifteen minutes
+INDEXING_TIMEOUT = 60*60  # One hour
 SITES = ["https://docs.redislabs.com/"]  # TODO multi-site: store in redis
 
 
