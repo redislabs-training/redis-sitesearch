@@ -9,13 +9,14 @@ from typing import List, Callable
 import redis.exceptions
 import scrapy
 from bs4 import BeautifulSoup, element
-from redisearch import TextField, Client
+from redisearch import TextField, Client, IndexDefinition
 from scrapy import signals
 from scrapy.linkextractors import LinkExtractor
 from scrapy.crawler import CrawlerProcess
 from scrapy.signalmanager import dispatcher
 
-
+from docsearch import keys
+from docsearch.connections import get_search_connection
 from docsearch.errors import ParseError
 from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
 from docsearch.scorers import boost_pages, boost_top_level_pages
@@ -195,16 +196,11 @@ class DocumentParser:
 
 class DocumentationSpider(scrapy.Spider):
     name = "documentation"
-    url = "https://docs.redislabs.com/"
     doc_parser_class = DocumentParser
 
     def __init__(self, *args, **kwargs):
         self.doc_parser = self.doc_parser_class()
         super().__init__(*args, **kwargs)
-
-    @property
-    def start_urls(self):
-        return [self.url]
 
     def follow_links(self, response):
         extractor = LinkExtractor(deny=r'\/release-notes\/')
@@ -227,10 +223,14 @@ class DocumentationSpider(scrapy.Spider):
 
 
 class Indexer:
-    def __init__(self, search_client: Client, schema=None, validators=None,
+    def __init__(self, url, search_client: Client = None, schema=None, validators=None,
                  scorers=None, create_index=True,
                  *args, **kwargs):
+        self.url = url
         self.search_client = search_client
+
+        if search_client is None:
+            search_client = get_search_connection()
 
         if validators is None:
             self.validators = DEFAULT_VALIDATORS
@@ -272,8 +272,9 @@ class Indexer:
         This is the moment we convert a SearchDocument into a Python
         dictionary and send it to RediSearch.
         """
-        self.search_client.add_document(**self.document_to_dict(doc),
-                                        replace=True)
+        self.search_client.redis.hset(
+            keys.document(self.url, doc.doc_id),
+            mapping=self.document_to_dict(doc))
 
     def index_document(self, doc: SearchDocument):
         try:
@@ -292,7 +293,8 @@ class Indexer:
         else:
             self.search_client.drop_index()
 
-        self.search_client.create_index(self.schema)
+        definition = IndexDefinition(prefix=[f"{keys.PREFIX}:{self.url}"])
+        self.search_client.create_index(self.schema, definition=definition)
 
     def index(self):
         docs_to_process = Queue()
@@ -325,5 +327,5 @@ class Indexer:
             'HTTP_CACHE_ENABLED': True,
             'LOG_LEVEL': 'ERROR'
         })
-        process.crawl(DocumentationSpider)
+        process.crawl(DocumentationSpider, start_urls=[self.url])
         process.start()

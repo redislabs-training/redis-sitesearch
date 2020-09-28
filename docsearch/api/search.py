@@ -42,7 +42,7 @@ class SearchResource:
 
         try:
             res = search_client.search(q)
-        except redis.exceptions.ResponseError as e:
+        except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
             log.error("Search query failed: %s", e)
             total = 0
             docs = []

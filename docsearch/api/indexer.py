@@ -8,12 +8,10 @@ from rq.job import Job
 from rq.exceptions import NoSuchJobError
 from rq.registry import StartedJobRegistry
 
-from docsearch.connections import get_search_connection, get_redis_connection
+from docsearch.connections import get_search_connection, get_rq_redis_client
 from docsearch.tasks import JOB_ID, JOB_STARTED, JOB_NOT_QUEUED, index, INDEXING_TIMEOUT
 
-# rq expects to work with raw bytes from redis
-redis_client = get_redis_connection(decode_responses=False)
-
+redis_client = get_rq_redis_client()
 search_client = get_search_connection()
 log = logging.getLogger(__name__)
 queue = Queue(connection=redis_client)

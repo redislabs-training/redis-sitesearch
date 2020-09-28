@@ -1,3 +1,4 @@
+PREFIX = "docsearch:docs"
 
-METADATA_KEY = "docsearch:meta:{doc_id}"
-HIERARCHY_KEY = "docsearch:hierarchy:{doc_id}"
+def document(url, doc_id: str):
+    return f"{PREFIX}:{url}:{doc_id}"

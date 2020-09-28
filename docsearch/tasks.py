@@ -2,13 +2,12 @@ import logging
 
 from rq_scheduler import Scheduler
 
-from docsearch.connections import get_search_connection, get_redis_connection
+from docsearch.connections import get_search_connection, get_rq_redis_client
 from docsearch.indexer import Indexer
 
 
 log = logging.getLogger(__name__)
-search_client = get_search_connection()
-redis_client = get_redis_connection()
+redis_client = get_rq_redis_client()
 scheduler = Scheduler(connection=redis_client)
 
 JOB_ID = 'index'
@@ -18,7 +17,7 @@ INDEXING_TIMEOUT = 60*15  # Fifteen minutes
 
 
 def index():
-    indexer = Indexer(search_client)
+    indexer = Indexer("http://example.com")
     indexer.index()
     return True
 

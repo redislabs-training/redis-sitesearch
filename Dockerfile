@@ -31,11 +31,11 @@ COPY constraints.txt /src/constraints.txt
 WORKDIR /src
 RUN pip3 install -r requirements.txt -c constraints.txt
 
-COPY . /src
-RUN pip3 install .
-
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf
+
+COPY . /src
+RUN pip3 install .
 
 EXPOSE 8080/tcp
 
