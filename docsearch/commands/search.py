@@ -2,11 +2,13 @@ import click
 import logging
 import redis
 
+from docsearch.config import Config
 from docsearch.transformer import transform_documents
 from docsearch.connections import get_search_connection, get_redis_connection
 from docsearch.query_parser import parse
 
-client = get_search_connection()
+config = Config()
+client = get_search_connection(config.default_search_site)
 redis_client = get_redis_connection()
 log = logging.getLogger(__name__)
 
@@ -14,7 +16,7 @@ log = logging.getLogger(__name__)
 @click.argument("query")
 @click.command()
 def search(query):
-    q = parse(query)
+    q = parse(query, config.default_search_site.exact_matches)
 
     try:
         res = client.search(q)

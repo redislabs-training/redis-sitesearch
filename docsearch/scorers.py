@@ -9,14 +9,14 @@ from docsearch.models import SearchDocument, TYPE_PAGE
 SCORE_FLOOR = 0.1
 
 
-def boost_pages(doc: SearchDocument, current_score: float):
+def boost_pages(doc: SearchDocument, current_score: float) -> float:
     """Score page sections lower than pages, to boost pages."""
     if doc.type != TYPE_PAGE:
         current_score -= 0.5
     return max(current_score, SCORE_FLOOR)
 
 
-def boost_top_level_pages(doc: SearchDocument, current_score: float):
+def boost_top_level_pages(doc: SearchDocument, current_score: float) -> float:
     """
     Decay the score of documents deeper in the site hierarchy.
 

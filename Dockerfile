@@ -1,9 +1,7 @@
 FROM redislabs/redisearch:latest
 
-ARG REDIS_PASSWORD=password
 ARG REDIS_HOST=localhost
 ARG PORT=8081
-ARG API_KEY=key
 
 # Install Python 3.8
 
@@ -36,11 +34,14 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY . /src
 RUN pip3 install .
 
+# The port on which nginx is listening
 EXPOSE 8080/tcp
 
-ENV REDIS_PASSWORD ${REDIS_PASSWORD}
-ENV REDIS_HOST ${REDIS_HOST}
-ENV PORT ${PORT}
-ENV API_KEY ${API_KEY}
+# The port on which to run the Python app
+ENV PORT 8081
+ENV NEW_RELIC_APP_NAME "docsearch"
+ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED true
+ENV NEW_RELIC_LOG stdout
+
 
 ENTRYPOINT ["/usr/bin/supervisord"]

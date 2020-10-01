@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import multiprocessing
@@ -9,7 +10,7 @@ from typing import List, Callable
 import redis.exceptions
 import scrapy
 from bs4 import BeautifulSoup, element
-from redisearch import TextField, Client, IndexDefinition
+from redisearch import Client, IndexDefinition
 from scrapy import signals
 from scrapy.linkextractors import LinkExtractor
 from scrapy.crawler import CrawlerProcess
@@ -18,30 +19,21 @@ from scrapy.signalmanager import dispatcher
 from docsearch import keys
 from docsearch.connections import get_search_connection
 from docsearch.errors import ParseError
-from docsearch.models import SearchDocument, TYPE_PAGE, TYPE_SECTION
-from docsearch.scorers import boost_pages, boost_top_level_pages
-from docsearch.validators import skip_release_notes
+from docsearch.models import SearchDocument, SiteConfiguration, SynonymGroup, TYPE_PAGE, TYPE_SECTION
 
 ROOT_PAGE = "Redis Labs Documentation"
-DEFAULT_VALIDATORS = (
-    skip_release_notes,
-)
-DEFAULT_SCORERS = (
-    boost_pages,
-    boost_top_level_pages
-)
-DEFAULT_SCHEMA = (
-    TextField("title", weight=10),
-    TextField("section_title", weight=1.2),
-    TextField("body"),
-    TextField("url"),
-)
 MAX_THREADS = multiprocessing.cpu_count() * 5
+DEBOUNCE_SECONDS = 60 * 5  # Five minutes
+SYNUPDATE_COMMAND = 'FT.SYNUPDATE'
 
 ScorerList = List[Callable[[SearchDocument, float], float]]
 Extractor = Callable[[str], List[str]]
 
 log = logging.getLogger(__name__)
+
+
+class DebounceError(Exception):
+    """The indexing debounce threshold wsa not met"""
 
 
 def next_element(elem):
@@ -53,7 +45,8 @@ def next_element(elem):
 
 
 class DocumentParser:
-    validators = DEFAULT_VALIDATORS
+    def __init__(self, validators):
+        self.validators = validators
 
     def extract_hierarchy(self, soup):
         """
@@ -209,13 +202,14 @@ class DocumentationSpiderBase(scrapy.Spider):
     name = "documentation"
     doc_parser_class = DocumentParser
     url = None
+    validators = []
 
     @property
     def start_urls(self):
         return [self.url]
 
     def __init__(self, *args, **kwargs):
-        self.doc_parser = self.doc_parser_class()
+        self.doc_parser = self.doc_parser_class(self.validators)
         super().__init__(*args, **kwargs)
 
     def follow_links(self, response):
@@ -240,28 +234,23 @@ class DocumentationSpiderBase(scrapy.Spider):
 
 
 class Indexer:
-    def __init__(self, url, search_client: Client = None, schema=None, validators=None,
-                 scorers=None, create_index=True,
-                 *args, **kwargs):
-        self.url = url
-        self.search_client = search_client
+    def __init__(self, site: SiteConfiguration, search_client: Client = None,
+                 create_index=True, *args, **kwargs):
+        self.site = site
 
         if search_client is None:
-            self.search_client = get_search_connection()
+            search_client = get_search_connection(self.site.index_name)
 
-        if validators is None:
-            self.validators = DEFAULT_VALIDATORS
-
-        if scorers is None:
-            self.scorers = DEFAULT_SCORERS
-
-        if schema is None:
-            self.schema = DEFAULT_SCHEMA
+        self.search_client = search_client
 
         if create_index:
             self.setup_index()
 
         super().__init__(*args, **kwargs)
+
+    @property
+    def url(self):
+        return self.site.url
 
     def document_to_dict(self, document: SearchDocument):
         """
@@ -275,34 +264,44 @@ class Indexer:
         score of a document to produce the final score.
         """
         score = 1.0
-        for scorer in self.scorers:
+        for scorer in self.site.scorers:
             score = scorer(document, score)
         doc = asdict(document)
         doc['score'] = score
         doc['hierarchy'] = json.dumps(doc['hierarchy'])
         return doc
 
-    def add_document(self, doc: SearchDocument):
+    def index_document(self, doc: SearchDocument):
         """
         Add a document to the search index.
 
         This is the moment we convert a SearchDocument into a Python
         dictionary and send it to RediSearch.
         """
-        self.search_client.redis.hset(
-            keys.document(self.url, doc.doc_id),
-            mapping=self.document_to_dict(doc))
-
-    def index_document(self, doc: SearchDocument):
         try:
-            self.add_document(doc)
+            self.search_client.redis.hset(
+                keys.document(self.site.url, doc.doc_id),
+                mapping=self.document_to_dict(doc))
         except redis.exceptions.DataError as e:
             log.error("Failed -- bad data: %s, %s", e, doc.url)
         except redis.exceptions.ResponseError as e:
             log.error("Failed -- response error: %s, %s", e, doc.url)
 
+    def add_synonyms(self):
+        for synonym_group in self.site.synonym_groups:
+            return self.search_client.redis.execute_command(
+                SYNUPDATE_COMMAND,
+                self.site.index_name,
+                synonym_group.group_id,
+                *synonym_group.synonyms)
+
     def setup_index(self):
-        # Creating the index definition and schema
+        """
+        Create the index definition and schema.
+
+        If the indexer was given any synonym groups, it adds these
+        to RediSearch after creating the index.
+        """
         try:
             self.search_client.info()
         except redis.exceptions.ResponseError:
@@ -311,19 +310,34 @@ class Indexer:
             self.search_client.drop_index()
 
         definition = IndexDefinition(prefix=[f"{keys.PREFIX}:{self.url}"])
-        self.search_client.create_index(self.schema, definition=definition)
+        self.search_client.create_index(self.site.schema, definition=definition)
+
+        if self.site.synonym_groups:
+            self.add_synonyms()
+
+    def debounce(self):
+        last_index = self.search_client.redis.get(keys.last_index(self.site.url))
+        if last_index:
+            now = datetime.datetime.now().timestamp()
+            time_diff =  now - float(last_index)
+            log.error("Time diff %s, now %s, last %s", time_diff, now, last_index)
+            if time_diff > DEBOUNCE_SECONDS:
+                raise DebounceError(f"Debounced indexing after {time_diff}s")
 
     def index(self):
+        self.debounce()
+
         docs_to_process = Queue()
 
         Spider = type(
             'Spider', (DocumentationSpiderBase,),
-            {"url": self.url})
+            {"url": self.url, "validators": self.site.validators})
 
-        def crawler_results(signal, sender, item: SearchDocument, response, spider):
+        def enqueue_document(signal, sender, item: SearchDocument, response, spider):
+            """Queue a SearchDocument for indexation."""
             docs_to_process.put(item)
 
-        def index_document():
+        def index_documents():
             while True:
                 doc: SearchDocument = docs_to_process.get()
                 try:
@@ -335,17 +349,24 @@ class Indexer:
         def start_indexing():
             if docs_to_process.empty():
                 return
+            log.error("JOINING QUEUE")
             docs_to_process.join()
+            log.error("SETTING TIMESTAMP %s %s", keys.last_index(self.site.url), datetime.datetime.now().timestamp())
+            self.search_client.redis.set(
+                keys.last_index(self.site.url), datetime.datetime.now().timestamp())
 
         for _ in range(MAX_THREADS):
-            Thread(target=index_document, daemon=True).start()
+            Thread(target=index_documents, daemon=True).start()
 
-        dispatcher.connect(crawler_results, signal=signals.item_scraped)
+        dispatcher.connect(enqueue_document, signal=signals.item_scraped)
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)
 
         process = CrawlerProcess(settings={
+            'CONCURRENT_ITEMS': 200,
+            'CONCURRENT_REQUESTS': 100,
             'CONCURRENT_REQUESTS_PER_DOMAIN': 100,
             'HTTP_CACHE_ENABLED': True,
+            'REACTOR_THREADPOOL_MAXSIZE': 30,
             'LOG_LEVEL': 'ERROR'
         })
         process.crawl(Spider)

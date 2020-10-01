@@ -8,11 +8,14 @@ from rq.job import Job
 from rq.exceptions import NoSuchJobError
 from rq.registry import StartedJobRegistry
 
+from docsearch.config import Config
 from docsearch.connections import get_search_connection, get_rq_redis_client
 from docsearch.tasks import JOB_ID, JOB_STARTED, JOB_NOT_QUEUED, index, INDEXING_TIMEOUT
+from .resource import Resource
 
+config = Config()
 redis_client = get_rq_redis_client()
-search_client = get_search_connection()
+search_client = get_search_connection(config.default_search_site.index_name)
 log = logging.getLogger(__name__)
 queue = Queue(connection=redis_client)
 registry = StartedJobRegistry('default', connection=redis_client)
@@ -20,7 +23,7 @@ registry = StartedJobRegistry('default', connection=redis_client)
 API_KEY = os.environ['API_KEY']
 
 
-class IndexerResource:
+class IndexerResource(Resource):
     def on_get(self, req, resp):
         """Start an indexing job."""
         try:
@@ -50,6 +53,7 @@ class IndexerResource:
         else:
             job.cancel()
 
-        job = queue.enqueue(index, job_id=JOB_ID, job_timeout=INDEXING_TIMEOUT)
+        job = queue.enqueue(index, self.config.sites, job_id=JOB_ID,
+                            job_timeout=INDEXING_TIMEOUT)
 
         resp.body = json.dumps({"job_id": JOB_ID, "status": job.get_status()})

@@ -4,11 +4,13 @@ from collections import OrderedDict
 
 import redis
 
+from docsearch.config import Config
 from docsearch.transformer import transform_documents
 from docsearch.connections import get_search_connection, get_redis_connection
 from docsearch.query_parser import parse
+from .resource import Resource
 
-search_client = get_search_connection()
+config = Config()
 redis_client = get_redis_connection()
 log = logging.getLogger(__name__)
 
@@ -26,12 +28,14 @@ class OrderedDefaultDict(OrderedDict):
         return value
 
 
-class SearchResource:
+class SearchResource(Resource):
     def on_get(self, req, resp):
         """Run a search."""
         # Dash postfixes confuse the query parser.
         query = req.get_param('q', default='')
         start = int(req.get_param('start', default=0))
+        # TODO multi-site: configurable index
+        search_client = get_search_connection(config.default_search_site.index_name)
 
         try:
             num = min(int(req.get_param('num', default=DEFAULT_NUM)), MAX_NUM)

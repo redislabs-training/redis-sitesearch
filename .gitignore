@@ -8,3 +8,4 @@ redis-docsearch.iml
 .env
 app.yaml
 data
+env.txt
