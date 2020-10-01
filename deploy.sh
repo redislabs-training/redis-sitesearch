@@ -32,7 +32,7 @@ gcloud beta compute --project=redislabs-university instance-templates \
     --container-image=$TAG \
     --container-restart-policy=always \
     --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
-    --container-env-file ./production-env.txt \
+    --container-env-file ./env.txt \
     --labels=container-vm=cos-stable-81-12871-1196-0
 
 echo "Start rolling update"
