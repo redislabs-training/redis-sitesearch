@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 @click.argument("query")
 @click.command()
 def search(query):
-    q = parse(query, config.default_search_site.exact_matches)
+    q = parse(query, config.default_search_site.synonym_groups)
 
     try:
         res = client.search(q)

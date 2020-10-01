@@ -34,15 +34,16 @@ class SearchResource(Resource):
         # Dash postfixes confuse the query parser.
         query = req.get_param('q', default='')
         start = int(req.get_param('start', default=0))
-        # TODO multi-site: configurable index
-        search_client = get_search_connection(config.default_search_site.index_name)
+        # TODO multi-site: decide which site to use based on query (header?)
+        search_site = config.default_search_site
+        search_client = get_search_connection(search_site.index_name)
 
         try:
             num = min(int(req.get_param('num', default=DEFAULT_NUM)), MAX_NUM)
         except ValueError:
             num = DEFAULT_NUM
 
-        q = parse(query).paging(start, num)
+        q = parse(query, search_site.synonym_groups).paging(start, num)
 
         try:
             res = search_client.search(q)
