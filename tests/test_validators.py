@@ -36,13 +36,29 @@ def test_skip_release_notes_skips_release_notes():
         assert validators.skip_release_notes(doc)
 
 
-def test_skip_404_skips_404():
+def test_skip_404_skips_404_hierarchy():
     doc = SearchDocument(
         doc_id="123",
         title="Title",
         section_title="Section",
         hierarchy=["404 Page not found"],
         url="http://example.com/1",
+        body="This is the body",
+        type=TYPE_PAGE,
+        position=0
+    )
+
+    with pytest.raises(ParseError):
+        assert validators.skip_404_page(doc)
+
+
+def test_skip_404_skips_404_url():
+    doc = SearchDocument(
+        doc_id="123",
+        title="Title",
+        section_title="Section",
+        hierarchy=["404 Page not found"],
+        url="https://docs.redislabs.com/latest/404.html",
         body="This is the body",
         type=TYPE_PAGE,
         position=0

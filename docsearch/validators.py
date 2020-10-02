@@ -10,3 +10,5 @@ def skip_release_notes(doc: SearchDocument):
 def skip_404_page(doc: SearchDocument):
     if '404 Page not found' in doc.hierarchy:
         raise ParseError("Skipping 404 page")
+    if doc.url.endswith('404.html'):
+        raise ParseError("Skipping 404 page")
