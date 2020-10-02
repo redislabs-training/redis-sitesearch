@@ -44,8 +44,8 @@ REDIS_LABS_SYNONYMS = [
 
 REDIS_LABS_SCHEMA = (
     TextField("title", weight=10),
-    TextField("section_title", weight=1.2),
-    TextField("body"),
+    TextField("section_title"),
+    TextField("body", weight=1.5),
     TextField("url"),
 )
 

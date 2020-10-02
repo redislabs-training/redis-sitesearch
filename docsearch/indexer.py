@@ -213,8 +213,8 @@ class DocumentationSpiderBase(scrapy.Spider):
         super().__init__(*args, **kwargs)
 
     def follow_links(self, response):
-        # TODO multi-site: make deny patterns configurable
-        extractor = LinkExtractor(deny=r'\/release-notes\/')
+        # TODO multi-site: make allow/deny patterns configurable
+        extractor = LinkExtractor(deny=r'\/release-notes\/', allow=r'\/latest\/')
         links = [l for l in extractor.extract_links(response)
                  if l.url.startswith(self.url)]
         yield from response.follow_all(links, callback=self.parse)
@@ -267,7 +267,7 @@ class Indexer:
         for scorer in self.site.scorers:
             score = scorer(document, score)
         doc = asdict(document)
-        doc['score'] = score
+        doc['__score'] = score
         doc['hierarchy'] = json.dumps(doc['hierarchy'])
         return doc
 

@@ -6,13 +6,13 @@ from docsearch.models import SearchDocument, TYPE_PAGE
 # multiplies the TF*IDF score by the document score at query
 # time, so we want to avoid dropping the document score down
 # to 0.0.
-SCORE_FLOOR = 0.1
+SCORE_FLOOR = 0.01
 
 
 def boost_pages(doc: SearchDocument, current_score: float) -> float:
     """Score page sections lower than pages, to boost pages."""
     if doc.type != TYPE_PAGE:
-        current_score -= 0.5
+        current_score -= 0.25
     return max(current_score, SCORE_FLOOR)
 
 
