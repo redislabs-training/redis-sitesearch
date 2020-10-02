@@ -37,6 +37,10 @@ REDIS_LABS_SYNONYMS = [
         synonyms={'gears', 'RedisGears', 'redis gears'}
     ),
     SynonymGroup(
+        group_id='search',
+        synonyms={'redisearch', 'readisearch', 'search'}
+    ),
+    SynonymGroup(
         group_id='enterprise',
         synonyms={'enterprise', 'redis enterprise'}
     ),
