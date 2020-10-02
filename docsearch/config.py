@@ -4,7 +4,7 @@ from redisearch.client import TextField
 
 from docsearch.models import SiteConfiguration, SynonymGroup
 from docsearch.scorers import boost_pages, boost_top_level_pages
-from docsearch.validators import skip_release_notes
+from docsearch.validators import skip_404_page, skip_release_notes
 
 
 REDIS_LABS_SYNONYMS = [
@@ -44,6 +44,10 @@ REDIS_LABS_SYNONYMS = [
         group_id='enterprise',
         synonyms={'enterprise', 'redis enterprise'}
     ),
+    SynonymGroup(
+        group_id='cloud',
+        synonyms={"cloud", "redis enterprise cloud"}
+    ),
     # This is to avoid doing a fuzzy search on 'redis' -- the
     # API does exact match searches on synonym terms.
     SynonymGroup(
@@ -61,6 +65,7 @@ REDIS_LABS_SCHEMA = (
 
 REDIS_LABS_VALIDATORS = (
     skip_release_notes,
+    skip_404_page
 )
 
 REDIS_LABS_SCORERS = (
