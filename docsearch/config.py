@@ -39,6 +39,12 @@ REDIS_LABS_SYNONYMS = [
     SynonymGroup(
         group_id='enterprise',
         synonyms={'enterprise', 'redis enterprise'}
+    ),
+    # This is to avoid doing a fuzzy search on 'redis' -- the
+    # API does exact match searches on synonym terms.
+    SynonymGroup(
+        group_id='redis',
+        synonyms={'redis'}
     )
 ]
 
