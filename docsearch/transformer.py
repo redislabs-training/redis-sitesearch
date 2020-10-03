@@ -1,7 +1,10 @@
 import json
 import logging
 from json import JSONDecodeError
+from re import search
 from typing import List, Dict, Any
+
+from docsearch.models import SiteConfiguration
 
 
 DEFAULT_MAX_LENGTH = 100
@@ -14,13 +17,21 @@ def elide_text(text, max_length):
 
 
 def transform_documents(docs: List[Any],
+                        search_site: SiteConfiguration,
+                        query: str,
                         max_length=DEFAULT_MAX_LENGTH) -> List[Dict[str, str]]:
     """
     Transform a list of Documents from RediSearch into a list of dictionaries.
     """
     transformed = []
+    landing_page = search_site.landing_pages.get(query, None)
+    landing_page_idx = -1
 
-    for doc in docs:
+    for i, doc in enumerate(docs):
+        # Dedupe the landing page if it's already in the results.
+        if landing_page and doc.title == landing_page.title:
+            landing_page_idx = i
+
         try:
             hierarchy = json.loads(doc.hierarchy)
         except (JSONDecodeError, ValueError) as e:
@@ -33,6 +44,18 @@ def transform_documents(docs: List[Any],
             "hierarchy": hierarchy,
             "body": elide_text(doc.body, max_length),
             "url": doc.url
+        })
+
+    if landing_page_idx:
+        docs.pop(landing_page_idx)
+
+    if landing_page:
+        transformed.insert(0, {
+            "title": landing_page.title,
+            "section_title": landing_page.section_title,
+            "hierarchy": landing_page.hierarchy,
+            "body": elide_text(landing_page.body, max_length),
+            "url": landing_page.url
         })
 
     return transformed

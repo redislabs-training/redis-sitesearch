@@ -141,7 +141,9 @@ disable=print-statement,
         comprehension-escape,
         no-member,
         missing-module-docstring,
-        redefined-outer-name
+        redefined-outer-name,
+        protected-access,
+        invalid-name
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

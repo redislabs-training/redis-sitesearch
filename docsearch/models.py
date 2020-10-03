@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import List, Set, Tuple, Callable
+from dataclasses import InitVar, dataclass, field
+from typing import Dict, List, Set, Tuple, Callable
 
 from docsearch import keys
 from redisearch.client import Field
@@ -37,7 +37,15 @@ class SiteConfiguration:
     schema: Tuple[Field]
     scorers: Tuple[ScoreFn]
     validators: Tuple[ValidatorFn]
+    landing_pages: Dict[str, SearchDocument]
 
     @property
-    def index_name(self):
+    def all_synonyms(self) -> Set[str]:
+        synonyms = set()
+        for syn_group in self.synonym_groups:
+            synonyms |= syn_group.synonyms
+        return synonyms
+
+    @property
+    def index_name(self) -> str:
         return keys.index_name(self.url)
