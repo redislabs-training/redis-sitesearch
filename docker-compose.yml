@@ -15,4 +15,4 @@ services:
     build: .
     entrypoint: "pytest"
     env_file:
-      - .env.test
+      - .env

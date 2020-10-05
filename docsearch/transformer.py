@@ -24,7 +24,7 @@ def transform_documents(docs: List[Any],
     Transform a list of Documents from RediSearch into a list of dictionaries.
     """
     transformed = []
-    landing_page = search_site.landing_pages.get(query, None)
+    landing_page = search_site.landing_page(query)
     landing_page_idx = -1
 
     for i, doc in enumerate(docs):

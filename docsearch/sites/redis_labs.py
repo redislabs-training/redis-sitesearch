@@ -60,7 +60,7 @@ CLOUD_LANDING_PAGE = SearchDocument(
     title="Redis Enterprise Cloud",
     section_title="",
     hierarchy=["Redis Enterprise Cloud"],
-    url="/rc/",
+    url="rc/",
     body="Redis Enterprise <b>Cloud</b> delivers a cost-effective, fully "
             "managed Database-as-a-Service (DBaaS) offering, fully hosted on public clouds.",
     type=TYPE_PAGE,

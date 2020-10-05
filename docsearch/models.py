@@ -1,4 +1,4 @@
-from dataclasses import InitVar, dataclass, field
+from dataclasses import InitVar, dataclass, field, replace
 from typing import Dict, List, Set, Tuple, Callable
 
 from docsearch import keys
@@ -49,3 +49,10 @@ class SiteConfiguration:
     @property
     def index_name(self) -> str:
         return keys.index_name(self.url)
+
+    def landing_page(self, query) -> SearchDocument:
+        page = self.landing_pages.get(query, None)
+        separator = "" if self.url.endswith("/") else "/"
+        if page:
+            page = replace(page, url=f"{self.url}{separator}{page.url}")
+        return page

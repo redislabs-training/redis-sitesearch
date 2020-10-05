@@ -6,7 +6,7 @@ PREFIX = os.environ.get('KEY_PREFIX', DEFAULT_PREFIX)
 
 
 def document(url: str, doc_id: str):
-    return f"{PREFIX}:doc:{url}:{doc_id}"
+    return f"{PREFIX}:{url}:doc:{doc_id}"
 
 
 def last_index(url: str):
