@@ -5,11 +5,6 @@ import pytest
 from docsearch.api.app import create_app
 
 
-@pytest.fixture()
-def client():
-    return testing.TestClient(create_app())
-
-
 def test_query_python(client):
     result = client.simulate_get('/search?q=python')
     assert result.status_code == 200

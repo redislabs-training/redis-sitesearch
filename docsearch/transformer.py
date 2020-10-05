@@ -46,7 +46,7 @@ def transform_documents(docs: List[Any],
             "url": doc.url
         })
 
-    if landing_page_idx:
+    if landing_page_idx >= 0:
         docs.pop(landing_page_idx)
 
     if landing_page:

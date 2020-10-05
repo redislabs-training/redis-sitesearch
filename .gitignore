@@ -6,6 +6,6 @@ __pycache__*
 .envredis-docsearch.iml
 redis-docsearch.iml
 .env
+.env.prod
 app.yaml
 data
-env.txt
