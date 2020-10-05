@@ -9,3 +9,5 @@ redis-docsearch.iml
 .env.prod
 app.yaml
 data
+supervisord.log
+supervisord.pid

@@ -8,11 +8,14 @@ services:
       - "8080:8080"
     volumes:
       - $PWD/data:/data
+      - $PWD:/src
     env_file:
       - .env
 
   test:
     build: .
-    entrypoint: "pytest"
+    entrypoint: "/src/test.sh"
+    volumes:
+      - $PWD:/src
     env_file:
       - .env

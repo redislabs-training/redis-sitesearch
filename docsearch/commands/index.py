@@ -13,4 +13,3 @@ log = logging.getLogger(__name__)
 def index(url):
     """Index the configured documentation site RediSearch."""
     tasks.index([url])
-

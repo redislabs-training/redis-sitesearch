@@ -16,7 +16,7 @@ TEST_DOC = os.path.join(DOCS_DIR, FILE_WITH_SECTIONS)
 TEST_URL = f"{DOCS_STAGING.url}/test"
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def redis():
     redis_client = get_redis_connection()
 

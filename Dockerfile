@@ -22,17 +22,20 @@ RUN make altinstall
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.8 get-pip.py
 RUN pip3 install --upgrade pip
 
+WORKDIR /src
+
 # Hack to avoid docker reinstalling every build
 COPY requirements.txt /src/requirements.txt
-
-WORKDIR /src
 RUN pip3 install -r requirements.txt
+
+COPY requirements-dev.txt /src/requirements-dev.txt
+RUN pip3 install -r requirements-dev.txt
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY . /src
-RUN pip3 install .
+RUN pip3 install -e .
 
 # The port on which nginx is listening
 EXPOSE 8080/tcp

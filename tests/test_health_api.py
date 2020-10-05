@@ -1,5 +1,6 @@
 import time
 
+
 def test_no_content(client):
     result = client.simulate_get('/health')
     assert result.status_code == 503
