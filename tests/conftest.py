@@ -3,10 +3,10 @@ import os
 import pytest
 from falcon import testing
 
-from docsearch.api.app import create_app
-from docsearch.connections import get_redis_connection
-from docsearch.indexer import DocumentParser, Indexer
-from docsearch.sites.redis_labs import DOCS_STAGING
+from sitesearch.api.app import create_app
+from sitesearch.connections import get_redis_connection
+from sitesearch.indexer import DocumentParser, Indexer
+from sitesearch.sites.redis_labs import DOCS_STAGING
 
 
 DOCS_DIR = os.path.join(

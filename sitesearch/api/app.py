@@ -1,7 +1,7 @@
 import falcon
 from falcon_cors import CORS
 
-from docsearch.config import Config
+from sitesearch.config import Config
 from .search import SearchResource
 from .indexer import IndexerResource
 from .health import HealthCheckResource

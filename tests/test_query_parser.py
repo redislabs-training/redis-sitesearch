@@ -1,5 +1,5 @@
-from docsearch.config import Config
-from docsearch.query_parser import parse
+from sitesearch.config import Config
+from sitesearch.query_parser import parse
 
 config = Config()
 

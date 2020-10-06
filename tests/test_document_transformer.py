@@ -1,7 +1,7 @@
 from redisearch import Document
-from docsearch.config import Config
-from docsearch.models import TYPE_PAGE
-from docsearch.transformer import transform_documents
+from sitesearch.config import Config
+from sitesearch.models import TYPE_PAGE
+from sitesearch.transformer import transform_documents
 
 
 config = Config()

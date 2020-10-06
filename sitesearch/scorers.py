@@ -1,6 +1,6 @@
 import math
 
-from docsearch.models import SearchDocument, TYPE_PAGE
+from sitesearch.models import SearchDocument, TYPE_PAGE
 
 # The minimum score we'll allow a document to have. RediSearch
 # multiplies the TF*IDF score by the document score at query

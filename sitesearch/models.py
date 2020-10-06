@@ -1,7 +1,7 @@
 from dataclasses import InitVar, dataclass, field, replace
 from typing import Dict, List, Set, Tuple, Callable
 
-from docsearch import keys
+from sitesearch import keys
 from redisearch.client import Field
 
 TYPE_PAGE = "page"

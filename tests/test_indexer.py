@@ -5,10 +5,10 @@ from unittest.mock import call
 from bs4 import BeautifulSoup
 import pytest
 
-from docsearch.config import DOCS_STAGING
-from docsearch import keys
-from docsearch.errors import ParseError
-from docsearch.indexer import Indexer, DocumentParser
+from sitesearch.config import DOCS_STAGING
+from sitesearch import keys
+from sitesearch.errors import ParseError
+from sitesearch.indexer import Indexer, DocumentParser
 
 DOCS_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "documents")

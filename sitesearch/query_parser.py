@@ -1,7 +1,7 @@
 import re
 from typing import List, Union
 
-from docsearch.models import SiteConfiguration, SynonymGroup
+from sitesearch.models import SiteConfiguration, SynonymGroup
 from redisearch import Query
 
 UNSAFE_CHARS = re.compile('[\\[\\]\\-@+]')

@@ -7,9 +7,9 @@ from rq.exceptions import NoSuchJobError
 from rq.job import Job, JobStatus
 from rq.registry import StartedJobRegistry
 
-from docsearch.config import Config
-from docsearch.connections import get_search_connection, get_rq_redis_client
-from docsearch.tasks import JOB_ID, INDEXING_TIMEOUT, index
+from sitesearch.config import Config
+from sitesearch.connections import get_search_connection, get_rq_redis_client
+from sitesearch.tasks import JOB_ID, INDEXING_TIMEOUT, index
 from .resource import Resource
 
 config = Config()

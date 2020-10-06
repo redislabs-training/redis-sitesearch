@@ -42,7 +42,7 @@ EXPOSE 8080/tcp
 
 # The port on which to run the Python app
 ENV PORT 8081
-ENV NEW_RELIC_APP_NAME "docsearch"
+ENV NEW_RELIC_APP_NAME "sitesearch"
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED true
 ENV NEW_RELIC_LOG stdout
 

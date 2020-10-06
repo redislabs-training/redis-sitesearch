@@ -1,6 +1,6 @@
 
 HASH=`git rev-parse --short HEAD`
-TAG=docsearch-app:$HASH
+TAG=sitesearch-app:$HASH
 IMAGE="gcr.io/redislabs-university/$TAG"
 
 echo "Building $IMAGE..."

@@ -16,10 +16,10 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.crawler import CrawlerProcess
 from scrapy.signalmanager import dispatcher
 
-from docsearch import keys
-from docsearch.connections import get_search_connection
-from docsearch.errors import ParseError
-from docsearch.models import SearchDocument, SiteConfiguration, SynonymGroup, TYPE_PAGE, TYPE_SECTION
+from sitesearch import keys
+from sitesearch.connections import get_search_connection
+from sitesearch.errors import ParseError
+from sitesearch.models import SearchDocument, SiteConfiguration, SynonymGroup, TYPE_PAGE, TYPE_SECTION
 
 ROOT_PAGE = "Redis Labs Documentation"
 MAX_THREADS = multiprocessing.cpu_count() * 5

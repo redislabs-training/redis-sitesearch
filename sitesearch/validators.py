@@ -1,5 +1,5 @@
-from docsearch.errors import ParseError
-from docsearch.models import SearchDocument
+from sitesearch.errors import ParseError
+from sitesearch.models import SearchDocument
 
 
 def skip_release_notes(doc: SearchDocument):

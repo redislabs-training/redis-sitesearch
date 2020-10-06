@@ -4,7 +4,7 @@ from json import JSONDecodeError
 from re import search
 from typing import List, Dict, Any
 
-from docsearch.models import SiteConfiguration
+from sitesearch.models import SiteConfiguration
 
 
 DEFAULT_MAX_LENGTH = 100

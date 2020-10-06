@@ -2,7 +2,7 @@ import logging
 
 import click
 
-from docsearch import tasks
+from sitesearch import tasks
 
 
 log = logging.getLogger(__name__)

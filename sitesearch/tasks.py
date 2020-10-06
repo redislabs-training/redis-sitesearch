@@ -3,9 +3,9 @@ from typing import List
 
 from rq_scheduler import Scheduler
 
-from docsearch.connections import get_rq_redis_client
-from docsearch.indexer import Indexer
-from docsearch.models import SiteConfiguration
+from sitesearch.connections import get_rq_redis_client
+from sitesearch.indexer import Indexer
+from sitesearch.models import SiteConfiguration
 
 
 log = logging.getLogger(__name__)

@@ -1,9 +1,9 @@
 import dataclasses
 from redisearch.client import TextField
 
-from docsearch.models import SearchDocument, SiteConfiguration, SynonymGroup, TYPE_PAGE
-from docsearch.scorers import boost_pages, boost_top_level_pages
-from docsearch.validators import skip_404_page, skip_release_notes
+from sitesearch.models import SearchDocument, SiteConfiguration, SynonymGroup, TYPE_PAGE
+from sitesearch.scorers import boost_pages, boost_top_level_pages
+from sitesearch.validators import skip_404_page, skip_release_notes
 
 
 SYNONYMS = [

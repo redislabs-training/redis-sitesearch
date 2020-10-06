@@ -1,8 +1,8 @@
 import pytest
 
-from docsearch import validators
-from docsearch.errors import ParseError
-from docsearch.models import SearchDocument, TYPE_PAGE
+from sitesearch import validators
+from sitesearch.errors import ParseError
+from sitesearch.models import SearchDocument, TYPE_PAGE
 
 
 def test_skip_release_notes_passes_non_release_notes():

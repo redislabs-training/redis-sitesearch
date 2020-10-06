@@ -1,6 +1,6 @@
 import os
 
-DEFAULT_PREFIX = "docsearch:test"
+DEFAULT_PREFIX = "sitesearch:test"
 
 PREFIX = os.environ.get('KEY_PREFIX', DEFAULT_PREFIX)
 

@@ -4,14 +4,14 @@ with open("README.md", "r") as readme:
     long_description = readme.read()
 
 setuptools.setup(
-    name="redis-docsearch",
+    name="redis-sitesearch",
     version="1.0",
     author="Andrew Brookins",
     author_email="andrew.brookins@redislabs.com",
-    description="Redis-powered documentation search",
+    description="Redis-powered site search",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/redislabs-training/redis-docsearch",
+    url="https://github.com/redislabs-training/redis-sitesearch",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -21,8 +21,8 @@ setuptools.setup(
     python_requires='>=3.8',
     entry_points={
         'console_scripts': [
-            'index=docsearch.commands.index:index',
-            'search=docsearch.commands.search:search'
+            'index=sitesearch.commands.index:index',
+            'search=sitesearch.commands.search:search'
         ],
     }
 )

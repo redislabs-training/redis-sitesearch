@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
-from docsearch.sites.redis_labs import DOCS_PROD, DOCS_STAGING
+from sitesearch.sites.redis_labs import DOCS_PROD, DOCS_STAGING
 
 load_dotenv()
 
