@@ -35,7 +35,14 @@ gcloud beta compute --project=redislabs-university instance-templates \
     --container-env-file ./.env.prod \
     --labels=container-vm=cos-stable-81-12871-1196-0
 
-echo "Start rolling update"
+echo "Start rolling update of US-West"
 gcloud compute instance-groups managed rolling-action start-update sitesearch-managed-app-1 \
         --version template=$NEW_TEMPLATE --zone us-west1-a
 
+echo "Start rolling update of Mumbai"
+gcloud compute instance-groups managed rolling-action start-update sitesearch-managed-app-mumbai \
+        --version template=$NEW_TEMPLATE --zone asia-south1-c
+
+echo "Start rolling update of Zurich"
+gcloud compute instance-groups managed rolling-action start-update sitesearch-managed-app-zurich \
+        --version template=$NEW_TEMPLATE --zone europe-west6-a
