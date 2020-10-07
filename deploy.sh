@@ -1,10 +1,10 @@
 #!/bin/bash
 
 HASH=`git rev-parse --short HEAD`
-TAG="gcr.io/redislabs-university/sitesearch-app:$HASH"
-NEW_TEMPLATE="sitesearch-app-west-$HASH"
+TAG="gcr.io/redislabs-university/docsearch-app:$HASH"
+NEW_TEMPLATE="docsearch-app-west-$HASH"
 SERVICE_ACCOUNT="279443788353-compute@developer.gserviceaccount.com"
-US_WEST_DISK="sitesearch-app-west-2"
+US_WEST_DISK="docsearch-app-west-2"
 
 echo "Building $TAG..."
 docker build -t $TAG --build-arg REDIS_PASSWORD=$REDIS_PASSWORD .
@@ -17,7 +17,7 @@ gcloud beta compute --project=redislabs-university instance-templates \
     create-with-container $NEW_TEMPLATE \
     --container-image $TAG \
     --machine-type=e2-medium \
-    --network=projects/redislabs-university/global/networks/sitesearch \
+    --network=projects/redislabs-university/global/networks/docsearch \
     --network-tier=PREMIUM \
     --metadata=google-logging-enabled=false \
     --can-ip-forward \
