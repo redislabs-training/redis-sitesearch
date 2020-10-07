@@ -3,6 +3,7 @@ from typing import List
 
 from rq_scheduler import Scheduler
 
+from sitesearch.config import Config
 from sitesearch.connections import get_rq_redis_client
 from sitesearch.indexer import Indexer
 from sitesearch.models import SiteConfiguration
@@ -11,6 +12,7 @@ from sitesearch.models import SiteConfiguration
 log = logging.getLogger(__name__)
 redis_client = get_rq_redis_client()
 scheduler = Scheduler(connection=redis_client)
+config = Config()
 
 JOB_ID = 'index'
 JOB_NOT_QUEUED = 'not_queued'
@@ -28,4 +30,5 @@ def index(sites: List[SiteConfiguration]):
 scheduler.cron(
     '*/30 * * * *',  # Every 30 minutes
     func=index,
+    args=[config.sites]
 )
