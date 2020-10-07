@@ -26,6 +26,6 @@ def index(sites: List[SiteConfiguration]):
 
 
 scheduler.cron(
-    '0 */12 * * *',
+    '*/30 * * * *',  # Every 30 minutes
     func=index,
 )
