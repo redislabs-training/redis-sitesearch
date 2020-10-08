@@ -5,9 +5,8 @@ import click
 from sitesearch import tasks
 from sitesearch.config import Config
 
+
 config = Config()
-
-
 log = logging.getLogger(__name__)
 
 
