@@ -72,3 +72,11 @@ def test_transform_documents_raises_parse_error_with_bad_hierarchy():
     docs = transform_documents([doc], config.default_search_site, 'test')
 
     assert docs[0]['hierarchy'] == []
+
+
+def test_transform_documents_injects_landing_page_doc():
+    docs = transform_documents([], config.default_search_site, 'rc')
+    assert docs[0]['title'] == 'Redis Enterprise Cloud'
+
+    docs = transform_documents([], config.default_search_site, 'k8s*')
+    assert docs[0]['title'] == 'Getting Started with Redis Enterprise Software using Kubernetes'
