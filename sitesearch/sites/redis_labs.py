@@ -1,9 +1,10 @@
 import dataclasses
 from redisearch.client import TextField
 
-from sitesearch.models import SearchDocument, SiteConfiguration, SynonymGroup, TYPE_PAGE
+from sitesearch.models import SiteConfiguration, SynonymGroup
 from sitesearch.scorers import boost_pages, boost_top_level_pages
 from sitesearch.validators import skip_404_page, skip_release_notes
+from sitesearch.sites.redis_labs_landing_pages import LANDING_PAGES
 
 
 SYNONYMS = [
@@ -54,24 +55,6 @@ SYNONYMS = [
         synonyms={'redis'}
     )
 ]
-
-CLOUD_LANDING_PAGE = SearchDocument(
-    doc_id="redislabs://docs/landing/cloud",  # Note: this is a fake document ID,
-    title="Redis Enterprise Cloud",
-    section_title="",
-    hierarchy=["Redis Enterprise Cloud"],
-    url="latest/rc/",
-    body="Redis Enterprise <b>Cloud</b> delivers a cost-effective, fully "
-            "managed Database-as-a-Service (DBaaS) offering, fully hosted on public clouds.",
-    type=TYPE_PAGE,
-    position=0
-)
-
-LANDING_PAGES = {
-    'cloud': CLOUD_LANDING_PAGE,
-    'redis cloud': CLOUD_LANDING_PAGE,
-    'redis enterprise cloud': CLOUD_LANDING_PAGE,
-}
 
 DOCS_PROD = SiteConfiguration(
     url="https://docs.redislabs.com/",
