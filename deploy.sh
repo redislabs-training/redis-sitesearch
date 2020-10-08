@@ -1,8 +1,8 @@
 #!/bin/bash
 
 HASH=`git rev-parse --short HEAD`
-TAG="gcr.io/redislabs-university/docsearch-app:$HASH"
-NEW_TEMPLATE="docsearch-app-west-$HASH"
+TAG="gcr.io/redislabs-university/docsearch-app:$HASH:$RANDOM"
+NEW_TEMPLATE="docsearch-app-west-$HASH-$RANDOM"
 SERVICE_ACCOUNT="279443788353-compute@developer.gserviceaccount.com"
 US_WEST_DISK="docsearch-app-west-2"
 
@@ -35,17 +35,17 @@ gcloud beta compute --project=redislabs-university instance-templates \
     --container-env-file ./.env.prod \
     --labels=container-vm=cos-stable-81-12871-1196-0
 
-echo "\nStart rolling update of US-West"
+echo "Start rolling update of US-West"
 echo "--------------------------------"
 gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-1 \
         --version template=$NEW_TEMPLATE --zone us-west1-a
 
-echo "\nStart rolling update of Mumbai"
+echo "Start rolling update of Mumbai"
 echo "-------------------------------"
 gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-mumbai \
         --version template=$NEW_TEMPLATE --zone asia-south1-c
 
-echo "\nStart rolling update of Zurich"
+echo "Start rolling update of Zurich"
 echo "-------------------------------"
 gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-zurich \
         --version template=$NEW_TEMPLATE --zone europe-west6-a
