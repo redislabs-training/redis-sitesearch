@@ -19,7 +19,7 @@ from scrapy.signalmanager import dispatcher
 from sitesearch import keys
 from sitesearch.connections import get_search_connection
 from sitesearch.errors import ParseError
-from sitesearch.models import SearchDocument, SiteConfiguration, SynonymGroup, TYPE_PAGE, TYPE_SECTION
+from sitesearch.models import SearchDocument, SiteConfiguration, TYPE_PAGE, TYPE_SECTION
 
 ROOT_PAGE = "Redis Labs Documentation"
 MAX_THREADS = multiprocessing.cpu_count() * 5
@@ -189,7 +189,7 @@ class DocumentParser:
 
 class DocumentationSpiderBase(scrapy.Spider):
     """
-    A base-class for spiders. Each base class should define the `url`
+    A base class for spiders. Each base class should define the `url`
     class attribute, or else Scrapy won't spider anything.
 
     This can be done programmatically:
@@ -208,13 +208,15 @@ class DocumentationSpiderBase(scrapy.Spider):
     def start_urls(self):
         return [self.url]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, allow=None, deny=None, **kwargs):
         self.doc_parser = self.doc_parser_class(self.validators)
+        self.allow = allow or ()
+        self.deny = deny or ()
         super().__init__(*args, **kwargs)
 
     def follow_links(self, response):
         # TODO multi-site: make allow/deny patterns configurable
-        extractor = LinkExtractor(deny=r'\/release-notes\/', allow=r'\/latest\/')
+        extractor = LinkExtractor(allow=self.allow, deny=self.deny)
         links = [l for l in extractor.extract_links(response)
                  if l.url.startswith(self.url)]
         yield from response.follow_all(links, callback=self.parse)
@@ -320,12 +322,15 @@ class Indexer:
         if last_index:
             now = datetime.datetime.now().timestamp()
             time_diff =  now - float(last_index)
-            log.error("Time diff %s, now %s, last %s", time_diff, now, last_index)
             if time_diff > DEBOUNCE_SECONDS:
                 raise DebounceError(f"Debounced indexing after {time_diff}s")
 
     def index(self):
-        self.debounce()
+        try:
+            self.debounce()
+        except DebounceError as e:
+            log.error("Debounced indexing task: %s", e)
+            return
 
         docs_to_process = Queue()
 
@@ -349,11 +354,9 @@ class Indexer:
         def start_indexing():
             if docs_to_process.empty():
                 return
-            log.error("JOINING QUEUE")
-            docs_to_process.join()
-            log.error("SETTING TIMESTAMP %s %s", keys.last_index(self.site.url), datetime.datetime.now().timestamp())
             self.search_client.redis.set(
                 keys.last_index(self.site.url), datetime.datetime.now().timestamp())
+            docs_to_process.join()
 
         for _ in range(MAX_THREADS):
             Thread(target=index_documents, daemon=True).start()

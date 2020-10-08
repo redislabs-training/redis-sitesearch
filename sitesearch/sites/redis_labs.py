@@ -73,10 +73,13 @@ DOCS_PROD = SiteConfiguration(
     validators=(
         skip_release_notes,
         skip_404_page
-    )
+    ),
+    deny=(r'\/release-notes\/',),
+    allow=(r'\/latest\/',)
 )
 
 DOCS_STAGING = dataclasses.replace(
     DOCS_PROD,
-    url="https://docs.redislabs.com/staging/docs-with-RediSearch"
+    url="https://docs.redislabs.com/staging/docs-with-RediSearch",
+    allow=(),
 )

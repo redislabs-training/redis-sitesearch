@@ -1,5 +1,5 @@
 from dataclasses import InitVar, dataclass, field, replace
-from typing import Dict, List, Set, Tuple, Callable
+from typing import Dict, List, Set, Tuple, Callable, Pattern
 
 from sitesearch import keys
 from redisearch.client import Field
@@ -38,6 +38,8 @@ class SiteConfiguration:
     scorers: Tuple[ScoreFn]
     validators: Tuple[ValidatorFn]
     landing_pages: Dict[str, SearchDocument]
+    allow: Tuple[Pattern]
+    deny: Tuple[Pattern]
 
     @property
     def all_synonyms(self) -> Set[str]:
