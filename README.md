@@ -26,7 +26,7 @@ Ensure you are running at least these versions before you continue.
 The app is configured using environment variables, so you'll need two different `.env` files depending on what you want to do:
 
 - `.env`: Environment variables for local development
-- `.env.prod`: Environment varialbes to deploy to production
+- `.env.prod`: Environment variables to deploy to production
 
 Examples are included, which you can copy from `.env.example` to `.env` and from `.env.prod.example` to `.env.prod`.
 
@@ -80,7 +80,7 @@ However, note that this won't work if you're already running redis locally on th
 
 ## Deploying
 
-This project includes a deployment script for Google Cloud Platform that is specific to Redis Labs's deployment.
+This project includes a deployment script for Google Cloud Platform that is specific to Redis Labs' deployment.
 
 If you want to use this script to deploy, follow these steps:
 
