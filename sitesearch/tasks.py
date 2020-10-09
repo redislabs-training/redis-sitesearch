@@ -13,8 +13,8 @@ JOB_STARTED = 'started'
 INDEXING_TIMEOUT = 60*60  # One hour
 
 
-def index(sites: List[SiteConfiguration]):
+def index(sites: List[SiteConfiguration], create_index=True):
     for site in sites:
-        indexer = Indexer(site)
+        indexer = Indexer(site, create_index=create_index)
         indexer.index()
     return True
