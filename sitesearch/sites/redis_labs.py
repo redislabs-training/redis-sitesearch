@@ -80,6 +80,7 @@ DOCS_PROD = SiteConfiguration(
 
 DOCS_STAGING = dataclasses.replace(
     DOCS_PROD,
-    url="https://docs.redislabs.com/staging/docs-with-RediSearch",
-    allow=(),
+
+    # Uncomment and use your branch to index staging content.
+    # url="https://docs.redislabs.com/staging/docs-with-RediSearch"
 )
