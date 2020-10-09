@@ -70,13 +70,13 @@ To run tests, use this command:
 
 This runs `pytest` within the container.
 
-If have a `.env` file, you can run `pytest` locally (after you've activated your virtualenv), and the tests will pick up the necessary environment variables from your `.env` file.
+If you have a `.env` file, you can run `pytest` locally (after you've activated your virtualenv), and the tests will pick up the necessary environment variables from your `.env` file.
 
 ### Local vs. Docker redis
 
-The redis that this project's container starts exposes the default redis port locally (6379). So, after you run `docker-compose up app` you can connect to redis outside of the Docker container on that port.
+The redis instance that this project's container starts exposes the default redis port locally (6379). So, after you run `docker-compose up` you can connect to redis outside of the Docker container on that port.
 
-However, note that this won't work if you're already running redis locally on the default port -- so make sure you stop that if you want to connect to Docker.
+However, note that this won't work if you're already running redis locally on the default port -- so make sure you stop that if you want to connect to the redis running on Docker.
 
 ## Deploying
 
