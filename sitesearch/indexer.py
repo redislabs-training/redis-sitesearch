@@ -203,6 +203,8 @@ class DocumentationSpiderBase(scrapy.Spider):
     doc_parser_class = DocumentParser
     url = None
     validators = []
+    allow = ()
+    deny = ()
 
     @property
     def start_urls(self):
@@ -210,8 +212,6 @@ class DocumentationSpiderBase(scrapy.Spider):
 
     def __init__(self, *args, allow=None, deny=None, **kwargs):
         self.doc_parser = self.doc_parser_class(self.validators)
-        self.allow = allow or ()
-        self.deny = deny or ()
         super().__init__(*args, **kwargs)
 
     def follow_links(self, response):
@@ -336,7 +336,8 @@ class Indexer:
 
         Spider = type(
             'Spider', (DocumentationSpiderBase,),
-            {"url": self.url, "validators": self.site.validators})
+            {"url": self.url, "validators": self.site.validators, "allow": self.site.allow,
+             "deny": self.site.deny})
 
         def enqueue_document(signal, sender, item: SearchDocument, response, spider):
             """Queue a SearchDocument for indexation."""

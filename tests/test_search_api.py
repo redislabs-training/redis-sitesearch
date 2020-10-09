@@ -13,4 +13,4 @@ def test_query_python(docs, client):
 def test_cloud_landing_page(client):
     result = client.simulate_get('/search?q=cloud')
     assert result.json['results'][0]['title'] == 'Redis Enterprise Cloud'
-    assert result.json['results'][0]['url'] == 'https://docs.redislabs.com/staging/docs-with-RediSearch/latest/rc/'
+    assert result.json['results'][0]['url'] == 'https://docs.redislabs.com/latest/rc/'
