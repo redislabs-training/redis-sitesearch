@@ -7,12 +7,12 @@ SERVICE_ACCOUNT="279443788353-compute@developer.gserviceaccount.com"
 US_WEST_DISK="docsearch-app-west-2"
 
 echo "Building $TAG..."
-docker build -t $TAG --build-arg REDIS_PASSWORD=$REDIS_PASSWORD .
+docker build -t $TAG .
 
 echo "Updating compute engine container"
 docker push $TAG
 
-echo "Creating new us-west instance template $NEW_TEMPLATE from $TAG"
+echo "Creating new instance template $NEW_TEMPLATE from $TAG"
 gcloud beta compute --project=redislabs-university instance-templates \
     create-with-container $NEW_TEMPLATE \
     --container-image $TAG \
