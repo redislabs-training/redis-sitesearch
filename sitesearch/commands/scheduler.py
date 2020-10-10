@@ -26,7 +26,8 @@ def scheduler():
         "*/30 * * * *",
         func=tasks.index,
         args=[config.sites, False],
-        use_local_timezone=True
+        use_local_timezone=True,
+        timeout=tasks.INDEXING_TIMEOUT
     )
 
     scheduler.run()
