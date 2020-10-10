@@ -22,7 +22,8 @@ setuptools.setup(
     entry_points={
         'console_scripts': [
             'index=sitesearch.commands.index:index',
-            'search=sitesearch.commands.search:search'
+            'search=sitesearch.commands.search:search',
+            'scheduler=sitesearch.commands.scheduler:scheduler'
         ],
     }
 )
