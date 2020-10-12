@@ -35,23 +35,27 @@ gcloud beta compute --project=redislabs-university instance-templates \
     --container-env-file ./.env.prod \
     --labels=container-vm=cos-stable-81-12871-1196-0
 
-# echo
-# echo "Start rolling update of US-West"
-# echo "--------------------------------"
-# gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-1 \
-#         --version template=$NEW_TEMPLATE --zone us-west1-a
+echo
+echo "Start rolling update of Mumbai"
+echo "-------------------------------"
+gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-mumbai \
+        --version template=$NEW_TEMPLATE --zone asia-south1-c
 
-# echo
-# echo "Start rolling update of US-East"
-# echo "--------------------------------"
-# gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-us-east \
-#         --version template=$NEW_TEMPLATE --zone us-east4-c
+echo
+echo "GOOD IDEA: Wait until the instance group updates, make some test requests. "
+read -p "Press enter to continue deploying to to other regions..."
 
-# echo
-# echo "Start rolling update of Mumbai"
-# echo "-------------------------------"
-# gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-mumbai \
-#         --version template=$NEW_TEMPLATE --zone asia-south1-c
+echo
+echo "Start rolling update of US-West"
+echo "--------------------------------"
+gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-1 \
+        --version template=$NEW_TEMPLATE --zone us-west1-a
+
+echo
+echo "Start rolling update of US-East"
+echo "--------------------------------"
+gcloud compute instance-groups managed rolling-action start-update docsearch-managed-app-us-east \
+        --version template=$NEW_TEMPLATE --zone us-east4-c
 
 echo
 echo "Start rolling update of Zurich"
