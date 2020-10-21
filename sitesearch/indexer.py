@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 
 
 class DebounceError(Exception):
-    """The indexing debounce threshold wsa not met"""
+    """The indexing debounce threshold was not met"""
 
 
 def next_element(elem):
