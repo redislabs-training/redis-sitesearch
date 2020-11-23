@@ -5,7 +5,7 @@ import multiprocessing
 from dataclasses import asdict
 from queue import Queue
 from threading import Thread
-from typing import List, Callable
+from typing import List, Callable, Tuple
 
 import redis.exceptions
 import scrapy
@@ -26,8 +26,11 @@ MAX_THREADS = multiprocessing.cpu_count() * 5
 DEBOUNCE_SECONDS = 60 * 5  # Five minutes
 SYNUPDATE_COMMAND = 'FT.SYNUPDATE'
 
-ScorerList = List[Callable[[SearchDocument, float], float]]
+Scorer = Callable[[SearchDocument, float], None]
+ScorerList = List[Scorer]
 Extractor = Callable[[str], List[str]]
+Validator = Callable[[SearchDocument], None]
+ValidatorList = List[Validator]
 
 log = logging.getLogger(__name__)
 
@@ -198,19 +201,29 @@ class DocumentationSpiderBase(scrapy.Spider):
             'RedisDocsSpider',
             (DocumentationSpiderBase,),
             {"url": "http://example.com"})
+
+    If `validators` is defined, the indexer will call each validator
+    function for every `SearchDocument` that this scraper produces
+    before indexing it.
+
+    If `allow` or `deny` are defined, this scraper will send them in
+    as arguments to LinkExtractor when extracting links on a page,
+    allowing fine-grained control of URL patterns to exclude or allow.
     """
-    name = "documentation"
+    name: str = "documentation"
     doc_parser_class = DocumentParser
-    url = None
-    validators = []
-    allow = ()
-    deny = ()
+
+    # Sub-classes should override these fields.
+    url: str = None
+    validators = ValidatorList
+    allow: Tuple[str] = ()
+    deny: Tuple[str] = ()
 
     @property
     def start_urls(self):
         return [self.url]
 
-    def __init__(self, *args, allow=None, deny=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.doc_parser = self.doc_parser_class(self.validators)
         super().__init__(*args, **kwargs)
 

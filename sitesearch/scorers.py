@@ -3,7 +3,7 @@ import math
 from sitesearch.models import SearchDocument, TYPE_PAGE
 
 # The minimum score we'll allow a document to have. RediSearch
-# multiplies the TF*IDF score by the document score at query
+# multiplies the TF-IDF score by the document score at query
 # time, so we want to avoid dropping the document score down
 # to 0.0.
 SCORE_FLOOR = 0.01

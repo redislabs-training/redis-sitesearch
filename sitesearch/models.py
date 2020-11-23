@@ -26,8 +26,8 @@ class SynonymGroup:
     synonyms: Set[str]
 
 
-ScoreFn = Callable[[SearchDocument, float], float]
-ValidatorFn = Callable[[SearchDocument], None]
+Scorer = Callable[[SearchDocument, float], float]
+Validator = Callable[[SearchDocument], None]
 
 
 @dataclass(frozen=True)
@@ -35,8 +35,8 @@ class SiteConfiguration:
     url: str
     synonym_groups: List[SynonymGroup]
     schema: Tuple[Field]
-    scorers: Tuple[ScoreFn]
-    validators: Tuple[ValidatorFn]
+    scorers: Tuple[Scorer]
+    validators: Tuple[Validator]
     landing_pages: Dict[str, SearchDocument]
     allow: Tuple[Pattern]
     deny: Tuple[Pattern]
