@@ -228,7 +228,6 @@ class DocumentationSpiderBase(scrapy.Spider):
         super().__init__(*args, **kwargs)
 
     def follow_links(self, response):
-        # TODO multi-site: make allow/deny patterns configurable
         extractor = LinkExtractor(allow=self.allow, deny=self.deny)
         links = [l for l in extractor.extract_links(response)
                  if l.url.startswith(self.url)]
