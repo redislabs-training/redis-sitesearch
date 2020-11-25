@@ -31,7 +31,6 @@ class OrderedDefaultDict(OrderedDict):
 class SearchResource(Resource):
     def on_get(self, req, resp):
         """Run a search."""
-        # Dash postfixes confuse the query parser.
         query = req.get_param('q', default='')
         start = int(req.get_param('start', default=0))
 

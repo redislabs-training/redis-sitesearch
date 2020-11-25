@@ -1,7 +1,6 @@
 import json
 import logging
 from json import JSONDecodeError
-from re import search
 from typing import List, Dict, Any
 
 from sitesearch.models import SiteConfiguration
@@ -34,7 +33,7 @@ def transform_documents(docs: List[Any],
 
         try:
             hierarchy = json.loads(doc.hierarchy)
-        except (JSONDecodeError, ValueError) as e:
+        except (JSONDecodeError, ValueError):
             log.error("Bad hierarchy data for doc: %s", doc)
             hierarchy = []
 

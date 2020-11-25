@@ -1,7 +1,6 @@
 import re
-from typing import List, Union
 
-from sitesearch.models import SiteConfiguration, SynonymGroup
+from sitesearch.models import SiteConfiguration
 from redisearch import Query
 
 UNSAFE_CHARS = re.compile('[\\[\\]\\-@+]')
@@ -15,7 +14,7 @@ def parse(query: str, search_site: SiteConfiguration) -> Query:
 
     # For queries of a term that should result in an exact match, e.g.
     # "insight" (a synonym of RedisInsight), or "active-active", strip any star
-    # postfix to avoid the query becoming a fuzzy search.
+    # postfix to avoid the query becoming a prefix search.
     if query.endswith('*'):
         exact_match_query = query.rstrip("*")
         if exact_match_query in search_site.all_synonyms:
