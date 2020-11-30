@@ -8,6 +8,8 @@ RediSearch is a querying and indexing engine for Redis that supports full-text s
 
 redis-sitesearch was originally developed by Redis Labs to provide a search API for our documentation. You can see it live at: https://docs.redislabs.com.
 
+**Want to learn more?** Join the [Redis discord](https://discord.gg/yEbfGhqhsz) to meet other Redis and RediSearch users.
+
 ## Installing
 
 The development environment is provided as a Docker container. Running and deploying it all involve using Docker, and this section describes how to do so.
