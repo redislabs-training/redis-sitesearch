@@ -4,7 +4,7 @@
 
 redis-sitesearch is a package that indexes web sites into RediSearch.
 
-RediSearch is a querying and indexing engine for Redis that supports full-text search. You can read more about how ti works here: https://oss.redislabs.com/redisearch/
+RediSearch is a querying and indexing engine for Redis that supports full-text search. You can read more about it here: https://oss.redislabs.com/redisearch/
 
 redis-sitesearch was originally developed by Redis Labs to provide a search API for our documentation. You can see it live at: https://docs.redislabs.com.
 
