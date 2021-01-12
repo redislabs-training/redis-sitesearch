@@ -90,9 +90,17 @@ app_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser error 
 
 This output is usually normal -- some pages don't have breadcrumbs, and we skip 404 pages.
 
-### Searching
+### New Relic
 
-The app maps port 8080 to the search API. You can search by using this URL:
+The Python app tries to use New Relic. If you don't specify a valid NEW_RELIC_LICENSE_KEY environment variable in your .env or .env.prod files, the New Relic Agent will log errors. This is ok -- the app will continue to function without New Relic.
+
+```
+app_1   | 2021-01-12 22:36:16,867 (61/NR-Activate-Session/sitesearch) newrelic.core.agent_protocol CRITICAL - Disconnection of the agent has been requested by the data collector for the application where the agent run was None. Please contact New Relic support for further information.
+```
+
+## Searching
+
+The app maps localhost port 8080 to the search API. After you start the app with `docker-compose up`, can search using this URL:
 
         localhost:8080/search?q=<your search terms>
 
