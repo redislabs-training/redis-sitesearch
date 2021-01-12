@@ -249,7 +249,7 @@ class DocumentationSpiderBase(scrapy.Spider):
 
 class Indexer:
     def __init__(self, site: SiteConfiguration, search_client: Client = None,
-                 create_index=True, *args, **kwargs):
+                 rebuild_index: bool = False, **kwargs):
         self.site = site
 
         if search_client is None:
@@ -257,10 +257,13 @@ class Indexer:
 
         self.search_client = search_client
 
-        if create_index:
+        if rebuild_index:
+            self.search_client.drop_index()
+            self.setup_index()
+        elif not self.search_index_exists:
             self.setup_index()
 
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
     @property
     def url(self):
@@ -309,6 +312,15 @@ class Indexer:
                 synonym_group.group_id,
                 *synonym_group.synonyms)
 
+    @property
+    def search_index_exists(self):
+        try:
+            self.search_client.info()
+        except redis.exceptions.ResponseError:
+            return False
+        else:
+            return True
+
     def setup_index(self):
         """
         Create the index definition and schema.
@@ -316,13 +328,6 @@ class Indexer:
         If the indexer was given any synonym groups, it adds these
         to RediSearch after creating the index.
         """
-        try:
-            self.search_client.info()
-        except redis.exceptions.ResponseError:
-            pass
-        else:
-            self.search_client.drop_index()
-
         definition = IndexDefinition(prefix=[f"{keys.PREFIX}:{self.url}"])
         self.search_client.create_index(self.site.schema, definition=definition)
 

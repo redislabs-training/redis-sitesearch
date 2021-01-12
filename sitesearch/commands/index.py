@@ -12,6 +12,6 @@ log = logging.getLogger(__name__)
 
 @click.option('--create-index', default=False)
 @click.command()
-def index(create_index):
+def index(rebuild_index):
     """Index the app's configured sites in RediSearch."""
-    tasks.index(config.sites, create_index=create_index)
+    tasks.index(config.sites, rebuild_index=rebuild_index)
