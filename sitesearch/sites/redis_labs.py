@@ -74,7 +74,7 @@ DOCS_PROD = SiteConfiguration(
         skip_release_notes,
         skip_404_page
     ),
-    deny=(r'\/release-notes\/',),
+    deny=(r'\/release-notes\/', r'.*\.tgz'),
     allow=(r'\/latest\/',)
 )
 
