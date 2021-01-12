@@ -18,9 +18,14 @@ def scheduler():
     redis_client = get_rq_redis_client()
     scheduler = Scheduler(connection=redis_client)
 
-    # We need to define this here, at the time we run this command, because
-    # there is no deduplication in the cron() method, and this app has no
-    # "exactly once" startup/initialization step that we could use to call
+    # Create the RediSearch index and begin indexing immediately.
+    tasks.index(config.sites, True)
+
+    # Schedule an indexing job to run every 30 minutes.
+    #
+    # NOTE: We need to define this here, at the time we run this command,
+    # because there is no deduplication in the cron() method, and this app has
+    # no "exactly once" startup/initialization step that we could use to call
     # code only once.
     scheduler.cron(
         "*/30 * * * *",
