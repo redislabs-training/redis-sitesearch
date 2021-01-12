@@ -36,6 +36,14 @@ The app is configured using environment variables, so you'll need two different 
 
 Examples are included, which you can copy from `.env.example` to `.env` and from `.env.prod.example` to `.env.prod`.
 
+### Redis Passwords
+
+This application expects to use a password to authenticate with Redis. Both .env.prod.example and .env.example include the environment variable `REDIS_PASSWORD`.
+
+In local development, running `docker-compose up` will start Redis in password-required mode with the password you set in the `REDIS_PASSWORD` environment variable from the `.env` file.
+
+In production, the app will use the password from the `.env.prod` file.
+
 ### Virtualenv
 
 If you want code completion to work in an IDE, or you want to run commands outside of Docker (like `pytest`), create a virtualenv:
@@ -55,6 +63,44 @@ After you have the necessary Docker software, "install" the app with `docker-com
         docker-compose up --build
 
 This command builds the necessary images and brings up the app.
+
+### Indexing Documents
+
+As soon as the app finishes starting up, it begins indexing site content.
+
+You should see output like this, indicating that supervisor started the processes:
+
+```
+app_1   | 2021-01-12 21:17:51,091 INFO success: worker entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+app_1   | 2021-01-12 21:17:51,092 INFO success: app entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+app_1   | 2021-01-12 21:17:51,093 INFO success: redis entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+app_1   | 2021-01-12 21:17:51,095 INFO success: scheduler entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+```
+
+* The "app" process is the Python search API
+* The "worker" process is an RQ worker that will process any indexing tasks it sees
+* The "scheduler" worker is a process that runs an indexing task every 60 minutes
+
+You might see errors and warnings as the indexing job proceeds, like this:
+
+```
+app_1   | 2021-01-12 21:18:07 [sitesearch.indexer] ERROR: Document parser error -- Could not find breadcrumbs: https://docs.redislabs.com/latest/
+app_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser error -- Skipping 404 page: https://docs.redislabs.com/latest/404.html
+```
+
+This output is usually normal -- some pages don't have breadcrumbs, and we skip 404 pages.
+
+### Searching
+
+The app maps port 8080 to the search API. You can search by using this URL:
+
+        localhost:8080/search?q=<your search terms>
+
+For example:
+
+        $ curl localhost:8080/search?q=redis
+
+Every response includes the total number of hits and a configurable number of results.
 
 ## Developing
 
