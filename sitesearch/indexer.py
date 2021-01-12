@@ -256,11 +256,13 @@ class Indexer:
             search_client = get_search_connection(self.site.index_name)
 
         self.search_client = search_client
+        index_exists = self.search_index_exists()
 
         if rebuild_index:
-            self.search_client.drop_index()
+            if index_exists:
+                self.search_client.drop_index()
             self.setup_index()
-        elif not self.search_index_exists:
+        elif not index_exists:
             self.setup_index()
 
         super().__init__(**kwargs)
@@ -312,7 +314,6 @@ class Indexer:
                 synonym_group.group_id,
                 *synonym_group.synonyms)
 
-    @property
     def search_index_exists(self):
         try:
             self.search_client.info()
