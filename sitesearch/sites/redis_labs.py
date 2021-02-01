@@ -22,7 +22,7 @@ SYNONYMS = [
     ),
     SynonymGroup(
         group_id='timeseries',
-        synonyms={'timeseries', 'RedisTimeries', 'redis timeseries'}
+        synonyms={'timeseries', 'RedisTimeSeries', 'redis timeseries'}
     ),
     SynonymGroup(
         group_id='ai',
