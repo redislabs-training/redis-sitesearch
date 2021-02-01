@@ -24,18 +24,28 @@ def transform_documents(docs: List[Any],
     """
     transformed = []
     landing_page = search_site.landing_page(query.replace('*', ''))
-    landing_page_idx = -1
+    pages_seen = set()
 
-    for i, doc in enumerate(docs):
-        # Dedupe the landing page if it's already in the results.
-        if landing_page and doc.title == landing_page.title:
-            landing_page_idx = i
+    if landing_page:
+        transformed.append({
+            "title": landing_page.title,
+            "section_title": landing_page.section_title,
+            "hierarchy": landing_page.hierarchy,
+            "body": elide_text(landing_page.body, max_length),
+            "url": landing_page.url
+        })
+        pages_seen.add((*landing_page.hierarchy, landing_page.title))
 
+    for doc in docs:
         try:
             hierarchy = json.loads(doc.hierarchy)
         except (JSONDecodeError, ValueError):
             log.error("Bad hierarchy data for doc: %s", doc)
             hierarchy = []
+
+        # Only include one result per page
+        if (*hierarchy, doc.title) in pages_seen:
+            continue
 
         transformed.append({
             "title": doc.title,
@@ -45,16 +55,6 @@ def transform_documents(docs: List[Any],
             "url": doc.url
         })
 
-    if landing_page_idx >= 0:
-        docs.pop(landing_page_idx)
-
-    if landing_page:
-        transformed.insert(0, {
-            "title": landing_page.title,
-            "section_title": landing_page.section_title,
-            "hierarchy": landing_page.hierarchy,
-            "body": elide_text(landing_page.body, max_length),
-            "url": landing_page.url
-        })
+        pages_seen.add((*hierarchy, doc.title))
 
     return transformed
