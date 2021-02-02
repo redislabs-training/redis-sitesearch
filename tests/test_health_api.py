@@ -7,6 +7,6 @@ def test_no_content(client):
 
 
 def test_with_content(docs, client):
-    time.sleep(2)
+    time.sleep(5)
     result = client.simulate_get('/health')
     assert result.status_code == 200

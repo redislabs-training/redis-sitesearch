@@ -14,7 +14,7 @@ config = Config()
 redis_client = get_redis_connection()
 log = logging.getLogger(__name__)
 
-DEFAULT_NUM = 20
+DEFAULT_NUM = 30
 MAX_NUM = 100
 
 

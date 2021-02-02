@@ -17,6 +17,7 @@ class SearchDocument:
     url: str
     body: str
     type: str
+    s: str  # Shortcut for the root page
     position: int = 0
 
 

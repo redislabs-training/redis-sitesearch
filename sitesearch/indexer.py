@@ -48,7 +48,8 @@ def next_element(elem):
 
 
 class DocumentParser:
-    def __init__(self, validators):
+    def __init__(self, root_url, validators):
+        self.root_url = root_url
         self.validators = validators
 
     def extract_hierarchy(self, soup):
@@ -115,6 +116,7 @@ class DocumentParser:
                 doc_id=_id,
                 title=doc.title,
                 hierarchy=doc.hierarchy,
+                s=doc.s,
                 section_title=part_title or "",
                 body=body,
                 url=doc.url,
@@ -148,6 +150,10 @@ class DocumentParser:
             raise ParseError("Failed -- missing breadcrumbs")
 
         content = soup.select(".main-content")
+        try:
+            s = url.replace(self.root_url, "").replace("//", "/").split("/")[1]
+        except IndexError:
+            s = ""
 
         # Try to index only the content div. If a page lacks
         # that div, index the entire thing.
@@ -163,6 +169,7 @@ class DocumentParser:
             title=title,
             section_title="",
             hierarchy=hierarchy,
+            s=s,
             body=body,
             url=url,
             type=TYPE_PAGE)
@@ -224,7 +231,7 @@ class DocumentationSpiderBase(scrapy.Spider):
         return [self.url]
 
     def __init__(self, *args, **kwargs):
-        self.doc_parser = self.doc_parser_class(self.validators)
+        self.doc_parser = self.doc_parser_class(self.url, self.validators)
         super().__init__(*args, **kwargs)
 
     def follow_links(self, response):

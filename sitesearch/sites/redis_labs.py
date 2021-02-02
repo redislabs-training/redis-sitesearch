@@ -65,6 +65,7 @@ DOCS_PROD = SiteConfiguration(
         TextField("section_title"),
         TextField("body", weight=1.5),
         TextField("url"),
+        TextField("s", no_stem=True),
     ),
     scorers=(
         boost_pages,
