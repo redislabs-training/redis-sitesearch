@@ -328,9 +328,6 @@ class Indexer:
         parts = url.split("/")
         joinable_site_url = self.site.url.rstrip("/")
 
-        if not parts:
-            print("No parts", url)
-
         for i, part in enumerate(parts):
             if i == 0:
                 continue
@@ -338,11 +335,9 @@ class Indexer:
             page = self.seen_urls.get(path_url)
             if page:
                 hierarchy.append(page)
-            else:
-                print('not found', path_url)
 
         if not hierarchy:
-            print('no hierarchy', url)
+            log.debug('URL lacks hierarchy: %s', url)
 
         return hierarchy
 
