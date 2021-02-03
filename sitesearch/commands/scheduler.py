@@ -20,7 +20,7 @@ def scheduler():
 
     # Create the RediSearch index and begin indexing immediately.
     # If a previous index exists, delete it.
-    tasks.index(config.sites, rebuild_index=True)
+    tasks.index(config.sites, rebuild_index=True, force=True)
 
     # Schedule an indexing job to run every 60 minutes.
     #

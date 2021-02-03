@@ -34,18 +34,18 @@ def transform_documents(docs: List[Any],
             "body": elide_text(landing_page.body, max_length),
             "url": landing_page.url
         })
-        pages_seen.add((*landing_page.hierarchy, landing_page.title))
+        pages_seen.add(landing_page.url)
 
     for doc in docs:
+        # Only include one result per page
+        if doc.url in pages_seen:
+            continue
+
         try:
             hierarchy = json.loads(doc.hierarchy)
         except (JSONDecodeError, ValueError):
             log.error("Bad hierarchy data for doc: %s", doc)
             hierarchy = []
-
-        # Only include one result per page
-        if (*hierarchy, doc.title) in pages_seen:
-            continue
 
         transformed.append({
             "title": doc.title,
@@ -55,6 +55,6 @@ def transform_documents(docs: List[Any],
             "url": doc.url
         })
 
-        pages_seen.add((*hierarchy, doc.title))
+        pages_seen.add(doc.url)
 
     return transformed

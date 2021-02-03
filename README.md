@@ -88,7 +88,19 @@ app_1   | 2021-01-12 21:18:07 [sitesearch.indexer] ERROR: Document parser error 
 app_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser error -- Skipping 404 page: https://docs.redislabs.com/latest/404.html
 ```
 
-This output is usually normal -- some pages don't have breadcrumbs, and we skip 404 pages.
+This output is normal -- some pages don't have breadcrumbs, and we skip 404 pages.
+
+#### Scheduled indexing
+
+The app indexes on a schedule, every 60 minutes. So if you leave it running, it will reindex once per hour.
+
+#### Manually indexing
+
+While you work, you might want to reindex to test a change to the indexing process.
+
+You have two options to force the app to reindex:
+* Restart the app: `docker-compose restart`
+* Manually trigger reindexing with the `index` CLI command: `docker-compose exec app index`
 
 ### New Relic
 

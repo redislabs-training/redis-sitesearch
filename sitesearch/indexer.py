@@ -324,20 +324,35 @@ class Indexer:
 
     def build_hierarchy(self, doc: SearchDocument):
         hierarchy = []
-        url = doc.url.replace(self.site.url, "").replace("//", "/").lstrip("/")
+        url = doc.url.replace(self.site.url, "").replace("//", "/").strip("/")
         parts = url.split("/")
+        joinable_site_url = self.site.url.rstrip("/")
+
+        if not parts:
+            print("No parts", url)
+
         for i, part in enumerate(parts):
-            page = self.seen_urls.get("/".join([self.site.url, *parts[:i], part]))
+            if i == 0:
+                continue
+            path_url = "/".join([joinable_site_url, *parts[:i], part])
+            page = self.seen_urls.get(path_url)
             if page:
                 hierarchy.append(page)
+            else:
+                print('not found', path_url)
+
+        if not hierarchy:
+            print('no hierarchy', url)
+
         return hierarchy
 
-    def index(self):
-        try:
-            self.debounce()
-        except DebounceError as e:
-            log.error("Debounced indexing task: %s", e)
-            return
+    def index(self, force: bool = False):
+        if not force:
+            try:
+                self.debounce()
+            except DebounceError as e:
+                log.error("Debounced indexing task: %s", e)
+                return
 
         docs_to_process = Queue()
 
@@ -380,5 +395,8 @@ class Indexer:
             'REACTOR_THREADPOOL_MAXSIZE': 30,
             'LOG_LEVEL': 'ERROR'
         })
+
+        log.info("Started crawling")
+
         process.crawl(Spider)
         process.start()
