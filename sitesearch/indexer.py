@@ -5,7 +5,7 @@ import multiprocessing
 from dataclasses import asdict
 from queue import Queue
 from threading import Thread
-from typing import List, Callable, Tuple
+from typing import Dict, List, Callable, Tuple
 
 import redis.exceptions
 import scrapy
@@ -51,36 +51,6 @@ class DocumentParser:
     def __init__(self, root_url, validators):
         self.root_url = root_url
         self.validators = validators
-
-    def extract_hierarchy(self, soup):
-        """
-        Extract the page hierarchy we need from the page's breadcrumbs:
-        root and parent page.
-
-        E.g. for the breadcrumbs:
-                RedisInsight > Using RedisInsight > Cluster Management
-
-        We want:
-                ["RedisInsight", "Using RedisInsight", "Cluster Management"]
-        """
-        hierarchy = []
-        elem = soup.select("#breadcrumbs a")
-
-        if not elem:
-            raise ParseError("Could not find breadcrumbs")
-
-        elem = elem[0]
-        while elem:
-            try:
-                text = elem.get_text()
-            except AttributeError:
-                text = str(elem)
-            text = text.strip()
-            if text and text != ">":
-                hierarchy.append(text)
-            elem = next_element(elem)
-
-        return [title for title in hierarchy if title != ROOT_PAGE]
 
     def extract_parts(self, doc, h2s: List[element.Tag]) -> List[SearchDocument]:
         """
@@ -144,11 +114,6 @@ class DocumentParser:
         except AttributeError as e:
             raise ParseError("Failed -- missing title") from e
 
-        hierarchy = self.extract_hierarchy(soup)
-
-        if not hierarchy:
-            raise ParseError("Failed -- missing breadcrumbs")
-
         content = soup.select(".main-content")
         try:
             s = url.replace(self.root_url, "").replace("//", "/").split("/")[1]
@@ -168,7 +133,7 @@ class DocumentParser:
             doc_id=f"{url}:{title}",
             title=title,
             section_title="",
-            hierarchy=hierarchy,
+            hierarchy=[],
             s=s,
             body=body,
             url=url,
@@ -226,10 +191,6 @@ class DocumentationSpiderBase(scrapy.Spider):
     allow: Tuple[str] = ()
     deny: Tuple[str] = ()
 
-    @property
-    def start_urls(self):
-        return [self.url]
-
     def __init__(self, *args, **kwargs):
         self.doc_parser = self.doc_parser_class(self.url, self.validators)
         super().__init__(*args, **kwargs)
@@ -253,6 +214,11 @@ class DocumentationSpiderBase(scrapy.Spider):
 
         yield from self.follow_links(response)
 
+    @property
+    def start_urls(self):
+        return [self.url]
+
+
 
 class Indexer:
     def __init__(self, site: SiteConfiguration, search_client: Client = None,
@@ -271,6 +237,11 @@ class Indexer:
             self.setup_index()
         elif not index_exists:
             self.setup_index()
+
+        # This is a map of already-crawled URLs to page titles, which we can
+        # use to construct a hierarchy for a given document by comparing each
+        # segment of its URL to known URLs.
+        self.seen_urls: Dict[str, str] = {}
 
         super().__init__(**kwargs)
 
@@ -294,7 +265,8 @@ class Indexer:
             score = scorer(document, score)
         doc = asdict(document)
         doc['__score'] = score
-        doc['hierarchy'] = json.dumps(doc['hierarchy'])
+        hierarchy = self.build_hierarchy(document)
+        doc['hierarchy'] = json.dumps(hierarchy)
         return doc
 
     def index_document(self, doc: SearchDocument):
@@ -350,6 +322,16 @@ class Indexer:
             if time_diff > DEBOUNCE_SECONDS:
                 raise DebounceError(f"Debounced indexing after {time_diff}s")
 
+    def build_hierarchy(self, doc: SearchDocument):
+        hierarchy = []
+        url = doc.url.replace(self.site.url, "").replace("//", "/").lstrip("/")
+        parts = url.split("/")
+        for i, part in enumerate(parts):
+            page = self.seen_urls.get("/".join([self.site.url, *parts[:i], part]))
+            if page:
+                hierarchy.append(page)
+        return hierarchy
+
     def index(self):
         try:
             self.debounce()
@@ -366,6 +348,7 @@ class Indexer:
 
         def enqueue_document(signal, sender, item: SearchDocument, response, spider):
             """Queue a SearchDocument for indexation."""
+            self.seen_urls[item.url.rstrip("/")] = item.title
             docs_to_process.put(item)
 
         def index_documents():
@@ -380,12 +363,11 @@ class Indexer:
         def start_indexing():
             if docs_to_process.empty():
                 return
+            for _ in range(MAX_THREADS):
+                Thread(target=index_documents, daemon=True).start()
             self.search_client.redis.set(
                 keys.last_index(self.site.url), datetime.datetime.now().timestamp())
             docs_to_process.join()
-
-        for _ in range(MAX_THREADS):
-            Thread(target=index_documents, daemon=True).start()
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)

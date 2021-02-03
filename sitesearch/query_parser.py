@@ -20,8 +20,6 @@ def parse(query: str, search_site: SiteConfiguration) -> Query:
         if exact_match_query in search_site.all_synonyms:
             query = exact_match_query
 
-    print(query)
-
     return Query(query).summarize(
         'body', context_len=10
     ).highlight(

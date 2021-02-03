@@ -22,4 +22,5 @@ def boost_top_level_pages(doc: SearchDocument, current_score: float) -> float:
 
     This should result in a boost for top-level pages.
     """
-    return max(current_score - math.log10(len(doc.hierarchy)) / 2, SCORE_FLOOR)
+    length = max(len(doc.hierarchy), 1)
+    return max(current_score - math.log10(length) / 2, SCORE_FLOOR)

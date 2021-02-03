@@ -57,7 +57,7 @@ SYNONYMS = [
 ]
 
 DOCS_PROD = SiteConfiguration(
-    url="https://docs.redislabs.com/",
+    url="https://docs.redislabs.com",
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
     schema=(
@@ -83,5 +83,5 @@ DOCS_STAGING = dataclasses.replace(
     DOCS_PROD,
 
     # Uncomment and use your branch to index staging content.
-    # url="https://docs.redislabs.com/staging/docs-with-RediSearch"
+    # url="https://docs.redislabs.com/staging/<your-branch>"
 )
