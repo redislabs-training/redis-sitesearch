@@ -323,14 +323,43 @@ class Indexer:
                 raise DebounceError(f"Debounced indexing after {time_diff}s")
 
     def build_hierarchy(self, doc: SearchDocument):
+        """
+        Build the hierarchy of pages "above" this document.
+
+        At this point, we've already crawled all the URLs that we're going to
+        index, and we added the URLs and page titles to the `seen_urls`
+        dictionary.
+
+        Now, for this document, we're going to walk through the parts of its
+        URL and reconstruct the page titles for those pages. We don't need
+        the root page title of the site, so we leave that out of the
+        hierarchy.
+
+        So, for example, if we're indexing the site https://docs.redislabs.com/latest
+        and we have a document whose URL is:
+
+            https://docs.redislabs.com/latest/ri/using-redisinsight/cluster-management/
+
+        We're going to look up the titles of the following URLs:
+
+            https://docs.redislabs.com/latest/ri
+            https://docs.redislabs.com/latest/ri/using-redisinsight
+
+        And we'll come up with the following hierarchy:
+
+                ["RedisInsight", "Using RedisInsight", "Cluster Management"]
+
+        Because URLs might contain trailing slashes, and we might have a mix
+        of URLs with and without trailing slashes, we always remove the
+        trailing slash when we add a URL to `seen_urls` and then we remove
+        any trailing slashes again when we look up a URL.
+        """
         hierarchy = []
         url = doc.url.replace(self.site.url, "").replace("//", "/").strip("/")
         parts = url.split("/")
         joinable_site_url = self.site.url.rstrip("/")
 
         for i, part in enumerate(parts):
-            if i == 0:
-                continue
             path_url = "/".join([joinable_site_url, *parts[:i], part])
             page = self.seen_urls.get(path_url)
             if page:

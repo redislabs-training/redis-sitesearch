@@ -3,11 +3,11 @@ from unittest import mock
 from unittest.mock import call
 
 import pytest
-
-from sitesearch.config import DOCS_STAGING
 from sitesearch import keys
+from sitesearch.config import DOCS_STAGING
 from sitesearch.errors import ParseError
-from sitesearch.indexer import Indexer, DocumentParser
+from sitesearch.indexer import DocumentParser, Indexer
+from sitesearch.models import SearchDocument
 
 DOCS_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "documents")
@@ -145,3 +145,23 @@ def test_parsing_page_with_links_in_h2s_returns_body_content(parse_file):
     docs = parse_file(FILE_WITH_AN_INDEX)
     for doc in docs:
         assert doc.body is not None
+
+
+def test_build_hierarchy(indexer):
+    indexer.seen_urls = {
+        "https://docs.redislabs.com/latest/1": "One",
+        "https://docs.redislabs.com/latest/1/2": "Two",
+        "https://docs.redislabs.com/latest/1/2/3": "Three",
+    }
+    doc = SearchDocument(
+        doc_id="123",
+        title="Title",
+        section_title="Section",
+        hierarchy=[],
+        s="",
+        url="https://docs.redislabs.com/latest/1/2/3/",
+        body="This is the body",
+        type='page',
+        position=0
+    )
+    assert indexer.build_hierarchy(doc) == ['One', 'Two', 'Three']

@@ -55,7 +55,8 @@ class SiteConfiguration:
 
     def landing_page(self, query) -> SearchDocument:
         page = self.landing_pages.get(query, None)
-        separator = "" if self.url.endswith("/") else "/"
         if page:
-            page = replace(page, url=f"{self.url}{separator}{page.url}")
+            root_url = self.url.rstrip('/')
+            page_url = page.url.lstrip('/')
+            page = replace(page, url=f"{root_url}/{page_url}")
         return page

@@ -7,7 +7,7 @@ CLOUD_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Enterprise Cloud"],
     s="rc",
-    url="latest/rc/",
+    url="/rc/",
     body="Redis Enterprise <b>Cloud</b> delivers a cost-effective, fully "
             "managed Database-as-a-Service (DBaaS) offering, fully hosted on public clouds.",
     type=TYPE_PAGE,
@@ -20,7 +20,7 @@ SOFTWARE_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Enterprise Software"],
     s="rs",
-    url="latest/rs/",
+    url="/rs/",
     body="Redis Enterprise is a robust, in-memory database platform built by the same people "
          "who develop open-source Redis.",
     type=TYPE_PAGE,
@@ -33,7 +33,7 @@ ACTIVE_ACTIVE_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Enterprise Software", "Concepts and Architecture", "Geo-Distributed Active-Active Redis Applications"],
     s="rs",
-    url="latest/rs/concepts/intercluster-replication/",
+    url="/rs/concepts/intercluster-replication/",
     body="Developing globally distributed applications can be challenging, as developers "
          "have to think about race conditions and complex combinations of events under "
          "geo-failovers and cross-region write conflicts.",
@@ -48,7 +48,7 @@ FLASH_LANDING_PAGE = SearchDocument(
     hierarchy=["Redis Enterprise Software", "Concepts and Architecture",
                "Memory Architecture in Redis Enterprise Software", "Redis on Flash"],
     s="rs",
-    url="latest/rs/concepts/memory-architecture/redis-flash/",
+    url="/rs/concepts/memory-architecture/redis-flash/",
     body="Redis on Flash (RoF) offers users of Redis Enterprise Software and "
          "Redis Enterprise Cloud the unique ability to have very large Redis "
          "databases but at significant cost savings.",
@@ -62,7 +62,7 @@ REDIS_INSIGHT_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["RedisInsight"],
     s="ri",
-    url="latest/ri/",
+    url="/ri/",
     body="Information on how to install and use RedisInsight, a GUI for administering Redis.",
     type=TYPE_PAGE,
     position=0
@@ -74,7 +74,7 @@ GEARS_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RedisGears"],
     s="modules",
-    url="latest/modules/redisgears/",
+    url="/modules/redisgears/",
     body="RedisGears is an engine for data processing in Redis. RedisGears "
          "supports batch and event-driven processing for Redis data.",
     type=TYPE_PAGE,
@@ -87,7 +87,7 @@ SEARCH_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RediSearch"],
     s="modules",
-    url="latest/modules/redisearch/",
+    url="/modules/redisearch/",
     body="The RediSearch 2.x module is a source-available project that lets you build "
          "powerful searches for open-source Redis databases.",
     type=TYPE_PAGE,
@@ -100,7 +100,7 @@ GRAPH_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RedisGraph"],
     s="modules",
-    url="latest/modules/redisgraph/",
+    url="/modules/redisgraph/",
     body="RedisGraph is the first queryable Property Graph database to use sparse matrices "
          "to represent the adjacency matrix in graphs and linear algebra to query the graph.",
     type=TYPE_PAGE,
@@ -113,7 +113,7 @@ JSON_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RedisJSON"],
     s="modules",
-    url="latest/modules/redisjson/",
+    url="/modules/redisjson/",
     body="Applications developed with the open source version of RedisJSON are 100% "
          "compatible with RedisJSON in Redis Enterprise Software (RS).",
     type=TYPE_PAGE,
@@ -126,7 +126,7 @@ TIMESERIES_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RedisTimeSeries"],
     s="modules",
-    url="latest/modules/redistimeseries/",
+    url="/modules/redistimeseries/",
     body="RedisTimeSeries is a Redis module developed by Redis Labs to enhance your "
          "experience managing time series data with Redis.",
     type=TYPE_PAGE,
@@ -139,7 +139,7 @@ BLOOM_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RedisBloom"],
     s="modules",
-    url="latest/modules/redisbloom/",
+    url="/modules/redisbloom/",
     body="A Bloom filter is a probabilistic data structure which provides an efficient "
          "way to verify that an entry is certainly not in a set.",
     type=TYPE_PAGE,
@@ -152,7 +152,7 @@ AI_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RedisAI"],
     s="modules",
-    url="latest/modules/redisai/",
+    url="/modules/redisai/",
     body="RedisAI is a Redis module for executing Deep Learning/Machine Learning models "
          "and managing their data. ",
     type=TYPE_PAGE,
@@ -165,7 +165,7 @@ MODULES_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules"],
     s="modules",
-    url="latest/modules/",
+    url="/modules/",
     body="Redis Labs develops and packages modules for redis. The modules listed here "
          "are supported with Redis Enterprise Software (RS) clusters and Redis Cloud Pro (RC Pro).",
     type=TYPE_PAGE,
@@ -177,7 +177,7 @@ K8S_LANDING_PAGE = SearchDocument(
     title="Getting Started with Redis Enterprise Software using Kubernetes",
     section_title="",
     hierarchy=["Platforms", "Getting Started with Redis Enterprise Software using Kubernetes"],
-    url="latest/platforms/kubernetes/",
+    url="/platforms/kubernetes/",
     s="platforms",
     body="Getting a Redis Enterprise cluster running on Kubernetes is simple with the Redis Enterprise Operator.",
     type=TYPE_PAGE,
