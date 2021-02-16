@@ -21,5 +21,5 @@ def startup_indexing_job_ids():
     return f"{PREFIX}:startup_indexing_tasks"
 
 
-def site_indexes(url: str):
-    return f"{PREFIX}:{url}:indexes"
+def site_indexes(index_name: str):
+    return f"{PREFIX}:{index_name}:indexes"

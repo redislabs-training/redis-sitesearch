@@ -7,6 +7,7 @@ from dataclasses import asdict
 from queue import Queue
 from threading import Thread
 from typing import Dict, List, Callable, Tuple
+from redis import ResponseError
 
 import redis.exceptions
 import scrapy
@@ -352,12 +353,16 @@ class Indexer:
         Switch the current alias to point to the new index, delete any old
         indexes, and add the latest index to the set of known indexes.
         """
-        indexes_key = keys.site_indexes(self.site.index_name)
+        indexes_key = keys.site_indexes(self.site.url)
         old_indexes = self.search_client.redis.smembers(indexes_key)
         self.search_client.aliasupdate(self.site.index_name)
         for idx in old_indexes:
-            self.search_client.redis.execute_command(
-                self.search_client.DROP_CMD, idx)
+            try:
+                self.search_client.redis.execute_command(
+                    self.search_client.DROP_CMD, idx)
+            except ResponseError:
+                pass
+            self.search_client.redis.srem(indexes_key, idx)
         self.search_client.redis.sadd(indexes_key, self.index_name)
 
     def build_hierarchy(self, doc: SearchDocument):

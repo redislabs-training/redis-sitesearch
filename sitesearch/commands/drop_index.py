@@ -28,3 +28,6 @@ def drop_index(site):
         redis_client.drop_index()
     except ResponseError:
         log.info("Search index does not exist: %s", site.index_name)
+
+    indexer = Indexer(site)
+    redis_client.redis.srem(indexer.index_name)
