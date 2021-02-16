@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import multiprocessing
+import time
 from dataclasses import asdict
 from queue import Queue
 from threading import Thread
@@ -48,9 +49,10 @@ def next_element(elem):
 
 
 class DocumentParser:
-    def __init__(self, root_url, validators):
+    def __init__(self, root_url, validators, content_class):
         self.root_url = root_url
         self.validators = validators
+        self.content_class = content_class
 
     def extract_parts(self, doc, h2s: List[element.Tag]) -> List[SearchDocument]:
         """
@@ -108,24 +110,23 @@ class DocumentParser:
         """
         docs = []
         soup = BeautifulSoup(html, 'html.parser')
+        content = soup
+        safe_url = url.split('?')[0].rstrip('/')
 
         try:
             title = self.prepare_text(soup.title.string.split("|")[0])
         except AttributeError as e:
             raise ParseError("Failed -- missing title") from e
 
-        content = soup.select(".main-content")
+        if self.content_class:
+            main_content = soup.select(self.content_class)
+            if main_content:
+                content = main_content[0]
+
         try:
             s = url.replace(self.root_url, "").replace("//", "/").split("/")[1]
         except IndexError:
             s = ""
-
-        # Try to index only the content div. If a page lacks
-        # that div, index the entire thing.
-        if content:
-            content = content[0]
-        else:
-            content = soup
 
         h2s = content.find_all('h2')
         body = self.prepare_text(content.get_text())
@@ -136,7 +137,7 @@ class DocumentParser:
             hierarchy=[],
             s=s,
             body=body,
-            url=url,
+            url=safe_url,
             type=TYPE_PAGE)
 
         # Index the entire document
@@ -187,22 +188,30 @@ class DocumentationSpiderBase(scrapy.Spider):
 
     # Sub-classes should override these fields.
     url: str = None
+    content_class: str = None
     validators = ValidatorList
     allow: Tuple[str] = ()
     deny: Tuple[str] = ()
+    allowed_domains: Tuple[str] = ()
 
     def __init__(self, *args, **kwargs):
-        self.doc_parser = self.doc_parser_class(self.url, self.validators)
+        self.doc_parser = self.doc_parser_class(self.url, self.validators,
+                                                self.content_class)
         super().__init__(*args, **kwargs)
+        self.extractor = LinkExtractor(allow=self.allow, deny=self.deny)
 
     def follow_links(self, response):
-        extractor = LinkExtractor(allow=self.allow, deny=self.deny)
-        links = [l for l in extractor.extract_links(response)
-                 if l.url.startswith(self.url)]
+        try:
+            links = [l for l in self.extractor.extract_links(response)
+                    if l.url.startswith(self.url)]
+        except AttributeError:  # Usually means this page isn't text -- could be a a PDF, etc.
+            links = []
         yield from response.follow_all(links, callback=self.parse)
 
     def parse(self, response, **kwargs):
         docs_for_page = []
+        if not response.url.startswith(self.url):
+            return
 
         try:
             docs_for_page = self.doc_parser.parse(response.url, response.body)
@@ -219,14 +228,32 @@ class DocumentationSpiderBase(scrapy.Spider):
         return [self.url]
 
 
-
 class Indexer:
+    """
+    Indexer crawls a web site specified in a SiteConfiguration and
+    indexes it in RediSearch.
+
+    Some notes on how we use search index aliases:
+
+    When we create an index, the index name we use is the site's
+    specified index name combined with the current time as a UNIX
+    timestamp.
+
+    Later, when indexing the site actually completes, we'll use the
+    site's specified index name as an alias. We'll delete any existing
+    aliases (from past indexing runs) as well as indexes from past
+    indexing jobs.
+
+    Whenever we try to search the index, we'll refer to the alias --
+    not the actual index name.
+    """
     def __init__(self, site: SiteConfiguration, search_client: Client = None,
-                 rebuild_index: bool = False, **kwargs):
+                 rebuild_index: bool = False):
         self.site = site
+        self.index_name = f"{self.site.index_name}-{time.time()}"
 
         if search_client is None:
-            search_client = get_search_connection(self.site.index_name)
+            search_client = get_search_connection(self.index_name)
 
         self.search_client = search_client
         index_exists = self.search_index_exists()
@@ -242,8 +269,6 @@ class Indexer:
         # use to construct a hierarchy for a given document by comparing each
         # segment of its URL to known URLs.
         self.seen_urls: Dict[str, str] = {}
-
-        super().__init__(**kwargs)
 
     @property
     def url(self):
@@ -289,7 +314,7 @@ class Indexer:
         for synonym_group in self.site.synonym_groups:
             return self.search_client.redis.execute_command(
                 SYNUPDATE_COMMAND,
-                self.site.index_name,
+                self.index_name,
                 synonym_group.group_id,
                 *synonym_group.synonyms)
 
@@ -379,11 +404,15 @@ class Indexer:
                 return
 
         docs_to_process = Queue()
-
         Spider = type(
-            'Spider', (DocumentationSpiderBase,),
-            {"url": self.url, "validators": self.site.validators, "allow": self.site.allow,
-             "deny": self.site.deny})
+            'Spider', (DocumentationSpiderBase, ), {
+                "url": self.url,
+                "validators": self.site.validators,
+                "allow": self.site.allow,
+                "allowed_domains": self.site.allowed_domains,
+                "deny": self.site.deny,
+                "content_class": self.site.content_class
+            })
 
         def enqueue_document(signal, sender, item: SearchDocument, response, spider):
             """Queue a SearchDocument for indexation."""
@@ -407,6 +436,15 @@ class Indexer:
             self.search_client.redis.set(
                 keys.last_index(self.site.url), datetime.datetime.now().timestamp())
             docs_to_process.join()
+
+            # Indexing is now finished. Switch the current alias
+            # to point to the new index and delete old indexes.
+            old_indexes = self.search_client.redis.smembers(
+                keys.site_indexes(self.site.index_name))
+            self.search_client.aliasupdate(self.site.index_name)
+            for idx in old_indexes:
+                self.search_client.redis.execute_command(
+                    self.search_client.DROP_CMD, idx)
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)

@@ -1,6 +1,7 @@
 import logging
 
 import click
+from redis.exceptions import ResponseError
 
 from sitesearch.connections import get_search_connection
 from sitesearch.config import Config
@@ -22,4 +23,8 @@ def drop_index(site):
             f"The site you gave does not exist. Valid sites: {valid_sites}")
 
     redis_client = get_search_connection(site.index_name)
-    redis_client.drop_index()
+
+    try:
+        redis_client.drop_index()
+    except ResponseError:
+        log.info("Search index does not exist: %s", site.index_name)

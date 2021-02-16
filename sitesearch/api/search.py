@@ -2,6 +2,7 @@ import json
 import logging
 from collections import OrderedDict
 
+import falcon
 import redis
 
 from sitesearch.config import Config
@@ -33,9 +34,17 @@ class SearchResource(Resource):
         """Run a search."""
         query = req.get_param('q', default='')
         start = int(req.get_param('start', default=0))
+        site_url = req.get_param('site')
+        search_site = config.sites.get(site_url, config.default_search_site)
 
-        # TODO multi-site: decide which site to use based on query (header, URL?)
-        search_site = config.default_search_site
+        if not search_site:
+            raise falcon.HTTPBadRequest(
+                "Invalid site", "You must specify a valid search site.")
+
+        try:
+            num = min(int(req.get_param('num', default=DEFAULT_NUM)), MAX_NUM)
+        except ValueError:
+            num = DEFAULT_NUM
 
         search_client = get_search_connection(search_site.index_name)
 

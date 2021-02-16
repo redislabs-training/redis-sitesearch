@@ -7,12 +7,14 @@ from .indexer import IndexerResource
 from .health import HealthCheckResource
 
 
+
 def create_app(config=None):
     config = config or Config()
 
     cors = CORS(allow_origins_list=[
         'https://docs.redislabs.com',
-        'http://localhost:1313'
+        'http://localhost:1313',
+        'http://localhost:8000',
     ])
 
     api = falcon.API(middleware=[cors.middleware])

@@ -15,3 +15,11 @@ def last_index(url: str):
 
 def index_name(url: str):
     return f"{PREFIX}:{url}"
+
+
+def startup_indexing_job_ids():
+    return f"{PREFIX}:startup_indexing_tasks"
+
+
+def site_indexes(url: str):
+    return f"{PREFIX}:{url}:indexes"

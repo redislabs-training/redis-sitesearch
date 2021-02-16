@@ -11,14 +11,15 @@ DEFAULT_MAX_LENGTH = 100
 log = logging.getLogger(__name__)
 
 
-def elide_text(text, max_length):
+def elide_text(text: str, max_length: int) -> str:
+    """Shorten a string to a max length and end it with an ellipsis."""
     return text if len(text) < max_length else f"{text[:max_length]}..."
 
 
 def transform_documents(docs: List[Any],
                         search_site: SiteConfiguration,
                         query: str,
-                        max_length=DEFAULT_MAX_LENGTH) -> List[Dict[str, str]]:
+                        max_body_length: int = DEFAULT_MAX_LENGTH) -> List[Dict[str, str]]:
     """
     Transform a list of Documents from RediSearch into a list of dictionaries.
     """
@@ -31,7 +32,7 @@ def transform_documents(docs: List[Any],
             "title": landing_page.title,
             "section_title": landing_page.section_title,
             "hierarchy": landing_page.hierarchy,
-            "body": elide_text(landing_page.body, max_length),
+            "body": landing_page.body,
             "url": landing_page.url
         })
         pages_seen.add(landing_page.url)
@@ -47,11 +48,20 @@ def transform_documents(docs: List[Any],
             log.error("Bad hierarchy data for doc: %s", doc)
             hierarchy = []
 
+        # When the body includes highlighted terms, summarization shortens
+        # the text to a max length. But if the body doesn't have any highlighted
+        # terms, we get the entire body back and need to elide it.
+        #
+        # TODO: The elide_text() function is not HTML aware, so you shouldn't use
+        # it if the text includes HTML!
+        if '<b>' not in doc.body:
+            doc.body = elide_text(doc.body, max_body_length)
+
         transformed.append({
             "title": doc.title,
             "section_title": doc.section_title,
             "hierarchy": hierarchy,
-            "body": elide_text(doc.body, max_length),
+            "body": doc.body,
             "url": doc.url
         })
 

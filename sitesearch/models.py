@@ -34,13 +34,15 @@ Validator = Callable[[SearchDocument], None]
 @dataclass(frozen=True)
 class SiteConfiguration:
     url: str
-    synonym_groups: List[SynonymGroup]
     schema: Tuple[Field]
+    synonym_groups: List[SynonymGroup]
     scorers: Tuple[Scorer]
     validators: Tuple[Validator]
     landing_pages: Dict[str, SearchDocument]
     allow: Tuple[Pattern]
     deny: Tuple[Pattern]
+    allowed_domains: Tuple[str]
+    content_class: str = None
 
     @property
     def all_synonyms(self) -> Set[str]:

@@ -6,6 +6,7 @@ from sitesearch.transformer import transform_documents
 
 config = Config()
 
+
 def test_transform_documents_elides_body_if_longer_than_max():
     doc = Document(
         id="123",
@@ -38,7 +39,6 @@ def test_transform_documents_retains_body_if_shorter_than_max():
     docs = transform_documents([doc], config.default_search_site, 'test')
 
     assert docs[0]['body'] == "This is the body"
-
 
 def test_transform_documents_decodes_hierarchy():
     doc = Document(

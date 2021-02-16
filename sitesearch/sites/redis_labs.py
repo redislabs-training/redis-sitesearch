@@ -57,9 +57,10 @@ SYNONYMS = [
 ]
 
 DOCS_PROD = SiteConfiguration(
-    url="https://docs.redislabs.com/latest",
+    url="https://docs.redislabs.com/latest/",
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
+    allowed_domains=('docs.redislabs.com',),
     schema=(
         TextField("title", weight=10),
         TextField("section_title"),
@@ -76,7 +77,8 @@ DOCS_PROD = SiteConfiguration(
         skip_404_page
     ),
     deny=(r'\/release-notes\/', r'.*\.tgz'),
-    allow=(r'\/latest\/',)
+    allow=(),
+    content_class=".main-content"
 )
 
 DOCS_STAGING = dataclasses.replace(
@@ -84,4 +86,83 @@ DOCS_STAGING = dataclasses.replace(
 
     # Uncomment and use your branch to index staging content.
     # url="https://docs.redislabs.com/staging/<your-branch>"
+)
+
+DEVELOPERS = SiteConfiguration(
+    url="https://developer.redislabs.com",
+    synonym_groups=SYNONYMS,
+    landing_pages={},
+    allowed_domains=('developer.redislabs.com',),
+    schema=(
+        TextField("title", weight=10),
+        TextField("section_title"),
+        TextField("body", weight=1.5),
+        TextField("url"),
+        TextField("s", no_stem=True),
+    ),
+    scorers=(),
+    validators=(
+        skip_404_page,
+    ),
+    allow=(),
+    deny=(
+        r'.*\.pdf',
+        r'.*\.tgz',
+    ),
+    content_class=".main-wrapper"
+)
+
+CORPORATE = SiteConfiguration(
+    url="https://redislabs.com",
+    synonym_groups=SYNONYMS,
+    landing_pages=LANDING_PAGES,
+    allowed_domains=('redislabs.com',),
+    schema=(
+        TextField("title", weight=10),
+        TextField("section_title"),
+        TextField("body", weight=1.5),
+        TextField("url"),
+        TextField("s", no_stem=True),
+    ),
+    scorers=(
+        boost_pages,
+        boost_top_level_pages
+    ),
+    validators=(
+        skip_404_page,
+    ),
+    deny=(
+        r'.*\.pdf',
+        r'.*\.tgz',
+        r'\/tag\/.*',
+    ),
+    allow=(),
+    content_class=".bounds-content"
+)
+
+OSS = SiteConfiguration(
+    url="https://redis.io",
+    synonym_groups=SYNONYMS,
+    landing_pages=LANDING_PAGES,
+    allowed_domains=("redis.io",),
+    schema=(
+        TextField("title", weight=10),
+        TextField("section_title"),
+        TextField("body", weight=1.5),
+        TextField("url"),
+        TextField("s", no_stem=True),
+    ),
+    scorers=(
+        boost_pages,
+        boost_top_level_pages
+    ),
+    validators=(
+        skip_404_page,
+    ),
+    deny=(
+        r'.*\.pdf',
+        r'.*\.tgz',
+    ),
+    allow=(),
+    content_class=".site-content"
 )

@@ -21,7 +21,7 @@ def parse(query: str, search_site: SiteConfiguration) -> Query:
             query = exact_match_query
 
     return Query(query).summarize(
-        'body', context_len=10
+        'body', context_len=10, num_frags=1
     ).highlight(
         ('title', 'body', 'section_title')
     )

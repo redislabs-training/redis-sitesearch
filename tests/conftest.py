@@ -44,7 +44,7 @@ def parse_file():
             html = f.read()
 
         return DocumentParser(
-            DOCS_STAGING.url, DOCS_STAGING.validators).parse(TEST_URL, html)
+            DOCS_STAGING.url, DOCS_STAGING.validators, DOCS_STAGING.content_class).parse(TEST_URL, html)
 
     yield fn
 
