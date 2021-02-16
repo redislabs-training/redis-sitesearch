@@ -2,7 +2,7 @@ import logging
 
 import click
 
-from sitesearch import tasks
+from sitesearch.connections import get_search_connection
 from sitesearch.config import Config
 
 
@@ -10,10 +10,9 @@ config = Config()
 log = logging.getLogger(__name__)
 
 
-@click.option('--rebuild-index', default=False)
 @click.argument('site')
 @click.command()
-def index(site, rebuild_index):
+def drop_index(site):
     """Index the app's configured sites in RediSearch."""
     site = config.sites.get(site)
 
@@ -22,4 +21,5 @@ def index(site, rebuild_index):
         raise click.BadArgumentUsage(
             f"The site you gave does not exist. Valid sites: {valid_sites}")
 
-    tasks.index(site, rebuild_index=rebuild_index, force=True)
+    redis_client = get_search_connection(site.index_name)
+    redis_client.drop_index()
