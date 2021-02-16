@@ -347,6 +347,19 @@ class Indexer:
             if time_diff > DEBOUNCE_SECONDS:
                 raise DebounceError(f"Debounced indexing after {time_diff}s")
 
+    def create_index_alias(self):
+        """
+        Switch the current alias to point to the new index, delete any old
+        indexes, and add the latest index to the set of known indexes.
+        """
+        indexes_key = keys.site_indexes(self.site.index_name)
+        old_indexes = self.search_client.redis.smembers(indexes_key)
+        self.search_client.aliasupdate(self.site.index_name)
+        for idx in old_indexes:
+            self.search_client.redis.execute_command(
+                self.search_client.DROP_CMD, idx)
+        self.search_client.redis.sadd(indexes_key, self.index_name)
+
     def build_hierarchy(self, doc: SearchDocument):
         """
         Build the hierarchy of pages "above" this document.
@@ -437,14 +450,7 @@ class Indexer:
                 keys.last_index(self.site.url), datetime.datetime.now().timestamp())
             docs_to_process.join()
 
-            # Indexing is now finished. Switch the current alias
-            # to point to the new index and delete old indexes.
-            old_indexes = self.search_client.redis.smembers(
-                keys.site_indexes(self.site.index_name))
-            self.search_client.aliasupdate(self.site.index_name)
-            for idx in old_indexes:
-                self.search_client.redis.execute_command(
-                    self.search_client.DROP_CMD, idx)
+            self.create_index_alias()
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)

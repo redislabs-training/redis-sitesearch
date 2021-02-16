@@ -57,4 +57,6 @@ def docs(parse_file):
     for doc in docs:
         indexer.index_document(doc)
 
+    indexer.create_index_alias()
+
     yield docs
