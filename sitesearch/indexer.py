@@ -27,6 +27,7 @@ ROOT_PAGE = "Redis Labs Documentation"
 MAX_THREADS = multiprocessing.cpu_count() * 5
 DEBOUNCE_SECONDS = 60 * 5  # Five minutes
 SYNUPDATE_COMMAND = 'FT.SYNUPDATE'
+TWO_HOURS = 60*60*2
 
 Scorer = Callable[[SearchDocument, float], None]
 ScorerList = List[Scorer]
@@ -55,7 +56,8 @@ class DocumentParser:
         self.validators = validators
         self.content_classes = content_classes
 
-    def extract_parts(self, doc, h2s: List[element.Tag]) -> List[SearchDocument]:
+    def extract_parts(self, doc,
+                      h2s: List[element.Tag]) -> List[SearchDocument]:
         """
         Extract SearchDocuments from H2 elements in a SearchDocument.
 
@@ -85,16 +87,16 @@ class DocumentParser:
                 BeautifulSoup('\n'.join(page), 'html.parser').get_text())
             _id = f"{doc.url}:{doc.title}:{part_title}:{i}"
 
-            docs.append(SearchDocument(
-                doc_id=_id,
-                title=doc.title,
-                hierarchy=doc.hierarchy,
-                s=doc.s,
-                section_title=part_title or "",
-                body=body,
-                url=doc.url,
-                type=TYPE_SECTION,
-                position=i))
+            docs.append(
+                SearchDocument(doc_id=_id,
+                               title=doc.title,
+                               hierarchy=doc.hierarchy,
+                               s=doc.s,
+                               section_title=part_title or "",
+                               body=body,
+                               url=doc.url,
+                               type=TYPE_SECTION,
+                               position=i))
 
         return docs
 
@@ -135,15 +137,14 @@ class DocumentParser:
 
         h2s = content.find_all('h2')
         body = self.prepare_text(content.get_text())
-        doc = SearchDocument(
-            doc_id=f"{url}:{title}",
-            title=title,
-            section_title="",
-            hierarchy=[],
-            s=s,
-            body=body,
-            url=safe_url,
-            type=TYPE_PAGE)
+        doc = SearchDocument(doc_id=f"{url}:{title}",
+                             title=title,
+                             section_title="",
+                             hierarchy=[],
+                             s=s,
+                             body=body,
+                             url=safe_url,
+                             type=TYPE_PAGE)
 
         # Index the entire document
         docs.append(doc)
@@ -207,8 +208,10 @@ class DocumentationSpiderBase(scrapy.Spider):
 
     def follow_links(self, response):
         try:
-            links = [l for l in self.extractor.extract_links(response)
-                    if l.url.startswith(self.url)]
+            links = [
+                l for l in self.extractor.extract_links(response)
+                if l.url.startswith(self.url)
+            ]
         except AttributeError:  # Usually means this page isn't text -- could be a a PDF, etc.
             links = []
         yield from response.follow_all(links, callback=self.parse)
@@ -252,7 +255,9 @@ class Indexer:
     Whenever we try to search the index, we'll refer to the alias --
     not the actual index name.
     """
-    def __init__(self, site: SiteConfiguration, search_client: Client = None,
+    def __init__(self,
+                 site: SiteConfiguration,
+                 search_client: Client = None,
                  rebuild_index: bool = False):
         self.site = site
         self.index_name = f"{self.site.index_name}-{time.time()}"
@@ -261,6 +266,7 @@ class Indexer:
             search_client = get_search_connection(self.index_name)
 
         self.search_client = search_client
+        self.redis = self.search_client.redis
         index_exists = self.search_index_exists()
 
         if rebuild_index:
@@ -306,22 +312,25 @@ class Indexer:
         This is the moment we convert a SearchDocument into a Python
         dictionary and send it to RediSearch.
         """
+        key = keys.document(self.site.url, doc.doc_id)
         try:
-            self.search_client.redis.hset(
-                keys.document(self.site.url, doc.doc_id),
-                mapping=self.document_to_dict(doc))
+            self.redis.hset(key, mapping=self.document_to_dict(doc))
         except redis.exceptions.DataError as e:
             log.error("Failed -- bad data: %s, %s", e, doc.url)
         except redis.exceptions.ResponseError as e:
             log.error("Failed -- response error: %s, %s", e, doc.url)
 
+        # We're going to expire this key in 2 hours, based on the knowledge
+        # that we index every hour. If this content disappears from the site
+        # we're indexing, the outdated document will expire automatically.
+        self.redis.expire(key, TWO_HOURS)
+
     def add_synonyms(self):
         for synonym_group in self.site.synonym_groups:
-            return self.search_client.redis.execute_command(
-                SYNUPDATE_COMMAND,
-                self.index_name,
-                synonym_group.group_id,
-                *synonym_group.synonyms)
+            return self.redis.execute_command(SYNUPDATE_COMMAND,
+                                              self.index_name,
+                                              synonym_group.group_id,
+                                              *synonym_group.synonyms)
 
     def search_index_exists(self):
         try:
@@ -339,16 +348,17 @@ class Indexer:
         to RediSearch after creating the index.
         """
         definition = IndexDefinition(prefix=[f"{keys.PREFIX}:{self.url}"])
-        self.search_client.create_index(self.site.schema, definition=definition)
+        self.search_client.create_index(self.site.schema,
+                                        definition=definition)
 
         if self.site.synonym_groups:
             self.add_synonyms()
 
     def debounce(self):
-        last_index = self.search_client.redis.get(keys.last_index(self.site.url))
+        last_index = self.redis.get(keys.last_index(self.site.url))
         if last_index:
             now = datetime.datetime.now().timestamp()
-            time_diff =  now - float(last_index)
+            time_diff = now - float(last_index)
             if time_diff > DEBOUNCE_SECONDS:
                 raise DebounceError(f"Debounced indexing after {time_diff}s")
 
@@ -358,16 +368,15 @@ class Indexer:
         indexes, and add the latest index to the set of known indexes.
         """
         indexes_key = keys.site_indexes(self.site.url)
-        old_indexes = self.search_client.redis.smembers(indexes_key)
+        old_indexes = self.redis.smembers(indexes_key)
         self.search_client.aliasupdate(self.site.index_name)
         for idx in old_indexes:
             try:
-                self.search_client.redis.execute_command(
-                    'FT.DROPINDEX', idx)
+                self.redis.execute_command('FT.DROPINDEX', idx)
             except ResponseError:
                 pass
-            self.search_client.redis.srem(indexes_key, idx)
-        self.search_client.redis.sadd(indexes_key, self.index_name)
+            self.redis.srem(indexes_key, idx)
+        self.redis.sadd(indexes_key, self.index_name)
 
     def build_hierarchy(self, doc: SearchDocument):
         """
@@ -436,7 +445,8 @@ class Indexer:
                 "content_classes": self.site.content_classes
             })
 
-        def enqueue_document(signal, sender, item: SearchDocument, response, spider):
+        def enqueue_document(signal, sender, item: SearchDocument, response,
+                             spider):
             """Queue a SearchDocument for indexation."""
             self.seen_urls[item.url.rstrip("/")] = item.title
             docs_to_process.put(item)
@@ -447,7 +457,9 @@ class Indexer:
                 try:
                     self.index_document(doc)
                 except Exception as e:
-                    log.error("Unexpected error while indexing doc %s, error: %s", doc.doc_id, e)
+                    log.error(
+                        "Unexpected error while indexing doc %s, error: %s",
+                        doc.doc_id, e)
                 docs_to_process.task_done()
 
         def start_indexing():
@@ -455,22 +467,23 @@ class Indexer:
                 return
             for _ in range(MAX_THREADS):
                 Thread(target=index_documents, daemon=True).start()
-            self.search_client.redis.set(
-                keys.last_index(self.site.url), datetime.datetime.now().timestamp())
+            self.redis.set(keys.last_index(self.site.url),
+                           datetime.datetime.now().timestamp())
             docs_to_process.join()
             self.create_index_alias()
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)
 
-        process = CrawlerProcess(settings={
-            'CONCURRENT_ITEMS': 200,
-            'CONCURRENT_REQUESTS': 100,
-            'CONCURRENT_REQUESTS_PER_DOMAIN': 100,
-            'HTTP_CACHE_ENABLED': True,
-            'REACTOR_THREADPOOL_MAXSIZE': 30,
-            'LOG_LEVEL': 'ERROR'
-        })
+        process = CrawlerProcess(
+            settings={
+                'CONCURRENT_ITEMS': 200,
+                'CONCURRENT_REQUESTS': 100,
+                'CONCURRENT_REQUESTS_PER_DOMAIN': 100,
+                'HTTP_CACHE_ENABLED': True,
+                'REACTOR_THREADPOOL_MAXSIZE': 30,
+                'LOG_LEVEL': 'ERROR'
+            })
 
         log.info("Started crawling")
 

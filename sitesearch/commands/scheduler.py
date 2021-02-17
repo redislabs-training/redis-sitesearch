@@ -40,10 +40,6 @@ def scheduler():
         #
         # This performs an update-in-place using the existing RediSearch index.
         #
-        # TODO: We currently don't try to detect if we have outdated content in
-        # the index -- i.e. when we reindexed a site, a URL was leftover in the
-        # index that we didn't find on this round of indexing.
-        #
         # NOTE: We need to define this here, at the time we run this command,
         # because there is no deduplication in the cron() method, and this app has
         # no "exactly once" startup/initialization step that we could use to call
