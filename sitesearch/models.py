@@ -42,7 +42,7 @@ class SiteConfiguration:
     allow: Tuple[Pattern]
     deny: Tuple[Pattern]
     allowed_domains: Tuple[str]
-    content_class: str = None
+    content_classes: Tuple[str] = None
 
     @property
     def all_synonyms(self) -> Set[str]:

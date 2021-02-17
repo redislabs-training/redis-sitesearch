@@ -8,6 +8,7 @@ from sitesearch.config import Config
 
 config = Config()
 log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 @click.option('--rebuild-index', default=False)

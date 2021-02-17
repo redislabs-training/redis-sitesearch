@@ -50,10 +50,10 @@ def next_element(elem):
 
 
 class DocumentParser:
-    def __init__(self, root_url, validators, content_class):
+    def __init__(self, root_url, validators, content_classes):
         self.root_url = root_url
         self.validators = validators
-        self.content_class = content_class
+        self.content_classes = content_classes
 
     def extract_parts(self, doc, h2s: List[element.Tag]) -> List[SearchDocument]:
         """
@@ -119,10 +119,14 @@ class DocumentParser:
         except AttributeError as e:
             raise ParseError("Failed -- missing title") from e
 
-        if self.content_class:
-            main_content = soup.select(self.content_class)
-            if main_content:
-                content = main_content[0]
+        # Use the first content class we find on the page. (i.e., main
+        # page content).
+        if self.content_classes:
+            for content_class in self.content_classes:
+                main_content = soup.select(content_class)
+                if main_content:
+                    content = main_content[0]
+                    break
 
         try:
             s = url.replace(self.root_url, "").replace("//", "/").split("/")[1]
@@ -189,7 +193,7 @@ class DocumentationSpiderBase(scrapy.Spider):
 
     # Sub-classes should override these fields.
     url: str = None
-    content_class: str = None
+    content_classes: str = None
     validators = ValidatorList
     allow: Tuple[str] = ()
     deny: Tuple[str] = ()
@@ -197,7 +201,7 @@ class DocumentationSpiderBase(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         self.doc_parser = self.doc_parser_class(self.url, self.validators,
-                                                self.content_class)
+                                                self.content_classes)
         super().__init__(*args, **kwargs)
         self.extractor = LinkExtractor(allow=self.allow, deny=self.deny)
 
@@ -359,7 +363,7 @@ class Indexer:
         for idx in old_indexes:
             try:
                 self.search_client.redis.execute_command(
-                    self.search_client.DROP_CMD, idx)
+                    'FT.DROPINDEX', idx)
             except ResponseError:
                 pass
             self.search_client.redis.srem(indexes_key, idx)
@@ -429,7 +433,7 @@ class Indexer:
                 "allow": self.site.allow,
                 "allowed_domains": self.site.allowed_domains,
                 "deny": self.site.deny,
-                "content_class": self.site.content_class
+                "content_classes": self.site.content_classes
             })
 
         def enqueue_document(signal, sender, item: SearchDocument, response, spider):
@@ -454,7 +458,6 @@ class Indexer:
             self.search_client.redis.set(
                 keys.last_index(self.site.url), datetime.datetime.now().timestamp())
             docs_to_process.join()
-
             self.create_index_alias()
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)

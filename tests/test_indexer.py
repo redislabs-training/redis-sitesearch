@@ -42,7 +42,7 @@ def parse_file():
             html = f.read()
 
         return DocumentParser(DOCS_STAGING.url, DOCS_STAGING.validators,
-                              DOCS_STAGING.content_class).parse(
+                              DOCS_STAGING.content_classes).parse(
                                   TEST_URL, html)
 
     return fn

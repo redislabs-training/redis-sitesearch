@@ -78,7 +78,7 @@ DOCS_PROD = SiteConfiguration(
     ),
     deny=(r'\/release-notes\/', r'.*\.tgz'),
     allow=(),
-    content_class=".main-content"
+    content_classes=(".main-content",)
 )
 
 DOCS_STAGING = dataclasses.replace(
@@ -109,7 +109,7 @@ DEVELOPERS = SiteConfiguration(
         r'.*\.pdf',
         r'.*\.tgz',
     ),
-    content_class=".main-wrapper"
+    content_classes=(".markdown", ".margin-vert--md", ".main-wrapper")
 )
 
 CORPORATE = SiteConfiguration(
@@ -137,7 +137,7 @@ CORPORATE = SiteConfiguration(
         r'\/tag\/.*',
     ),
     allow=(),
-    content_class=".bounds-content"
+    content_classes=(".bounds-content", ".bounds-inner")
 )
 
 OSS = SiteConfiguration(
@@ -164,5 +164,5 @@ OSS = SiteConfiguration(
         r'.*\.tgz',
     ),
     allow=(),
-    content_class=".site-content"
+    content_classes=(".site-content",)
 )
