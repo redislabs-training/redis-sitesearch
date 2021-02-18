@@ -21,6 +21,8 @@ queue = Queue(connection=redis_client)
 registry = StartedJobRegistry('default', connection=redis_client)
 
 API_KEY = os.environ['API_KEY']
+JOB_NOT_QUEUED = 'not_queued'
+JOB_STARTED = 'started'
 
 
 class IndexerResource(Resource):

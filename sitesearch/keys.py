@@ -13,7 +13,7 @@ def last_index(url: str):
     return f"{PREFIX}:{url}:last_indexing_time"
 
 
-def index_name(url: str):
+def index_alias(url: str):
     return f"{PREFIX}:{url}"
 
 

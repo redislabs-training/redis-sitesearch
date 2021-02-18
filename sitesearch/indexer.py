@@ -260,7 +260,7 @@ class Indexer:
                  search_client: Client = None,
                  rebuild_index: bool = False):
         self.site = site
-        self.index_name = f"{self.site.index_name}-{time.time()}"
+        self.index_name = f"{self.site.index_alias}-{time.time()}"
 
         if search_client is None:
             search_client = get_search_connection(self.index_name)
@@ -271,7 +271,7 @@ class Indexer:
 
         if rebuild_index:
             if index_exists:
-                self.search_client.drop_index()
+                self.redis.execute_command('FT.DROPINDEX', self.index_name)
             self.setup_index()
         elif not index_exists:
             self.setup_index()
@@ -369,7 +369,16 @@ class Indexer:
         """
         indexes_key = keys.site_indexes(self.site.url)
         old_indexes = self.redis.smembers(indexes_key)
-        self.search_client.aliasupdate(self.site.index_name)
+        try:
+            self.search_client.aliasupdate(self.site.index_alias)
+        except ResponseError as e:
+            log.critical("Could not update index alias %s to index %s -- error: %s. "
+                         "Waiting 5 seconds and trying again...",
+                         self.index_name, self.site.index_alias, e)
+            log.info("Waiting")
+            time.sleep(5)
+            self.search_client.aliasupdate(self.site.index_alias)
+
         for idx in old_indexes:
             try:
                 self.redis.execute_command('FT.DROPINDEX', idx)
@@ -448,7 +457,13 @@ class Indexer:
         def enqueue_document(signal, sender, item: SearchDocument, response,
                              spider):
             """Queue a SearchDocument for indexation."""
-            self.seen_urls[item.url.rstrip("/")] = item.title
+            url_without_slash = item.url.rstrip("/")
+            # Don't index the root page. There is probably a better way to
+            # do this with Scrapy!
+            log.info(item.url.rstrip("/"))
+            if url_without_slash == self.site.url.rstrip("/"):
+                return
+            self.seen_urls[url_without_slash] = item.title
             docs_to_process.put(item)
 
         def index_documents():

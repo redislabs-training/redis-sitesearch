@@ -19,9 +19,11 @@ INDEXING_TIMEOUT = 60*60  # One hour
 
 def index(site: SiteConfiguration, rebuild_index=False, force=False):
     redis_client = get_rq_redis_client()
-    job = get_current_job()
     indexer = Indexer(site, rebuild_index=rebuild_index)
     indexer.index(force)
+
+    job = get_current_job()
     if job:
         redis_client.srem(keys.startup_indexing_job_ids(), job.id)
+
     return True

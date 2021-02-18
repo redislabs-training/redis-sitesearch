@@ -76,7 +76,11 @@ DOCS_PROD = SiteConfiguration(
         skip_release_notes,
         skip_404_page
     ),
-    deny=(r'\/release-notes\/', r'.*\.tgz'),
+    deny=(
+        r'\/release-notes\/',
+        r'.*\.tgz',
+        r'https:\/\/docs\.redislabs\.com\/latest\/index\.html'
+    ),
     allow=(),
     content_classes=(".main-content",)
 )

@@ -46,7 +46,7 @@ class SearchResource(Resource):
         except ValueError:
             num = DEFAULT_NUM
 
-        search_client = get_search_connection(search_site.index_name)
+        search_client = get_search_connection(search_site.index_alias)
 
         try:
             num = min(int(req.get_param('num', default=DEFAULT_NUM)), MAX_NUM)

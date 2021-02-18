@@ -1,4 +1,5 @@
 import logging
+from sitesearch.indexer import Indexer
 
 import click
 from redis.exceptions import ResponseError
@@ -22,12 +23,12 @@ def drop_index(site):
         raise click.BadArgumentUsage(
             f"The site you gave does not exist. Valid sites: {valid_sites}")
 
-    redis_client = get_search_connection(site.index_name)
+    redis_client = get_search_connection(site.index_alias)
 
     try:
-        redis_client.drop_index()
+        redis_client.execute_command('FT.DROPINDEX', site.index_alias)
     except ResponseError:
-        log.info("Search index does not exist: %s", site.index_name)
+        log.info("Search index does not exist: %s", site.index_alias)
 
     indexer = Indexer(site)
     redis_client.redis.srem(indexer.index_name)

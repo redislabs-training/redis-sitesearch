@@ -1,8 +1,10 @@
 import os
 
 import pytest
+import redis as redis_client
 from falcon import testing
 
+from sitesearch import keys
 from sitesearch.api.app import create_app
 from sitesearch.connections import get_redis_connection
 from sitesearch.indexer import DocumentParser, Indexer
@@ -18,11 +20,7 @@ TEST_URL = f"{DOCS_STAGING.url}/test"
 
 @pytest.fixture(autouse=True)
 def redis():
-    redis_client = get_redis_connection()
-
-    yield redis_client
-
-    redis_client.flushdb()
+    yield get_redis_connection()
 
 
 @pytest.fixture
@@ -61,3 +59,17 @@ def docs(parse_file):
     indexer.create_index_alias()
 
     yield docs
+
+
+def _delete_test_keys(prefix: str, conn: redis_client.Redis):
+    for key in conn.scan_iter(f"{prefix}:*"):
+        conn.delete(key)
+
+
+@pytest.fixture(scope="function", autouse=True)
+def delete_test_keys(request):
+    def cleanup():
+        conn = get_redis_connection()
+        _delete_test_keys(keys.PREFIX, conn)
+
+    request.addfinalizer(cleanup)

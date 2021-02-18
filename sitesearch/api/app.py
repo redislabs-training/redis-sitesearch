@@ -13,9 +13,10 @@ def create_app(config=None):
 
     cors = CORS(allow_origins_list=[
         'https://docs.redislabs.com',
+        'http://localhost:3000',
         'http://localhost:1313',
         'http://localhost:8000',
-    ])
+    ], allow_all_headers=True)
 
     api = falcon.API(middleware=[cors.middleware])
     api.add_route('/search', SearchResource(config))

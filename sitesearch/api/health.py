@@ -11,7 +11,7 @@ from .resource import Resource
 
 config = Config()
 redis_client = get_rq_redis_client()
-search_client = get_search_connection(config.default_search_site.index_name)
+search_client = get_search_connection(config.default_search_site.index_alias)
 log = logging.getLogger(__name__)
 queue = Queue(connection=redis_client)
 

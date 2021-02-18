@@ -25,8 +25,6 @@ class Config:
         self.sites = {
             DOCS_PROD.url: DOCS_PROD,
             DEVELOPERS.url: DEVELOPERS,
-            CORPORATE.url: CORPORATE,
-            OSS.url: OSS
         }
         self.default_search_site = DOCS_PROD
         self.is_dev = IS_DEV
