@@ -45,7 +45,7 @@ def scheduler():
         # no "exactly once" startup/initialization step that we could use to call
         # code only once.
         scheduler.cron(
-            "*/60 * * * *",
+            "* * * * *",
             func=tasks.index,
             args=[site],
             kwargs={

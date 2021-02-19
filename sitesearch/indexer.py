@@ -323,7 +323,8 @@ class Indexer:
         # We're going to expire this key in 2 hours, based on the knowledge
         # that we index every hour. If this content disappears from the site
         # we're indexing, the outdated document will expire automatically.
-        self.redis.expire(key, TWO_HOURS)
+        two_hours_from_now = datetime.datetime.now() + datetime.timedelta(hours=2)
+        self.redis.expireat(key, two_hours_from_now)
 
     def add_synonyms(self):
         for synonym_group in self.site.synonym_groups:
