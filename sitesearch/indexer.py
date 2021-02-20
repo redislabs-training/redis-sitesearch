@@ -320,11 +320,8 @@ class Indexer:
         except redis.exceptions.ResponseError as e:
             log.error("Failed -- response error: %s, %s", e, doc.url)
 
-        # We're going to expire this key in 2 hours, based on the knowledge
-        # that we index every hour. If this content disappears from the site
-        # we're indexing, the outdated document will expire automatically.
-        two_hours_from_now = datetime.datetime.now() + datetime.timedelta(hours=2)
-        self.redis.expireat(key, two_hours_from_now)
+        new_urls_key = keys.site_urls_new(self.site.index_alias)
+        self.redis.sadd(new_urls_key, doc.url)
 
     def add_synonyms(self):
         for synonym_group in self.site.synonym_groups:
@@ -387,6 +384,36 @@ class Indexer:
                 pass
             self.redis.srem(indexes_key, idx)
         self.redis.sadd(indexes_key, self.index_name)
+
+    def cleanup_urls(self):
+        """
+        Remove all Hashes for any URL that we previously indexed but is now
+        missing from the indexed site (because e.g., it was deleted from the
+        site).
+
+        Without special handling for this situation, we will retain Hashes
+        for a URL in the search index even if that URL is removed from the
+        site we are indexing.
+
+        To account for these stale URLs, we will keep a Set in Redis of all
+        the "current" indexed URLs for a site every time we index. Then, each
+        time we index the site, we'll take the difference of the Set of
+        current URLs and the Set of "new" URLs we just indexed. The result is
+        the Set of stale URLs, and we'll remove all Hashes for those URLs --
+        thus, we'll remove them from the search index, which follows Hashes.
+        """
+        current_urls_key = keys.site_urls_current(self.site.index_alias)
+        new_urls_key = keys.site_urls_new(self.site.index_alias)
+        old_urls = self.redis.sdiff(current_urls_key, new_urls_key)
+
+        with self.redis.pipeline(transaction=False) as p:
+            for url in old_urls:
+                # A URL can have multiple keys if it had H2s, so here we scan
+                # through all of the URLs document keys and delete them.
+                for doc_key in self.redis.scan_iter(keys.document(url, "*")):
+                    p.delete(doc_key)
+            p.rename(new_urls_key, current_urls_key)
+            p.execute()
 
     def build_hierarchy(self, doc: SearchDocument):
         """
@@ -487,6 +514,7 @@ class Indexer:
                            datetime.datetime.now().timestamp())
             docs_to_process.join()
             self.create_index_alias()
+            self.cleanup_urls()
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)

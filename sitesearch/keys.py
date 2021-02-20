@@ -23,3 +23,11 @@ def startup_indexing_job_ids():
 
 def site_indexes(index_name: str):
     return f"{PREFIX}:{index_name}:indexes"
+
+
+def site_urls_current(index_alias: str):
+    return f"{PREFIX}:{index_alias}:urls:current"
+
+
+def site_urls_new(index_alias: str):
+    return f"{PREFIX}:{index_alias}:urls:new"
