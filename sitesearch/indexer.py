@@ -362,11 +362,8 @@ class Indexer:
 
     def create_index_alias(self):
         """
-        Switch the current alias to point to the new index, delete any old
-        indexes, and add the latest index to the set of known indexes.
+        Switch the current alias to point to the new index and delete old indexes.
         """
-        indexes_key = keys.site_indexes(self.site.url)
-        old_indexes = self.redis.smembers(indexes_key)
         try:
             self.search_client.aliasupdate(self.site.index_alias)
         except ResponseError as e:
@@ -377,13 +374,13 @@ class Indexer:
             time.sleep(5)
             self.search_client.aliasupdate(self.site.index_alias)
 
+        old_indexes = [
+            i for i in self.redis.execute_command('FT._LIST')
+            if i.startswith(self.site.index_alias) and i != self.index_name
+        ]
+
         for idx in old_indexes:
-            try:
-                self.redis.execute_command('FT.DROPINDEX', idx)
-            except ResponseError:
-                pass
-            self.redis.srem(indexes_key, idx)
-        self.redis.sadd(indexes_key, self.index_name)
+            self.redis.execute_command('FT.DROPINDEX', idx)
 
     def cleanup_urls(self):
         """
