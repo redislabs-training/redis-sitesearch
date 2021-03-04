@@ -50,6 +50,23 @@ def next_element(elem):
             return elem
 
 
+def get_section(root_url: str, url: str) -> str:
+    """Given a root URL and an input URL, determine the "section" of the current URL.
+
+    The section is the first portion of the path above the root, e.g. in the URL:
+
+        https://docs.redislabs.com/first/second/third
+
+    The section is "first".
+    """
+    print(root_url, url)
+    try:
+        s = url.replace(root_url, "").replace("//", "/").split("/")[0]
+    except (IndexError, TypeError, AttributeError):
+        s = ""
+    return s
+
+
 class DocumentParser:
     def __init__(self, root_url, validators, content_classes):
         self.root_url = root_url
@@ -130,10 +147,7 @@ class DocumentParser:
                     content = main_content[0]
                     break
 
-        try:
-            s = url.replace(self.root_url, "").replace("//", "/").split("/")[1]
-        except IndexError:
-            s = ""
+        s = get_section(self.root_url, url)
 
         h2s = content.find_all('h2')
         body = self.prepare_text(content.get_text())

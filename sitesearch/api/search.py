@@ -9,6 +9,7 @@ from sitesearch.config import Config
 from sitesearch.transformer import transform_documents
 from sitesearch.connections import get_search_connection, get_redis_connection
 from sitesearch.query_parser import parse
+from sitesearch import indexer
 from .resource import Resource
 
 config = Config()
@@ -36,6 +37,7 @@ class SearchResource(Resource):
         start = int(req.get_param('start', default=0))
         site_url = req.get_param('site')
         search_site = config.sites.get(site_url, config.default_search_site)
+        section = indexer.get_section(site_url, req.referer)
 
         if not search_site:
             raise falcon.HTTPBadRequest(
@@ -53,7 +55,7 @@ class SearchResource(Resource):
         except ValueError:
             num = DEFAULT_NUM
 
-        q = parse(query, search_site).paging(start, num)
+        q = parse(query, section, search_site).paging(start, num)
 
         try:
             res = search_client.search(q)
