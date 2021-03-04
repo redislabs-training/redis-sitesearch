@@ -59,6 +59,8 @@ def get_section(root_url: str, url: str) -> str:
 
     The section is "first".
     """
+    if not url.startswith(root_url):
+        return ""
     try:
         s = url.replace(root_url, "").replace("//", "/").split("/")[0]
     except (IndexError, TypeError, AttributeError):

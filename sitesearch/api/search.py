@@ -36,7 +36,7 @@ class SearchResource(Resource):
         query = req.get_param('q', default='')
         from_url = req.get_param('from_url', default='')
         start = int(req.get_param('start', default=0))
-        site_url = req.get_param('site')
+        site_url = req.get_param('site', default=config.default_search_site.url)
         search_site = config.sites.get(site_url, config.default_search_site)
         section = indexer.get_section(site_url, from_url)
 

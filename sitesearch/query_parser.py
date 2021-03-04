@@ -3,7 +3,7 @@ import re
 from sitesearch.models import SiteConfiguration
 from redisearch import Query
 
-UNSAFE_CHARS = re.compile('[\\[\\]+]')
+UNSAFE_CHARS = re.compile('[\\[\\]\\<\\>+]')
 
 
 def parse(query: str, section: str, search_site: SiteConfiguration) -> Query:
@@ -20,7 +20,7 @@ def parse(query: str, section: str, search_site: SiteConfiguration) -> Query:
         if exact_match_query in search_site.all_synonyms:
             query = exact_match_query
 
-    if section:
+    if query and section:
         # Boost results in the section the user is currently browsing.
         query = f"((@s:{section}) => {{$weight: 10}} {query}) | {query}"
 
