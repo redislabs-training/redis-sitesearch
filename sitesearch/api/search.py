@@ -34,10 +34,11 @@ class SearchResource(Resource):
     def on_get(self, req, resp):
         """Run a search."""
         query = req.get_param('q', default='')
+        from_url = req.get_param('from_url', default='')
         start = int(req.get_param('start', default=0))
         site_url = req.get_param('site')
         search_site = config.sites.get(site_url, config.default_search_site)
-        section = indexer.get_section(site_url, req.referer)
+        section = indexer.get_section(site_url, from_url)
 
         if not search_site:
             raise falcon.HTTPBadRequest(
