@@ -24,8 +24,6 @@ def parse(query: str, section: str, search_site: SiteConfiguration) -> Query:
         # Boost results in the section the user is currently browsing.
         query = f"((@s:{section}) => {{$weight: 10}} {query}) | {query}"
 
-    print(query)
-
     return Query(query).summarize(
         'body', context_len=10, num_frags=1
     ).highlight(
