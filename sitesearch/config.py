@@ -14,16 +14,18 @@ class Config:
     def __init__(self):
         if IS_DEV :
             self.sites = {
+                DOCS_PROD.url: DOCS_PROD,
                 DOCS_STAGING.url: DOCS_STAGING,
                 DEVELOPERS.url: DEVELOPERS,
                 CORPORATE.url: CORPORATE,
                 OSS.url: OSS
             }
-            self.default_search_site = DOCS_STAGING
+            self.default_search_site = DOCS_PROD
             return
 
         self.sites = {
             DOCS_PROD.url: DOCS_PROD,
+            DOCS_STAGING.url: DOCS_STAGING,
             DEVELOPERS.url: DEVELOPERS,
         }
         self.default_search_site = DOCS_PROD

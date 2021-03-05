@@ -88,8 +88,7 @@ DOCS_PROD = SiteConfiguration(
 DOCS_STAGING = dataclasses.replace(
     DOCS_PROD,
 
-    # Uncomment and use your branch to index staging content.
-    # url="https://docs.redislabs.com/staging/<your-branch>"
+    url="https://docs.redislabs.com/staging/boost-current-section"
 )
 
 DEVELOPERS = SiteConfiguration(

@@ -8,14 +8,14 @@ from sitesearch import keys
 from sitesearch.api.app import create_app
 from sitesearch.connections import get_redis_connection
 from sitesearch.indexer import DocumentParser, Indexer
-from sitesearch.sites.redis_labs import DOCS_STAGING
+from sitesearch.sites.redis_labs import DOCS_PROD
 
 
 DOCS_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "documents")
 FILE_WITH_SECTIONS = "page_with_sections.html"
 TEST_DOC = os.path.join(DOCS_DIR, FILE_WITH_SECTIONS)
-TEST_URL = f"{DOCS_STAGING.url}/test"
+TEST_URL = f"{DOCS_PROD.url}/test"
 
 
 @pytest.fixture(autouse=True)
@@ -41,8 +41,8 @@ def parse_file():
         with open(file, encoding='utf-8') as f:
             html = f.read()
 
-        return DocumentParser(DOCS_STAGING.url, DOCS_STAGING.validators,
-                              DOCS_STAGING.content_classes).parse(
+        return DocumentParser(DOCS_PROD.url, DOCS_PROD.validators,
+                              DOCS_PROD.content_classes).parse(
                                   TEST_URL, html)
 
     yield fn
@@ -50,7 +50,7 @@ def parse_file():
 
 @pytest.fixture
 def docs(parse_file):
-    indexer = Indexer(DOCS_STAGING)
+    indexer = Indexer(DOCS_PROD)
     docs = parse_file(TEST_DOC)
 
     for doc in docs:

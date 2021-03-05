@@ -62,8 +62,10 @@ def get_section(root_url: str, url: str) -> str:
     if not url.startswith(root_url):
         return ""
     try:
-        s = url.replace(root_url, "").replace("//", "/").split("/")[0]
-    except (IndexError, TypeError, AttributeError):
+        url_parts = url.replace(root_url, "").replace("//", "/").split("/")
+        s = [u for u in url_parts if u][0]
+    except (IndexError, TypeError, AttributeError) as e:
+        log.debug("Could not parse section: %s", e)
         s = ""
     return s
 
