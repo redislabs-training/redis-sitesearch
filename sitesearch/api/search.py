@@ -1,6 +1,6 @@
 import json
 import logging
-from collections import OrderedDict
+from re import search
 
 import falcon
 import redis
@@ -18,16 +18,6 @@ log = logging.getLogger(__name__)
 
 DEFAULT_NUM = 30
 MAX_NUM = 100
-
-
-class OrderedDefaultDict(OrderedDict):
-    def __init__(self, factory, *args, **kwargs):
-        self.factory = factory
-        super().__init__(*args, **kwargs)
-
-    def __missing__(self, key):
-        self[key] = value = self.factory()
-        return value
 
 
 class SearchResource(Resource):
@@ -58,15 +48,17 @@ class SearchResource(Resource):
 
         q = parse(query, section, search_site).paging(start, num)
 
-        try:
-            res = search_client.search(q)
-        except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
-            log.error("Search query failed: %s", e)
-            total = 0
-            docs = []
-        else:
-            docs = res.docs
-            total = res.total
+        with search_client.pipeline() as p:
+            p.search(q)
+            try:
+                res, _ = p.execute()
+            except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
+                log.error("Search query failed: %s", e)
+                total = 0
+                docs = []
+            else:
+                docs = res.docs
+                total = res.total
 
         docs = transform_documents(docs, search_site, q.query_string())
 
