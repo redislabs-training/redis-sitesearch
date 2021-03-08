@@ -2,7 +2,7 @@
 
 HASH=`git rev-parse --short HEAD`
 TAG="gcr.io/redislabs-university/docsearch-app:$HASH-$RANDOM"
-NEW_TEMPLATE="docsearch-app-global-$HASH-$RANDOM"
+NEW_TEMPLATE="docsearch-app-west-$HASH-$RANDOM"
 SERVICE_ACCOUNT="279443788353-compute@developer.gserviceaccount.com"
 US_WEST_DISK="docsearch-app-west-2"
 
