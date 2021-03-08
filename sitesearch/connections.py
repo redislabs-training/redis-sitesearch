@@ -4,21 +4,28 @@ from dotenv import load_dotenv
 from redis import Redis
 from redisearch import Client
 
-
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
 
 load_dotenv()
 
 
-def get_redis_connection(password=REDIS_PASSWORD, host=REDIS_HOST,
+def get_redis_connection(password=REDIS_PASSWORD,
+                         host=REDIS_HOST,
+                         port=REDIS_PORT,
                          decode_responses=True):
-    return Redis(password=password, host=host, decode_responses=decode_responses)
+    return Redis(password=password,
+                 host=host,
+                 port=port,
+                 decode_responses=decode_responses)
 
 
-def get_search_connection(index: str, password: str = REDIS_PASSWORD,
+def get_search_connection(index: str,
+                          password: str = REDIS_PASSWORD,
+                          port=REDIS_PORT,
                           host: str = REDIS_HOST):
-    conn = get_redis_connection(password=password, host=host)
+    conn = get_redis_connection(password=password, host=host, port=port)
     return Client(index, conn=conn)
 
 

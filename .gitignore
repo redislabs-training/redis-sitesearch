@@ -6,7 +6,7 @@ __pycache__*
 .envredis-sitesearch.iml
 redis-sitesearch.iml
 .env
-.env.prod
+.env.prod*
 app.yaml
 data
 supervisord.log
