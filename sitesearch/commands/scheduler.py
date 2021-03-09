@@ -23,7 +23,6 @@ def scheduler():
         job = queue.enqueue(tasks.index,
                             args=[site],
                             kwargs={
-                                "rebuild_index": True,
                                 "force": True
                             },
                             job_timeout=tasks.INDEXING_TIMEOUT)
@@ -47,7 +46,6 @@ def scheduler():
             func=tasks.index,
             args=[site],
             kwargs={
-                "rebuild_index": False,
                 "force": False
             },
             use_local_timezone=True,

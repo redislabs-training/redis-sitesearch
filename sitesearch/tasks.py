@@ -17,9 +17,9 @@ JOB_STARTED = 'started'
 INDEXING_TIMEOUT = 60*60  # One hour
 
 
-def index(site: SiteConfiguration, rebuild_index=False, force=False):
+def index(site: SiteConfiguration, force=False):
     redis_client = get_rq_redis_client()
-    indexer = Indexer(site, rebuild_index=rebuild_index)
+    indexer = Indexer(site)
     indexer.index(force)
 
     job = get_current_job()

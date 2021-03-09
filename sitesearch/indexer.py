@@ -274,8 +274,7 @@ class Indexer:
     """
     def __init__(self,
                  site: SiteConfiguration,
-                 search_client: Client = None,
-                 rebuild_index: bool = False):
+                 search_client: Client = None):
         self.site = site
         self.index_name = f"{self.site.index_alias}-{time.time()}"
 
@@ -286,11 +285,7 @@ class Indexer:
         self.redis = self.search_client.redis
         index_exists = self.search_index_exists()
 
-        if rebuild_index:
-            if index_exists:
-                self.redis.execute_command('FT.DROPINDEX', self.index_name)
-            self.setup_index()
-        elif not index_exists:
+        if not index_exists:
             self.setup_index()
 
         # This is a map of already-crawled URLs to page titles, which we can

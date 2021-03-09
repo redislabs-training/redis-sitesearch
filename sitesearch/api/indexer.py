@@ -70,7 +70,6 @@ class IndexerResource(Resource):
             job = queue.enqueue(tasks.index,
                                 args=[site],
                                 kwargs={
-                                    "rebuild_index": True,
                                     "force": True
                                 },
                                 job_timeout=tasks.INDEXING_TIMEOUT)
