@@ -18,4 +18,4 @@ services:
     volumes:
       - $PWD:/src
     env_file:
-      - .env
+      - .env.test

@@ -4,11 +4,11 @@ from dotenv import load_dotenv
 from redis import Redis
 from redisearch import Client
 
+load_dotenv()
+
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 REDIS_HOST = os.environ.get('REDIS_HOST')
 REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
-
-load_dotenv()
 
 
 def get_redis_connection(password=REDIS_PASSWORD,

@@ -380,16 +380,15 @@ class Indexer:
     def create_index_alias(self):
         """
         Switch the current alias to point to the new index and delete old indexes.
+
+        If the alias doesn't exist yet, this method will create it.
         """
         try:
             self.search_client.aliasupdate(self.site.index_alias)
-        except ResponseError as e:
-            log.critical("Could not update index alias %s to index %s -- error: %s. "
-                         "Waiting 5 seconds and trying again...",
-                         self.index_name, self.site.index_alias, e)
-            log.info("Waiting")
-            time.sleep(5)
-            self.search_client.aliasupdate(self.site.index_alias)
+        except ResponseError:
+            log.error("Alias %s for index %s did not exist, creating.",
+                      self.site.index_alias, self.index_name)
+            self.search_client.aliasadd(self.site.index_alias)
 
         old_indexes = [
             i for i in self.redis.execute_command('FT._LIST')

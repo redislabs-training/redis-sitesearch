@@ -24,6 +24,7 @@ def index(site: SiteConfiguration, rebuild_index=False, force=False):
 
     job = get_current_job()
     if job:
+        log.info("Removing indexing job ID: %s", job.id)
         redis_client.srem(keys.startup_indexing_job_ids(), job.id)
 
     return True

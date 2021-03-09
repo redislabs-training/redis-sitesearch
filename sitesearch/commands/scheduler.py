@@ -1,14 +1,12 @@
 import logging
+from datetime import datetime, timedelta
 
 import click
-from rq_scheduler.scheduler import Scheduler
 from rq import Queue
-
-from sitesearch.connections import get_rq_redis_client
-from sitesearch import keys
-from sitesearch import tasks
+from rq_scheduler.scheduler import Scheduler
+from sitesearch import keys, tasks
 from sitesearch.config import Config
-
+from sitesearch.connections import get_rq_redis_client
 
 config = Config()
 log = logging.getLogger(__name__)
