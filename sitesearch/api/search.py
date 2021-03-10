@@ -20,16 +20,6 @@ DEFAULT_NUM = 30
 MAX_NUM = 100
 
 
-class OrderedDefaultDict(OrderedDict):
-    def __init__(self, factory, *args, **kwargs):
-        self.factory = factory
-        super().__init__(*args, **kwargs)
-
-    def __missing__(self, key):
-        self[key] = value = self.factory()
-        return value
-
-
 class SearchResource(Resource):
     def on_get(self, req, resp):
         """Run a search."""
@@ -50,12 +40,6 @@ class SearchResource(Resource):
             num = DEFAULT_NUM
 
         search_client = get_search_connection(search_site.index_alias)
-
-        try:
-            num = min(int(req.get_param('num', default=DEFAULT_NUM)), MAX_NUM)
-        except ValueError:
-            num = DEFAULT_NUM
-
         q = parse(query, section, search_site).paging(start, num)
 
         try:
