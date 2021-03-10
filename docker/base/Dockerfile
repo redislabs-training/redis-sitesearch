@@ -1,5 +1,9 @@
 FROM python:3.8
 
+RUN apt-get update
+RUN apt-get install -y supervisor nginx
+
+
 # ---------------
 # Install the app
 # ---------------

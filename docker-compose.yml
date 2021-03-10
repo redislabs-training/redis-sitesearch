@@ -7,39 +7,50 @@ services:
       - "6379:6379"
     volumes:
       - $PWD/data:/data
-    env_file:
-      - .env
+    command: redis-server --requirepass ${REDIS_PASSWORD} --dbfilename dump.rdb --dir /data --save 600 1000 --loadmodule /usr/lib/redis/modules/redisearch.so MINPREFIX 1
 
   app:
-    build: docker/app
+    build:
+      context: ./
+      dockerfile: docker/app/Dockerfile
     ports:
       - "8080:8080"
     volumes:
       - $PWD:/src
     env_file:
       - .env
+    depends_on:
+      - redis
 
   worker:
-    build: docker/worker
-    ports:
-      - "8080:8080"
+    build:
+      context: ./
+      dockerfile: docker/worker/Dockerfile
     volumes:
       - $PWD:/src
     env_file:
       - .env
+    depends_on:
+      - redis
 
   scheduler:
-    build: docker/scheduler
-    ports:
-      - "8080:8080"
+    build:
+      context: ./
+      dockerfile: docker/scheduler/Dockerfile
     volumes:
       - $PWD:/src
     env_file:
       - .env
+    depends_on:
+      - redis
 
   test:
-    build: docker/test
-    entrypoint: "/src/test.sh"
+    build:
+      context: ./
+      dockerfile: docker/test/Dockerfile
+    entrypoint: "pytest -s"
+    depends_on:
+      - redis
     volumes:
       - $PWD:/src
     env_file:

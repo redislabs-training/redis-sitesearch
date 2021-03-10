@@ -1,5 +1,8 @@
 FROM python:3.8
 
+RUN apt-get update
+RUN apt-get install -y supervisor nginx
+
 # ---------------
 # Install the app
 # ---------------
@@ -16,7 +19,7 @@ RUN pip3 install -r requirements.txt
 COPY requirements-dev.txt /src/requirements-dev.txt
 RUN pip3 install -r requirements-dev.txt
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY . /src

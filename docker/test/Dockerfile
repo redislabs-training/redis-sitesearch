@@ -16,7 +16,7 @@ RUN pip3 install -r requirements.txt
 COPY requirements-dev.txt /src/requirements-dev.txt
 RUN pip3 install -r requirements-dev.txt
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/test/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY . /src
