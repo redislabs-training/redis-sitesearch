@@ -1,19 +1,44 @@
 version: "3.8"
 
 services:
-  app:
-    build: .
+  redis:
+    image: redislabs/redisearch:latest
     ports:
       - "6379:6379"
-      - "8080:8080"
     volumes:
       - $PWD/data:/data
+    env_file:
+      - .env
+
+  app:
+    build: docker/app
+    ports:
+      - "8080:8080"
+    volumes:
+      - $PWD:/src
+    env_file:
+      - .env
+
+  worker:
+    build: docker/worker
+    ports:
+      - "8080:8080"
+    volumes:
+      - $PWD:/src
+    env_file:
+      - .env
+
+  scheduler:
+    build: docker/scheduler
+    ports:
+      - "8080:8080"
+    volumes:
       - $PWD:/src
     env_file:
       - .env
 
   test:
-    build: .
+    build: docker/test
     entrypoint: "/src/test.sh"
     volumes:
       - $PWD:/src
