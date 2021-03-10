@@ -9,5 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cp .env.example .env
+      - run: cp .env.example .env.test
       - run: sed -i 's/remove-if-redis-has-no-password/test/g' .env
       - run: docker-compose up test
