@@ -9,8 +9,8 @@ US_WEST_DISK="docsearch-app-west-2"
 WORKER_TAG="gcr.io/redislabs-university/docsearch-worker-staging:$HASH-$RANDOM"
 NEW_WORKER_TEMPLATE="docsearch-worker-staging-$HASH-$RANDOM"
 
-NEW_SCHEDULER_TEMPLATE="docsearch-scheduler-staging-$HASH-$RANDOM"
 SCHEDULER_TAG="gcr.io/redislabs-university/docsearch-scheduler-staging:$HASH-$RANDOM"
+NEW_SCHEDULER_TEMPLATE="docsearch-scheduler-staging-$HASH-$RANDOM"
 
 echo "Building $TAG..."
 docker build -t $TAG . -f docker/app/Dockerfile
@@ -69,7 +69,6 @@ create-with-container $NEW_WORKER_TEMPLATE \
 --boot-disk-size=10GB \
 --boot-disk-type=pd-standard \
 --boot-disk-device-name=$US_WEST_DISK \
---container-image=$TAG \
 --container-restart-policy=always \
 --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
 --container-env-file ./.env.staging \
@@ -93,7 +92,6 @@ create-with-container $NEW_SCHEDULER_TEMPLATE \
 --boot-disk-size=10GB \
 --boot-disk-type=pd-standard \
 --boot-disk-device-name=$US_WEST_DISK \
---container-image=$TAG \
 --container-restart-policy=always \
 --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
 --container-env-file ./.env.staging \
