@@ -16,7 +16,7 @@ echo "Creating new instance template $NEW_TEMPLATE from $TAG"
 gcloud beta compute --project=redislabs-university instance-templates \
     create-with-container $NEW_TEMPLATE \
     --container-image $TAG \
-    --machine-type=e2-medium \
+    --machine-type=e2-micro \
     --network=projects/redislabs-university/global/networks/docsearch \
     --network-tier=PREMIUM \
     --metadata=google-logging-enabled=false \
