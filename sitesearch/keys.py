@@ -1,5 +1,9 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 DEFAULT_PREFIX = "sitesearch:test"
 
 PREFIX = os.environ.get('KEY_PREFIX', DEFAULT_PREFIX)
