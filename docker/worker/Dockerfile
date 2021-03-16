@@ -1,7 +1,7 @@
 FROM python:3.8
 
 RUN apt-get update
-RUN apt-get install -y supervisor nginx
+RUN apt-get install -y supervisor
 
 # ---------------
 # Install the app
@@ -20,13 +20,10 @@ COPY requirements-dev.txt /src/requirements-dev.txt
 RUN pip3 install -r requirements-dev.txt
 
 COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY . /src
 RUN pip3 install -e .
 
-# The port on which nginx is listening
-EXPOSE 8080/tcp
 
 # The port on which to run the Python app
 ENV PORT 8081
