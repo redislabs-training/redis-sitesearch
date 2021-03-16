@@ -1,5 +1,8 @@
 FROM python:3.8
 
+RUN apt-get update
+RUN apt-get install -y supervisor nginx
+
 # ---------------
 # Install the app
 # ---------------
@@ -16,11 +19,19 @@ RUN pip3 install -r requirements.txt
 COPY requirements-dev.txt /src/requirements-dev.txt
 RUN pip3 install -r requirements-dev.txt
 
+COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY nginx.conf /etc/nginx/nginx.conf
+
 COPY . /src
 RUN pip3 install -e .
 
+# The port on which nginx is listening
+EXPOSE 8080/tcp
+
+# The port on which to run the Python app
+ENV PORT 8081
 ENV NEW_RELIC_APP_NAME "sitesearch"
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED true
 ENV NEW_RELIC_LOG stdout
 
-ENTRYPOINT ["rq", "worker", "--with-scheduler", "-c", "worker_settings"]
+ENTRYPOINT ["/usr/bin/supervisord"]
