@@ -19,7 +19,7 @@ RUN pip3 install -r requirements.txt
 COPY requirements-dev.txt /src/requirements-dev.txt
 RUN pip3 install -r requirements-dev.txt
 
-COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/worker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY . /src
 RUN pip3 install -e .
