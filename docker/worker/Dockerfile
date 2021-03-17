@@ -26,7 +26,7 @@ RUN pip3 install -e .
 
 
 # The port on which to run the Python app
-ENV PORT 8081
+ENV PORT 8082
 ENV NEW_RELIC_APP_NAME "sitesearch"
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED true
 ENV NEW_RELIC_LOG stdout
