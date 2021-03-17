@@ -21,9 +21,8 @@ class HealthCheckResource(Resource):
         """
         newrelic.agent.ignore_transaction(flag=True)
         try:
-            search_client.info()
+            search_client.redis.ping()
         except ResponseError as e:
-            # The index doesn't exist -- this may indicate that indexing
-            # hasn't started yet, or else our indexing tasks all failed.
+            # Connection to Redis is probably down, so this node isn't healthy.
             log.error("Response error: %s", e)
             resp.status = HTTP_503
