@@ -1,7 +1,7 @@
 import logging
 
-import newrelic
 from falcon.status_codes import HTTP_503
+from newrelic import agent
 from redis.exceptions import ResponseError
 
 from sitesearch.config import Config
@@ -18,7 +18,7 @@ class HealthCheckResource(Resource):
         """
         This service is considered unhealthy if the default search index is unavailable.
         """
-        newrelic.agent.ignore_transaction(flag=True)
+        agent.ignore_transaction(flag=True)
         try:
             redis_client.ping()
         except ResponseError as e:
