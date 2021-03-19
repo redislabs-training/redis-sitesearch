@@ -1,10 +1,9 @@
 import logging
-from sitesearch import keys
 
 from falcon.status_codes import HTTP_503
 from redis.exceptions import ResponseError
 from sitesearch.config import Config
-from sitesearch.connections import get_search_connection, get_rq_redis_client
+from sitesearch.connections import get_search_connection
 from .resource import Resource
 
 config = Config()
