@@ -17,7 +17,7 @@ COPY requirements-dev.txt /src/requirements-dev.txt
 RUN pip3 install -r requirements-dev.txt
 
 COPY . /src
-RUN pip3 install -e .
+RUN pip3 install -e /src
 
 ENV NEW_RELIC_APP_NAME "sitesearch"
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED true

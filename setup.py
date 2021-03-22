@@ -8,7 +8,7 @@ setuptools.setup(
     version="1.0",
     author="Andrew Brookins",
     author_email="andrew.brookins@redislabs.com",
-    description="Redis-powered site search",
+    description="Redis-powered website search by Redis Labs.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/redislabs-training/redis-sitesearch",
