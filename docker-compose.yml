@@ -4,7 +4,7 @@ services:
   redis:
     image: redislabs/redisearch:latest
     ports:
-      - "6379:6379"
+      - "16379:6379"
     volumes:
       - $PWD/data:/data
     command: redis-server --requirepass ${REDIS_PASSWORD} --dbfilename dump.rdb --dir /data --save 600 1000 --loadmodule /usr/lib/redis/modules/redisearch.so MINPREFIX 1

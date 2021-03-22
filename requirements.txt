@@ -11,4 +11,5 @@ scrapy==2.3.0
 gevent==20.9.0
 hiredis==1.1.0
 newrelic==6.0.1.155
+redisearch==2.0.0
 --no-binary falcon falcon==2.0.0
