@@ -10,20 +10,20 @@ RUN apt-get install -y supervisor nginx
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.8 get-pip.py
 RUN pip3 install --upgrade pip
 
-WORKDIR /src
+WORKDIR /redis-sitesearch
 
 # Hack to avoid docker reinstalling every build
-COPY requirements.txt /src/requirements.txt
-RUN pip3 install -r requirements.txt
+COPY requirements.txt /redis-sitesearch/requirements.txt
+RUN pip3 install -r /redis-sitesearch/requirements.txt
 
-COPY requirements-dev.txt /src/requirements-dev.txt
-RUN pip3 install -r requirements-dev.txt
+COPY requirements-dev.txt /redis-sitesearch/requirements-dev.txt
+RUN pip3 install -r /redis-sitesearch/requirements-dev.txt
 
 COPY docker/app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY . /src
-RUN pip3 install -e .
+COPY . /redis-sitesearch
+RUN pip3 install -e /redis-sitesearch
 
 # The port on which nginx is listening
 EXPOSE 8080/tcp
