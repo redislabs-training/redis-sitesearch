@@ -8,7 +8,6 @@ redis-sitesearch.iml
 .env
 .env.prod*
 .env.staging*
-.env.test*
 app.yaml
 data
 supervisord.log
