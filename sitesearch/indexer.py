@@ -18,7 +18,8 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.crawler import CrawlerProcess
 from scrapy.signalmanager import dispatcher
 
-from sitesearch import keys
+from sitesearch.keys import Keys
+from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_search_connection
 from sitesearch.errors import ParseError
 from sitesearch.models import SearchDocument, SiteConfiguration, TYPE_PAGE, TYPE_SECTION
@@ -274,9 +275,12 @@ class Indexer:
     """
     def __init__(self,
                  site: SiteConfiguration,
+                 app_config: AppConfiguration,
                  search_client: Client = None):
         self.site = site
-        self.index_name = f"{self.site.index_alias}-{time.time()}"
+        self.keys = Keys(app_config.key_prefix)
+        self.index_alias = self.keys.index_alias(self.site.url)
+        self.index_name = f"{self.index_alias}-{time.time()}"
 
         if search_client is None:
             search_client = get_search_connection(self.index_name)
@@ -324,7 +328,7 @@ class Indexer:
         This is the moment we convert a SearchDocument into a Python
         dictionary and send it to RediSearch.
         """
-        key = keys.document(self.site.url, doc.doc_id)
+        key = self.keys.document(self.site.url, doc.doc_id)
         try:
             self.redis.hset(key, mapping=self.document_to_dict(doc))
         except redis.exceptions.DataError as e:
@@ -332,7 +336,7 @@ class Indexer:
         except redis.exceptions.ResponseError as e:
             log.error("Failed -- response error: %s, %s", e, doc.url)
 
-        new_urls_key = keys.site_urls_new(self.site.index_alias)
+        new_urls_key = self.keys.site_urls_new(self.index_alias)
         self.redis.sadd(new_urls_key, doc.url)
 
     def add_synonyms(self):
@@ -357,7 +361,7 @@ class Indexer:
         If the indexer was given any synonym groups, it adds these
         to RediSearch after creating the index.
         """
-        definition = IndexDefinition(prefix=[f"{keys.PREFIX}:{self.url}"])
+        definition = IndexDefinition(prefix=[self.keys.index_prefix(self.url)])
         self.search_client.create_index(self.site.schema,
                                         definition=definition)
 
@@ -365,7 +369,7 @@ class Indexer:
             self.add_synonyms()
 
     def debounce(self):
-        last_index = self.redis.get(keys.last_index(self.site.url))
+        last_index = self.redis.get(self.keys.last_index(self.site.url))
         if last_index:
             now = datetime.datetime.now().timestamp()
             time_diff = now - float(last_index)
@@ -379,15 +383,15 @@ class Indexer:
         If the alias doesn't exist yet, this method will create it.
         """
         try:
-            self.search_client.aliasupdate(self.site.index_alias)
+            self.search_client.aliasupdate(self.index_alias)
         except ResponseError:
             log.error("Alias %s for index %s did not exist, creating.",
-                      self.site.index_alias, self.index_name)
-            self.search_client.aliasadd(self.site.index_alias)
+                      self.index_alias, self.index_name)
+            self.search_client.aliasadd(self.index_alias)
 
         old_indexes = [
             i for i in self.redis.execute_command('FT._LIST')
-            if i.startswith(self.site.index_alias) and i != self.index_name
+            if i.startswith(self.index_alias) and i != self.index_name
         ]
 
         for idx in old_indexes:
@@ -410,15 +414,15 @@ class Indexer:
         the Set of stale URLs, and we'll remove all Hashes for those URLs --
         thus, we'll remove them from the search index, which follows Hashes.
         """
-        current_urls_key = keys.site_urls_current(self.site.index_alias)
-        new_urls_key = keys.site_urls_new(self.site.index_alias)
+        current_urls_key = self.keys.site_urls_current(self.index_alias)
+        new_urls_key = self.keys.site_urls_new(self.index_alias)
         old_urls = self.redis.sdiff(current_urls_key, new_urls_key)
 
         with self.redis.pipeline(transaction=False) as p:
             for url in old_urls:
-                # A URL can have multiple keys if it had H2s, so here we scan
-                # through all of the URLs document keys and delete them.
-                for doc_key in self.redis.scan_iter(keys.document(url, "*")):
+                # A URL can have multiple self.keys.if it had H2s, so here we scan
+                # through all of the URLs document self.keys.and delete them.
+                for doc_key in self.redis.scan_iter(self.keys.document(url, "*")):
                     p.delete(doc_key)
             p.rename(new_urls_key, current_urls_key)
             p.execute()
@@ -518,7 +522,7 @@ class Indexer:
                 return
             for _ in range(MAX_THREADS):
                 Thread(target=index_documents, daemon=True).start()
-            self.redis.set(keys.last_index(self.site.url),
+            self.redis.set(self.keys.last_index(self.site.url),
                            datetime.datetime.now().timestamp())
             docs_to_process.join()
             self.create_index_alias()

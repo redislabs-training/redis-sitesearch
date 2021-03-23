@@ -1,12 +1,13 @@
 import logging
-from sitesearch import keys
-from sitesearch.connections import get_rq_redis_client
+from typing import Optional
+from sitesearch.config import AppConfiguration
 
 from rq import get_current_job
 
+from sitesearch import keys
+from sitesearch.connections import get_rq_redis_client
 from sitesearch.indexer import Indexer
 from sitesearch.models import SiteConfiguration
-
 
 log = logging.getLogger(__name__)
 
@@ -17,9 +18,11 @@ JOB_STARTED = 'started'
 INDEXING_TIMEOUT = 60*60  # One hour
 
 
-def index(site: SiteConfiguration, force=False):
+def index(site: SiteConfiguration, config: Optional[AppConfiguration] = None, force=False):
     redis_client = get_rq_redis_client()
-    indexer = Indexer(site)
+    if config is None:
+        config = AppConfiguration()
+    indexer = Indexer(site, config)
     indexer.index(force)
 
     job = get_current_job()

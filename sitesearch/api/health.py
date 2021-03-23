@@ -4,11 +4,11 @@ from falcon.status_codes import HTTP_503
 from newrelic import agent
 from redis.exceptions import ResponseError
 
-from sitesearch.config import Config
+from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_redis_connection
 from .resource import Resource
 
-config = Config()
+config = AppConfiguration()
 redis_client = get_redis_connection()
 log = logging.getLogger(__name__)
 

@@ -3,7 +3,8 @@ from unittest import mock
 from unittest.mock import call
 
 import pytest
-from sitesearch import keys
+
+from sitesearch.keys import Keys
 from sitesearch.config import DOCS_PROD
 from sitesearch.errors import ParseError
 from sitesearch.indexer import DocumentParser, Indexer
@@ -23,9 +24,14 @@ TEST_URL = f"{DOCS_PROD.url}/test"
 
 
 @pytest.fixture()
-def indexer():
+def indexer(app_config):
     mock_search_client = mock.MagicMock()
-    yield Indexer(DOCS_PROD, mock_search_client)
+    yield Indexer(DOCS_PROD, app_config, mock_search_client)
+
+
+@pytest.fixture()
+def keys(app_config):
+    yield Keys(prefix=app_config.key_prefix)
 
 
 @pytest.fixture()
@@ -65,7 +71,7 @@ def index_file(indexer, parse_file):
     return fn
 
 
-def test_indexer_indexes_page_document(index_file):
+def test_indexer_indexes_page_document(index_file, keys):
     indexer = index_file(FILE_WITH_SECTIONS)
     expected_doc = {
         'doc_id': f'{TEST_URL}:Database Persistence with Redis Enterprise Software',
@@ -83,7 +89,7 @@ def test_indexer_indexes_page_document(index_file):
     indexer.search_client.redis.hset.assert_any_call(key, mapping=expected_doc)
 
 
-def test_indexer_indexes_page_section_documents(index_file):
+def test_indexer_indexes_page_section_documents(index_file, keys):
     indexer = index_file(FILE_WITH_SECTIONS)
     expected_section_docs = [
         {

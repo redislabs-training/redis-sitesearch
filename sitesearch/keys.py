@@ -1,37 +1,49 @@
-import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
-
-DEFAULT_PREFIX = "sitesearch:test"
-
-PREFIX = os.environ.get('KEY_PREFIX', DEFAULT_PREFIX)
 
 
-def document(url: str, doc_id: str):
-    return f"{PREFIX}:{url}:doc:{doc_id}"
+class Keys:
+    def __init__(self, prefix: str):
+        self.prefix = prefix
 
+    def document(self, url: str, doc_id: str) -> str:
+        """The key used for a single document in the index.
 
-def last_index(url: str):
-    return f"{PREFIX}:{url}:last_indexing_time"
+        This key ends with an ID because each URL might have several
+        documents in the index, one for the page as a whole and one
+        per H2 we scraped (if there were H2 elements on the page).
+        """
+        return f"{self.prefix}:{url}:doc:{doc_id}"
 
+    def last_index(self, url: str) -> str:
+        """The last time we indexed a URL."""
+        return f"{self.prefix}:{url}:last_indexing_time"
 
-def index_alias(url: str):
-    return f"{PREFIX}:{url}"
+    def index_alias(self, url: str) -> str:
+        """The index alias we use for a URL."""
+        return f"{self.prefix}:{url}"
 
+    def index_prefix(self, url: str) -> str:
+        """The prefix we use for a RediSearch index.
 
-def startup_indexing_job_ids():
-    return f"{PREFIX}:startup_indexing_tasks"
+        This becomes part of the index definition and controls which
+        documents (Hashes) RediSearch will index.
+        """
+        return f"{self.prefix}:{url}"
 
+    def startup_indexing_job_ids(self) -> str:
+        """A Set containing the startup indexing task IDs.
 
-def site_indexes(index_name: str):
-    return f"{PREFIX}:{index_name}:indexes"
+        We clear this out as the tasks finish.
+        """
+        return f"{self.prefix}:startup_indexing_tasks"
 
+    def site_urls_current(self, index_alias: str) -> str:
+        """All the URLs currently indexed for a site."""
+        return f"{self.prefix}:{index_alias}:urls:current"
 
-def site_urls_current(index_alias: str):
-    return f"{PREFIX}:{index_alias}:urls:current"
+    def site_urls_new(self, index_alias: str) -> str:
+        """All the URLs newly indexed by an indexing task for a site.
 
-
-def site_urls_new(index_alias: str):
-    return f"{PREFIX}:{index_alias}:urls:new"
+        We use this and site_urls_current() to clean up old URLs that we
+        indexed from a site in the past but that are no longer on the site.
+        """
+        return f"{self.prefix}:{index_alias}:urls:new"

@@ -3,10 +3,10 @@ import logging
 import click
 
 from sitesearch import tasks
-from sitesearch.config import Config
+from sitesearch.config import AppConfiguration
 
 
-config = Config()
+config = AppConfiguration()
 log = logging.getLogger(__name__)
 
 
