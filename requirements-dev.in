@@ -1,0 +1,5 @@
+pytest==6.0.1
+mypy==0.761
+ipdb
+pylint
+pip-tools

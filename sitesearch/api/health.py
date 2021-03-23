@@ -1,13 +1,15 @@
 import logging
 
 from falcon.status_codes import HTTP_503
+from newrelic import agent
 from redis.exceptions import ResponseError
-from sitesearch.config import Config
-from sitesearch.connections import get_search_connection
+
+from sitesearch.config import AppConfiguration
+from sitesearch.connections import get_redis_connection
 from .resource import Resource
 
-config = Config()
-search_client = get_search_connection(config.default_search_site.index_alias)
+config = AppConfiguration()
+redis_client = get_redis_connection()
 log = logging.getLogger(__name__)
 
 
@@ -16,10 +18,10 @@ class HealthCheckResource(Resource):
         """
         This service is considered unhealthy if the default search index is unavailable.
         """
+        agent.ignore_transaction(flag=True)
         try:
-            search_client.info()
+            redis_client.ping()
         except ResponseError as e:
-            # The index doesn't exist -- this may indicate that indexing
-            # hasn't started yet, or else our indexing tasks all failed.
+            # Connection to Redis is probably down, so this node isn't healthy.
             log.error("Response error: %s", e)
             resp.status = HTTP_503

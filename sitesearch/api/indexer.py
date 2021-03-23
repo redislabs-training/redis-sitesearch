@@ -10,11 +10,9 @@ from rq.exceptions import NoSuchJobError
 from rq.registry import StartedJobRegistry
 from sitesearch import tasks
 
-from sitesearch.config import Config
 from sitesearch.connections import get_rq_redis_client
 from .resource import Resource
 
-config = Config()
 redis_client = get_rq_redis_client()
 log = logging.getLogger(__name__)
 queue = Queue(connection=redis_client)
@@ -66,7 +64,7 @@ class IndexerResource(Resource):
                 else:
                     job.cancel()
 
-        for site in self.config.sites.values():
+        for site in self.app_config.sites.values():
             job = queue.enqueue(tasks.index,
                                 args=[site],
                                 kwargs={

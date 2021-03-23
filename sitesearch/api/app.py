@@ -1,15 +1,14 @@
 import falcon
 from falcon_cors import CORS
 
-from sitesearch.config import Config
+from sitesearch.config import AppConfiguration
 from .search import SearchResource
 from .indexer import IndexerResource
 from .health import HealthCheckResource
 
 
-
 def create_app(config=None):
-    config = config or Config()
+    config = config or AppConfiguration()
 
     cors = CORS(allow_origins_list=[
         'https://docs.redislabs.com',
