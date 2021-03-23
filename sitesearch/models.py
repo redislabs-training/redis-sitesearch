@@ -1,7 +1,6 @@
-from dataclasses import InitVar, dataclass, field, replace
+from dataclasses import dataclass, replace
 from typing import Dict, List, Set, Tuple, Callable, Pattern
 
-from sitesearch import keys
 from redisearch.client import Field
 
 TYPE_PAGE = "page"

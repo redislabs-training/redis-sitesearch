@@ -19,7 +19,7 @@ DEV_SITES = {
     DOCS_STAGING.url: DOCS_STAGING,
     DEVELOPERS.url: DEVELOPERS,
     CORPORATE.url: CORPORATE,
-    OSS.url: OSS
+    OSS.url: OSS,
 }
 
 # Sites to index in production.

@@ -1,6 +1,5 @@
 import json
 import logging
-from sitesearch.commands.search import search
 
 import falcon
 import redis
@@ -45,15 +44,19 @@ class SearchResource(Resource):
         query = req.get_param('q', default='')
         from_url = req.get_param('from_url', default='')
         start = int(req.get_param('start', default=0))
-        site_url = req.get_param(
-            'site', default=self.app_config.default_search_site.url)
-        search_site = self.app_config.sites.get(
-            site_url, self.app_config.default_search_site)
-        section = indexer.get_section(site_url, from_url)
+        site_url = req.get_param('site', default=None)
 
-        if not search_site:
+        # Return an error if a site URL was given but it's invalid.
+        if site_url and site_url not in self.app_config.sites:
             raise falcon.HTTPBadRequest(
                 "Invalid site", "You must specify a valid search site.")
+
+        # Use the default search site if no site URL was given.
+        if not site_url:
+            site_url = self.app_config.default_search_site.url
+
+        search_site = self.app_config.sites.get(site_url)
+        section = indexer.get_section(site_url, from_url)
 
         try:
             num = min(int(req.get_param('num', default=DEFAULT_NUM)), MAX_NUM)

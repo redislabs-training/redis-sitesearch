@@ -6,7 +6,8 @@ from redis import Redis
 from rq import Queue
 from rq_scheduler.scheduler import Scheduler
 
-from sitesearch import keys, tasks
+from sitesearch import tasks
+from sitesearch.keys import Keys
 from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_rq_redis_client
 
@@ -17,6 +18,7 @@ log = logging.getLogger(__name__)
 def schedule(scheduler: Scheduler, redis_client: Redis,
              config: Optional[AppConfiguration] = None):
     queue = Queue(connection=redis_client)
+    keys = Keys(prefix=config.key_prefix)
 
     for site in config.sites.values():
         job = queue.enqueue(tasks.index,

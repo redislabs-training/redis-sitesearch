@@ -1,17 +1,16 @@
 import json
 import logging
 import os
-from sitesearch import keys
 
 from falcon.errors import HTTPUnauthorized
 from rq import Queue
-from rq.job import Job
 from rq.exceptions import NoSuchJobError
+from rq.job import Job
 from rq.registry import StartedJobRegistry
-from sitesearch import tasks
 
+from sitesearch import tasks
 from sitesearch.connections import get_rq_redis_client
-from .resource import Resource
+from sitesearch.api.resource import Resource
 
 redis_client = get_rq_redis_client()
 log = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ JOB_STARTED = 'started'
 class IndexerResource(Resource):
     def on_get(self, req, resp):
         """Get job IDs for in-progress indexing tasks."""
-        indexing_job_ids = redis_client.smembers(keys.startup_indexing_job_ids())
+        indexing_job_ids = redis_client.smembers(self.keys.startup_indexing_job_ids())
         jobs = []
 
         if indexing_job_ids:
@@ -53,7 +52,7 @@ class IndexerResource(Resource):
                            'as part of the request.')
             raise HTTPUnauthorized('Auth token required', description, challenges)
 
-        indexing_job_ids = redis_client.smembers(keys.startup_indexing_job_ids())
+        indexing_job_ids = redis_client.smembers(self.keys.startup_indexing_job_ids())
 
         if indexing_job_ids:
             for job_id in indexing_job_ids:
@@ -71,7 +70,7 @@ class IndexerResource(Resource):
                                     "force": True
                                 },
                                 job_timeout=tasks.INDEXING_TIMEOUT)
-            redis_client.sadd(keys.startup_indexing_job_ids(), job.id)
+            redis_client.sadd(self.keys.startup_indexing_job_ids(), job.id)
             jobs.append({"job_id" :job.id, "status": "started"})
 
         resp.body = json.dumps({"jobs": jobs})

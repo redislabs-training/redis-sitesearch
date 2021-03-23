@@ -1,12 +1,12 @@
 import logging
 from typing import Optional
-from sitesearch.config import AppConfiguration
 
 from rq import get_current_job
 
-from sitesearch import keys
+from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_rq_redis_client
 from sitesearch.indexer import Indexer
+from sitesearch.keys import Keys
 from sitesearch.models import SiteConfiguration
 
 log = logging.getLogger(__name__)
@@ -27,6 +27,7 @@ def index(site: SiteConfiguration, config: Optional[AppConfiguration] = None, fo
 
     job = get_current_job()
     if job:
+        keys = Keys(prefix=config.key_prefix)
         log.info("Removing indexing job ID: %s", job.id)
         redis_client.srem(keys.startup_indexing_job_ids(), job.id)
 

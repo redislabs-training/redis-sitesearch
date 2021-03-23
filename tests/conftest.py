@@ -4,13 +4,11 @@ import pytest
 import redis as redis_client
 from falcon import testing
 
-from sitesearch import keys
-from sitesearch.config import AppConfiguration
 from sitesearch.api.app import create_app
+from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_redis_connection
 from sitesearch.indexer import DocumentParser, Indexer
 from sitesearch.sites.redis_labs import DOCS_PROD
-
 
 DOCS_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "documents")
