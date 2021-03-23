@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from sitesearch.models import SiteConfiguration
 from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DOCS_STAGING, DEVELOPERS, OSS
+from sitesearch.sites.andrewbrookins import BLOG
 
 load_dotenv()
 
@@ -20,6 +21,7 @@ DEV_SITES = {
     DEVELOPERS.url: DEVELOPERS,
     CORPORATE.url: CORPORATE,
     OSS.url: OSS,
+    BLOG.url: BLOG  # Index Andrew's blog!
 }
 
 # Sites to index in production.
