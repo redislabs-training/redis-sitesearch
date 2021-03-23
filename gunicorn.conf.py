@@ -13,6 +13,7 @@ loglevel = 'warning'
 bind = f':{PORT}'
 daemon = False
 worker_temp_dir = '/dev/shm'
+reload = True
 
 # Gevent worker settings
 worker_class = 'gevent'
