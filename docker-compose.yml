@@ -2,12 +2,15 @@ version: "3.8"
 
 services:
   redis:
-    image: redislabs/redisearch:latest
+    build:
+      context: ./
+      dockerfile: docker/redis/Dockerfile
     ports:
       - "16379:6379"
     volumes:
       - $PWD/data:/data
-    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes --dir /data --loadmodule /usr/lib/redis/modules/redisearch.so MINPREFIX 1
+    env_file:
+      - .env
 
   app:
     build:
