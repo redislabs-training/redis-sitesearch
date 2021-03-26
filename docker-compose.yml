@@ -46,15 +46,3 @@ services:
       - .env
     depends_on:
       - redis
-
-  test:
-    build:
-      context: ./
-      dockerfile: docker/test/Dockerfile
-    entrypoint: "pytest -s"
-    volumes:
-      - $PWD:/redis-sitesearch
-    env_file:
-      - .env
-    depends_on:
-        - redis
