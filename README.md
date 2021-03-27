@@ -92,8 +92,8 @@ You will also see output from a Redis container.
 You might see errors and warnings as the indexing job proceeds, like this:
 
 ```
-app_1   | 2021-01-12 21:18:07 [sitesearch.indexer] ERROR: Document parser error -- Could not find breadcrumbs: https://docs.redislabs.com/latest/
-app_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser error -- Skipping 404 page: https://docs.redislabs.com/latest/404.html
+worker_1   | 2021-01-12 21:18:07 [sitesearch.indexer] ERROR: Document parser error -- Could not find breadcrumbs: https://docs.redislabs.com/latest/
+worker_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser error -- Skipping 404 page: https://docs.redislabs.com/latest/404.html
 ```
 
 This output is normal -- some pages don't have breadcrumbs, and we skip 404 pages. Other times, the scraper encounters PDF or other non-HTML files and gives up trying to index them.
