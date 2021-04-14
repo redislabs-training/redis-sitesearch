@@ -14,7 +14,7 @@ SYNONYMS = [
     ),
     SynonymGroup(
         group_id='active',
-        synonyms={'active', 'active-active', 'active active'}
+        synonyms={'active', 'active active'}
     ),
     SynonymGroup(
         group_id='json',
