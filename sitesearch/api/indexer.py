@@ -9,7 +9,7 @@ from rq.registry import StartedJobRegistry
 
 from sitesearch import tasks
 from sitesearch.connections import get_rq_redis_client
-from sitesearch.cluster_aware_queue import ClusterAwareQueue
+from sitesearch.cluster_aware_rq import ClusterAwareQueue
 from sitesearch.api.resource import Resource
 
 redis_client = get_rq_redis_client()

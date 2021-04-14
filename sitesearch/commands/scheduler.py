@@ -3,19 +3,18 @@ from typing import Optional
 
 import click
 from redis import Redis
-from rq_scheduler.scheduler import Scheduler
 
 from sitesearch import tasks
 from sitesearch.keys import Keys
 from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_rq_redis_client
-from sitesearch.cluster_aware_queue import ClusterAwareQueue
+from sitesearch.cluster_aware_rq import ClusterAwareQueue, ClusterAwareScheduler
 
 config = AppConfiguration()
 log = logging.getLogger(__name__)
 
 
-def schedule(scheduler: Scheduler, redis_client: Redis,
+def schedule(scheduler: ClusterAwareScheduler, redis_client: Redis,
              config: Optional[AppConfiguration] = None):
     queue = ClusterAwareQueue(connection=redis_client)
     keys = Keys(prefix=config.key_prefix)
@@ -60,6 +59,6 @@ def schedule(scheduler: Scheduler, redis_client: Redis,
 def scheduler():
     """Run rq-scheduler"""
     redis_client = get_rq_redis_client()
-    scheduler = Scheduler(connection=redis_client)
+    scheduler = ClusterAwareScheduler(connection=redis_client)
     schedule(scheduler, redis_client, config)
     scheduler.run()
