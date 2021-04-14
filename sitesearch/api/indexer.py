@@ -3,18 +3,18 @@ import logging
 import os
 
 from falcon.errors import HTTPUnauthorized
-from rq import Queue
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
 from rq.registry import StartedJobRegistry
 
 from sitesearch import tasks
 from sitesearch.connections import get_rq_redis_client
+from sitesearch.cluster_aware_queue import ClusterAwareQueue
 from sitesearch.api.resource import Resource
 
 redis_client = get_rq_redis_client()
 log = logging.getLogger(__name__)
-queue = Queue(connection=redis_client)
+queue = ClusterAwareQueue(connection=redis_client)
 registry = StartedJobRegistry('default', connection=redis_client)
 
 API_KEY = os.environ['API_KEY']
