@@ -38,7 +38,7 @@ class Keys:
 
     def site_urls_current(self, index_alias: str) -> str:
         """All the URLs currently indexed for a site."""
-        return f"{self.prefix}:{index_alias}:urls:current"
+        return f"{self.prefix}:{index_alias}:{{urls}}:current"
 
     def site_urls_new(self, index_alias: str) -> str:
         """All the URLs newly indexed by an indexing task for a site.
@@ -46,4 +46,4 @@ class Keys:
         We use this and site_urls_current() to clean up old URLs that we
         indexed from a site in the past but that are no longer on the site.
         """
-        return f"{self.prefix}:{index_alias}:urls:new"
+        return f"{self.prefix}:{index_alias}:{{urls}}:new"
