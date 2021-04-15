@@ -2,6 +2,7 @@ import rq.registry
 import rq.scheduler
 import rq.suspension
 import rq.worker_registration
+import rq.contrib.legacy
 from rq import Queue, Worker
 from rq.job import Job
 from rq_scheduler.scheduler import Scheduler
@@ -72,3 +73,8 @@ class ClusterAwareScheduler(Scheduler):
     scheduled_jobs_key = REDIS_SCHEDULED_JOBS_KEY
     queue_class = ClusterAwareQueue
     job_class = ClusterAwareJob
+
+
+# Apparently the CLI calls the cleanup_ghosts() function in this module, which
+# does not know anything about our custom worker class. Cool!
+rq.contrib.legacy.Worker = ClusterAwareWorker
