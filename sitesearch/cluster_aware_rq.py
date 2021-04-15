@@ -1,11 +1,10 @@
-import rq.worker_registration
-import rq.scheduler
 import rq.registry
+import rq.scheduler
+import rq.suspension
+import rq.worker_registration
 from rq import Queue, Worker
 from rq.job import Job
-from rq.registry import BaseRegistry
 from rq_scheduler.scheduler import Scheduler
-
 
 REDIS_QUEUE_NAMESPACE_PREFIX = '{rq}:queue:'
 REDIS_QUEUE_KEYS = '{rq}:queue:queues'
@@ -38,6 +37,7 @@ rq.registry.FailedJobRegistry.key_template = '{{rq}}:failed:{0}'
 rq.registry.FinishedJobRegistry.key_template = '{{rq}}:finished:{0}'
 rq.registry.DeferredJobRegistry.key_template = '{{rq}}:deferred:{0}'
 rq.registry.ScheduledJobRegistry.key_template = '{{rq}}:scheduled:{0}'
+rq.suspension.WORKERS_SUSPENDED = "{rq}:suspended"
 
 
 class ClusterAwareJob(Job):
