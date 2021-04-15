@@ -25,7 +25,8 @@ COPY . /redis-sitesearch
 RUN pip3 install -e /redis-sitesearch
 
 # The port on which to run the Python app
-ENV PORT 8082
+EXPOSE 8080/tcp
+ENV PORT 8080
 ENV NEW_RELIC_APP_NAME "sitesearch"
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED true
 ENV NEW_RELIC_LOG stdout
