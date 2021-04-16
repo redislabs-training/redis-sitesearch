@@ -35,17 +35,21 @@ def index(site: SiteConfiguration, config: Optional[AppConfiguration] = None, fo
     return True
 
 
-def clear_old_indexes(site: SiteConfiguration):
-    redis_client = get_search_connection(site.index_alias)
+def clear_old_indexes(site: SiteConfiguration, config: Optional[AppConfiguration] = None):
+    if config is None:
+        config = AppConfiguration()
+    keys = Keys(config.key_prefix)
+    index_alias = keys.index_alias(site.url)
+    redis_client = get_search_connection(index_alias)
     try:
         current_index = redis_client.info()['index_name']
     except ResponseError:
-        log.debug("Index alias does not exist: %s", site.index_alias)
-        return False
+        log.info("Index alias does not exist: %s", index_alias)
+        current_index = None
 
     old_indexes = [
         i for i in redis_client.redis.execute_command('FT._LIST')
-        if i.startswith(site.index_alias) and i != current_index
+        if i.startswith(index_alias) and i != current_index
     ]
 
     for idx in old_indexes:

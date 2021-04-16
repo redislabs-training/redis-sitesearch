@@ -4,7 +4,7 @@ from typing import Dict, Optional
 from dotenv import load_dotenv
 
 from sitesearch.models import SiteConfiguration
-from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OSS
+from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OSS, DOCS_STAGING
 from sitesearch.sites.andrewbrookins import BLOG
 
 load_dotenv()
@@ -20,6 +20,7 @@ DEV_SITES = {
     DEVELOPERS.url: DEVELOPERS,
     CORPORATE.url: CORPORATE,
     OSS.url: OSS,
+    DOCS_STAGING.url: DOCS_STAGING,
     BLOG.url: BLOG  # Index Andrew's blog!
 }
 

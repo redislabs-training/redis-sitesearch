@@ -29,6 +29,7 @@ MAX_THREADS = multiprocessing.cpu_count() * 5
 DEBOUNCE_SECONDS = 60 * 5  # Five minutes
 SYNUPDATE_COMMAND = 'FT.SYNUPDATE'
 TWO_HOURS = 60*60*2
+INDEXING_LOCK_TIMEOUT = 60*60
 
 Scorer = Callable[[SearchDocument, float], None]
 ScorerList = List[Scorer]
@@ -287,6 +288,7 @@ class Indexer:
 
         self.search_client = search_client
         self.redis = self.search_client.redis
+        self.lock = self.keys.index_lock(site.url)
         index_exists = self.search_index_exists()
 
         if not index_exists:
@@ -376,6 +378,16 @@ class Indexer:
             if time_diff > DEBOUNCE_SECONDS:
                 raise DebounceError(f"Debounced indexing after {time_diff}s")
 
+    def clear_old_indexes(self):
+        old_indexes = [
+            i for i in self.redis.execute_command('FT._LIST')
+            if i.startswith(self.index_alias) and i != self.index_name
+        ]
+
+        log.debug("Dropping old indexes: %s", ", ".join(old_indexes))
+        for idx in old_indexes:
+            self.redis.execute_command('FT.DROPINDEX', idx)
+
     def create_index_alias(self):
         """
         Switch the current alias to point to the new index and delete old indexes.
@@ -389,14 +401,7 @@ class Indexer:
                       self.index_alias, self.index_name)
             self.search_client.aliasadd(self.index_alias)
 
-        old_indexes = [
-            i for i in self.redis.execute_command('FT._LIST')
-            if i.startswith(self.index_alias) and i != self.index_name
-        ]
-
-        log.debug("Dropping old indexes: %s", ", ".join(old_indexes))
-        for idx in old_indexes:
-            self.redis.execute_command('FT.DROPINDEX', idx)
+        self.clear_old_indexes()
 
     def cleanup_urls(self):
         """
@@ -483,6 +488,12 @@ class Indexer:
             except DebounceError as e:
                 log.error("Debounced indexing task: %s", e)
                 return
+            if self.redis.exists(self.lock):
+                log.info("Skipping index due to presence of lock %s", self.lock)
+                return
+
+        # Set a lock per URL while indexing.
+        self.redis.set(self.lock, 1, ex=INDEXING_LOCK_TIMEOUT)
 
         docs_to_process = Queue()
         Spider = type(
@@ -521,7 +532,7 @@ class Indexer:
         def start_indexing():
             if docs_to_process.empty():
                 # Don't keep around an empty search index.
-                self.search_client.dropindex()
+                self.redis.execute_command('FT.DROPINDEX', self.index_name)
                 return
             for _ in range(MAX_THREADS):
                 Thread(target=index_documents, daemon=True).start()
@@ -530,6 +541,7 @@ class Indexer:
             docs_to_process.join()
             self.create_index_alias()
             self.cleanup_urls()
+            self.redis.delete(self.lock)
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)
         dispatcher.connect(start_indexing, signal=signals.engine_stopped)

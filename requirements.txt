@@ -112,7 +112,7 @@ rmtest==0.7.0
     # via redisearch
 rq-scheduler==0.10.0
     # via -r requirements.in
-rq==1.5.2
+rq==1.7.0
     # via
     #   -r requirements.in
     #   rq-scheduler

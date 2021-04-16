@@ -87,11 +87,11 @@ DOCS_PROD = SiteConfiguration(
 
 # Uncomment this and replace 'url' with your staging URL to test staging
 # branches.
-# DOCS_STAGING = dataclasses.replace(
-#     DOCS_PROD,
+DOCS_STAGING = dataclasses.replace(
+    DOCS_PROD,
 
-#     url="https://docs.redislabs.com/staging/boost-current-section"
-# )
+    url="https://docs.redislabs.com/staging/boost-current-section"
+)
 
 DEVELOPERS = SiteConfiguration(
     url="https://developer.redislabs.com",

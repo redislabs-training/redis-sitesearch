@@ -2,36 +2,25 @@ import logging
 from typing import Optional
 
 import click
-from redis import Redis
+from redis import Redis, ResponseError
 
 from sitesearch import tasks
 from sitesearch.keys import Keys
 from sitesearch.config import AppConfiguration
-from sitesearch.connections import get_rq_redis_client
+from sitesearch.connections import get_rq_redis_client, get_search_connection
 from sitesearch.cluster_aware_rq import ClusterAwareQueue, ClusterAwareScheduler
 
 config = AppConfiguration()
 log = logging.getLogger(__name__)
 
 
-def schedule(scheduler: ClusterAwareScheduler, redis_client: Redis,
-             config: Optional[AppConfiguration] = None):
+def schedule(scheduler: ClusterAwareScheduler, redis_client: Redis, config: AppConfiguration):
     queue = ClusterAwareQueue(connection=redis_client)
     keys = Keys(prefix=config.key_prefix)
 
     for site in config.sites.values():
-        job = queue.enqueue(tasks.index,
-                            args=[site, config],
-                            kwargs={
-                                "force": True
-                            },
-                            job_timeout=tasks.INDEXING_TIMEOUT)
-
-        # Track in-progress indexing tasks in a Redis set, so that we can
-        # check if indexing is in-progress. Tasks should remove their
-        # IDs from the set, so that when the set is empty, we think
-        # indexing is done.
-        redis_client.sadd(keys.startup_indexing_job_ids(), job.id)
+        # Clear old indexes on startup.
+        queue.enqueue(tasks.clear_old_indexes, args=[site])
 
         # Schedule an indexing job to run every 60 minutes.
         #
@@ -63,8 +52,36 @@ def schedule(scheduler: ClusterAwareScheduler, redis_client: Redis,
             timeout=tasks.INDEXING_TIMEOUT
         )
 
+        # Create an indexing job if the index doesn't exist.
+        index_alias = keys.index_alias(site.url)
+        redis_client = get_search_connection(index_alias)
 
-    redis_client.expire(keys.startup_indexing_job_ids(), tasks.INDEXING_TIMEOUT)
+        try:
+            redis_client.info()
+        except ResponseError:
+            index_exists = False
+        else:
+            index_exists = True
+
+        # The index already exists, so we don't need to index now. We'll
+        # reindex on the regular cron schedule.
+        if index_exists:
+            continue
+
+        job = queue.enqueue(tasks.index,
+                            args=[site, config],
+                            kwargs={
+                                "force": True
+                            },
+                            job_timeout=tasks.INDEXING_TIMEOUT)
+
+        # Track in-progress indexing tasks in a Redis set, so that we can
+        # check if indexing is in-progress. Tasks should remove their
+        # IDs from the set, so that when the set is empty, we think (startup)
+        # indexing is done.
+        redis_client.redis.sadd(keys.startup_indexing_job_ids(), job.id)
+
+        redis_client.redis.expire(keys.startup_indexing_job_ids(), tasks.INDEXING_TIMEOUT)
 
 
 @click.command()

@@ -21,6 +21,10 @@ class Keys:
         """The index alias we use for a URL."""
         return f"{self.prefix}:{url}"
 
+    def index_lock(self, url: str) -> str:
+        """A simple lock taken while indexing."""
+        return f"{self.prefix}:{url}:lock"
+
     def index_prefix(self, url: str) -> str:
         """The prefix we use for a RediSearch index.
 
