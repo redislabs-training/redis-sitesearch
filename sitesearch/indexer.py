@@ -394,6 +394,7 @@ class Indexer:
             if i.startswith(self.index_alias) and i != self.index_name
         ]
 
+        log.debug("Dropping old indexes: %s", ", ".join(old_indexes))
         for idx in old_indexes:
             self.redis.execute_command('FT.DROPINDEX', idx)
 
@@ -519,6 +520,8 @@ class Indexer:
 
         def start_indexing():
             if docs_to_process.empty():
+                # Don't keep around an empty search index.
+                self.search_client.dropindex()
                 return
             for _ in range(MAX_THREADS):
                 Thread(target=index_documents, daemon=True).start()

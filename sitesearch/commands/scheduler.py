@@ -52,6 +52,18 @@ def schedule(scheduler: ClusterAwareScheduler, redis_client: Redis,
             timeout=tasks.INDEXING_TIMEOUT
         )
 
+        scheduler.cron(
+            "*/30 * * * *",
+            func=tasks.index,
+            args=[site],
+            kwargs={
+                "force": False
+            },
+            use_local_timezone=True,
+            timeout=tasks.INDEXING_TIMEOUT
+        )
+
+
     redis_client.expire(keys.startup_indexing_job_ids(), tasks.INDEXING_TIMEOUT)
 
 

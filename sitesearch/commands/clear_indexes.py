@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 @click.argument('site')
 @click.command()
-def index(site: str):
+def clear_indexes(site):
     """Index the app's configured sites in RediSearch."""
     site = config.sites.get(site)
 
@@ -21,4 +21,4 @@ def index(site: str):
         raise click.BadArgumentUsage(
             f"The site you gave does not exist. Valid sites: {valid_sites}")
 
-    tasks.index(site, force=True)
+    tasks.clear_old_indexes(site)

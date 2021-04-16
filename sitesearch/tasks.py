@@ -1,10 +1,11 @@
 import logging
 from typing import Optional
+from redis import ResponseError
 
 from rq import get_current_job
 
 from sitesearch.config import AppConfiguration
-from sitesearch.connections import get_rq_redis_client
+from sitesearch.connections import get_rq_redis_client, get_search_connection
 from sitesearch.indexer import Indexer
 from sitesearch.keys import Keys
 from sitesearch.models import SiteConfiguration
@@ -30,5 +31,24 @@ def index(site: SiteConfiguration, config: Optional[AppConfiguration] = None, fo
         keys = Keys(prefix=config.key_prefix)
         log.info("Removing indexing job ID: %s", job.id)
         redis_client.srem(keys.startup_indexing_job_ids(), job.id)
+
+    return True
+
+
+def clear_old_indexes(site: SiteConfiguration):
+    redis_client = get_search_connection(site.index_alias)
+    try:
+        current_index = redis_client.info()['index_name']
+    except ResponseError:
+        log.debug("Index alias does not exist: %s", site.index_alias)
+        return False
+
+    old_indexes = [
+        i for i in redis_client.redis.execute_command('FT._LIST')
+        if i.startswith(site.index_alias) and i != current_index
+    ]
+
+    for idx in old_indexes:
+        redis_client.redis.execute_command('FT.DROPINDEX', idx)
 
     return True

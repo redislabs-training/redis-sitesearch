@@ -4,7 +4,7 @@ from typing import Dict, Optional
 from dotenv import load_dotenv
 
 from sitesearch.models import SiteConfiguration
-from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DOCS_STAGING, DEVELOPERS, OSS
+from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OSS
 from sitesearch.sites.andrewbrookins import BLOG
 
 load_dotenv()
@@ -17,7 +17,6 @@ IS_DEV = ENV in ('development', 'test')
 # Sites to index in development environments.
 DEV_SITES = {
     DOCS_PROD.url: DOCS_PROD,
-    DOCS_STAGING.url: DOCS_STAGING,
     DEVELOPERS.url: DEVELOPERS,
     CORPORATE.url: CORPORATE,
     OSS.url: OSS,
@@ -27,7 +26,6 @@ DEV_SITES = {
 # Sites to index in production.
 PROD_SITES = {
     DOCS_PROD.url: DOCS_PROD,
-    DOCS_STAGING.url: DOCS_STAGING,
     DEVELOPERS.url: DEVELOPERS,
 }
 
