@@ -4,6 +4,7 @@ from falcon_cors import CORS
 from sitesearch.config import AppConfiguration
 from .search import SearchResource
 from .indexer import IndexerResource
+from .job import JobResource
 from .health import HealthCheckResource
 
 
@@ -20,6 +21,7 @@ def create_app(config=None):
     api = falcon.API(middleware=[cors.middleware])
     api.add_route('/search', SearchResource(config))
     api.add_route('/indexer', IndexerResource(config))
+    api.add_route('/jobs/{job_id}', JobResource(config))
     api.add_route('/health', HealthCheckResource(config))
 
     return api

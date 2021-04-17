@@ -35,14 +35,3 @@ services:
       - .env
     depends_on:
       - redis
-
-  scheduler:
-    build:
-      context: ./
-      dockerfile: docker/scheduler/Dockerfile
-    volumes:
-      - $PWD:/redis-sitesearch
-    env_file:
-      - .env
-    depends_on:
-      - redis
