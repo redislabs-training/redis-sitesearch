@@ -23,8 +23,6 @@ click==7.1.2
     #   rq
 constantly==15.1.0
     # via twisted
-croniter==1.0.8
-    # via rq-scheduler
 cryptography==3.4.6
     # via
     #   pyopenssl
@@ -40,8 +38,6 @@ falcon-cors==1.1.7
     # via -r requirements.in
 falcon==2.0.0
     # via falcon-cors
-future==0.18.2
-    # via croniter
 gevent==20.9.0
     # via -r requirements.in
 greenlet==1.0.0
@@ -72,8 +68,6 @@ lxml==4.6.3
     # via
     #   parsel
     #   scrapy
-natsort==7.1.1
-    # via croniter
 newrelic==6.0.1.155
     # via -r requirements.in
 parsel==1.6.0
@@ -94,8 +88,6 @@ pydispatcher==2.0.5
     # via scrapy
 pyopenssl==20.0.1
     # via scrapy
-python-dateutil==2.8.1
-    # via croniter
 python-dotenv==0.14.0
     # via -r requirements.in
 queuelib==1.5.0
@@ -110,12 +102,8 @@ redisearch==2.0.0
     # via -r requirements.in
 rmtest==0.7.0
     # via redisearch
-rq-scheduler==0.10.0
-    # via -r requirements.in
 rq==1.7.0
-    # via
-    #   -r requirements.in
-    #   rq-scheduler
+    # via -r requirements.in
 scrapy==2.3.0
     # via -r requirements.in
 service-identity==18.1.0
@@ -126,7 +114,6 @@ six==1.15.0
     #   parsel
     #   protego
     #   pyopenssl
-    #   python-dateutil
     #   redisearch
     #   w3lib
 soupsieve==2.2.1

@@ -23,7 +23,6 @@ setuptools.setup(
         'console_scripts': [
             'index=sitesearch.commands.index:index',
             'search=sitesearch.commands.search:search',
-            'scheduler=sitesearch.commands.scheduler:scheduler',
             'drop_index=sitesearch.commands.drop_index:drop_index',
             'clear_old_indexes=sitesearch.commands.clear_indexes:clear_indexes'
         ],
