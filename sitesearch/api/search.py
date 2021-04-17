@@ -16,6 +16,38 @@ log = logging.getLogger(__name__)
 DEFAULT_NUM = 30
 MAX_NUM = 100
 
+# Until we can get MINPREFIX set to 1 on Redis Cluster, map
+# single-character queries to two-character queries. Use a
+# static map so results are similar across queries.
+SINGLE_CHAR_MAP = {
+    'a': 'ac',
+    'b': 'be',
+    'c': 'co',
+    'd': 'de',
+    'e': 'en',
+    'f': 'fi',
+    'g': 'ge',
+    'h': 'hi',
+    'i': 'in',
+    'j': 'ja',
+    'k': 'ku',
+    'l': 'lo',
+    'm': 'ma',
+    'n': 'ne',
+    'o': 'of',
+    'p': 'pe',
+    'q': 'qu',
+    'r': 'ra',
+    's': 'se',
+    't': 'ta',
+    'u': 'us',
+    'v': 'vo',
+    'w': 'we',
+    'x': '.x',
+    'y': 'ya',
+    'z': 'zo'
+}
+
 
 class SearchResource(Resource):
     """The Sitesearch Search API.
@@ -45,6 +77,10 @@ class SearchResource(Resource):
         from_url = req.get_param('from_url', default='')
         start = int(req.get_param('start', default=0))
         site_url = req.get_param('site', default=None)
+        query_len = len(query)
+
+        if query_len == 2 and query[1] == '*':
+            query = f"{SINGLE_CHAR_MAP[query[0]]}*"
 
         # Return an error if a site URL was given but it's invalid.
         if site_url and site_url not in self.app_config.sites:
