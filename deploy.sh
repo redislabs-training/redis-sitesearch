@@ -23,67 +23,67 @@ docker push $SCHEDULER_TAG
 
 
 # us-west
-echo "Deploying to US-WEST"
+# echo "Deploying to US-WEST"
 
-echo "Creating new app instance template $NEW_APP_TEMPLATE from $APP_TAG"
+# echo "Creating new app instance template $NEW_APP_TEMPLATE from $APP_TAG"
 
-gcloud beta compute --project=redislabs-university instance-templates \
-create-with-container $NEW_APP_TEMPLATE \
---machine-type=e2-medium \
---network=projects/redislabs-university/global/networks/docsearch \
---network-tier=PREMIUM \
---metadata=google-logging-enabled=false \
---can-ip-forward \
---maintenance-policy=MIGRATE \
---service-account=$SERVICE_ACCOUNT \
---scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
---image=cos-stable-81-12871-1196-0 \
---image-project=cos-cloud \
---boot-disk-size=10GB \
---boot-disk-type=pd-standard \
---boot-disk-device-name=$US_WEST_DISK \
---container-image=$APP_TAG \
---container-restart-policy=always \
---container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
---container-env-file ./.env.prod.uswest \
---labels=container-vm=cos-stable-81-12871-1196-0
-
-
-echo "Creating new worker instance template $NEW_WORKER_TEMPLATE from $WORKER_TAG"
-gcloud beta compute --project=redislabs-university instance-templates \
-create-with-container $NEW_WORKER_TEMPLATE \
---container-image $WORKER_TAG \
---machine-type=e2-medium \
---network=projects/redislabs-university/global/networks/docsearch \
---network-tier=PREMIUM \
---metadata=google-logging-enabled=false \
---can-ip-forward \
---maintenance-policy=MIGRATE \
---service-account=$SERVICE_ACCOUNT \
---scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
---image=cos-stable-81-12871-1196-0 \
---image-project=cos-cloud \
---boot-disk-size=10GB \
---boot-disk-type=pd-standard \
---boot-disk-device-name=$US_WEST_DISK \
---container-restart-policy=always \
---container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
---container-env-file ./.env.prod.uswest \
---labels=container-vm=cos-stable-81-12871-1196-0
+# gcloud beta compute --project=redislabs-university instance-templates \
+# create-with-container $NEW_APP_TEMPLATE \
+# --machine-type=e2-medium \
+# --network=projects/redislabs-university/global/networks/docsearch \
+# --network-tier=PREMIUM \
+# --metadata=google-logging-enabled=false \
+# --can-ip-forward \
+# --maintenance-policy=MIGRATE \
+# --service-account=$SERVICE_ACCOUNT \
+# --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
+# --image=cos-stable-81-12871-1196-0 \
+# --image-project=cos-cloud \
+# --boot-disk-size=10GB \
+# --boot-disk-type=pd-standard \
+# --boot-disk-device-name=$US_WEST_DISK \
+# --container-image=$APP_TAG \
+# --container-restart-policy=always \
+# --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
+# --container-env-file ./.env.prod.uswest \
+# --labels=container-vm=cos-stable-81-12871-1196-0
 
 
+# echo "Creating new worker instance template $NEW_WORKER_TEMPLATE from $WORKER_TAG"
+# gcloud beta compute --project=redislabs-university instance-templates \
+# create-with-container $NEW_WORKER_TEMPLATE \
+# --container-image $WORKER_TAG \
+# --machine-type=e2-medium \
+# --network=projects/redislabs-university/global/networks/docsearch \
+# --network-tier=PREMIUM \
+# --metadata=google-logging-enabled=false \
+# --can-ip-forward \
+# --maintenance-policy=MIGRATE \
+# --service-account=$SERVICE_ACCOUNT \
+# --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
+# --image=cos-stable-81-12871-1196-0 \
+# --image-project=cos-cloud \
+# --boot-disk-size=10GB \
+# --boot-disk-type=pd-standard \
+# --boot-disk-device-name=$US_WEST_DISK \
+# --container-restart-policy=always \
+# --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
+# --container-env-file ./.env.prod.uswest \
+# --labels=container-vm=cos-stable-81-12871-1196-0
 
-echo
-echo "Start rolling update of production app servers in us-west1-a"
-echo "--------------------------------"
-gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-uswest \
-        --version template=$NEW_APP_TEMPLATE --zone us-west1-a
 
-echo
-echo "Start rolling update of production worker servers in us-west1-a"
-echo "--------------------------------"
-gcloud compute instance-groups managed rolling-action start-update docsearch-worker-production-uswest \
-        --version template=$NEW_WORKER_TEMPLATE --zone us-west1-a
+
+# echo
+# echo "Start rolling update of production app servers in us-west1-a"
+# echo "--------------------------------"
+# gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-uswest \
+#         --version template=$NEW_APP_TEMPLATE --zone us-west1-a
+
+# echo
+# echo "Start rolling update of production worker servers in us-west1-a"
+# echo "--------------------------------"
+# gcloud compute instance-groups managed rolling-action start-update docsearch-worker-production-uswest \
+#         --version template=$NEW_WORKER_TEMPLATE --zone us-west1-a
 
 
 
@@ -93,7 +93,7 @@ gcloud compute instance-groups managed rolling-action start-update docsearch-wor
 
 # gcloud beta compute --project=redislabs-university instance-templates \
 # create-with-container $NEW_APP_TEMPLATE \
-# --machine-type=e2-micro \
+# --machine-type=e2-medium \
 # --network=projects/redislabs-university/global/networks/docsearch \
 # --network-tier=PREMIUM \
 # --metadata=google-logging-enabled=false \
@@ -149,66 +149,66 @@ gcloud compute instance-groups managed rolling-action start-update docsearch-wor
 #         --version template=$NEW_WORKER_TEMPLATE --zone us-east4-c
 
 
-# # mumbai
-# echo "Deploying to MUMBAI"
+# mumbai
+echo "Deploying to MUMBAI"
 
-# gcloud beta compute --project=redislabs-university instance-templates \
-# create-with-container $NEW_APP_TEMPLATE \
-# --machine-type=e2-micro \
-# --network=projects/redislabs-university/global/networks/docsearch \
-# --network-tier=PREMIUM \
-# --metadata=google-logging-enabled=false \
-# --can-ip-forward \
-# --maintenance-policy=MIGRATE \
-# --service-account=$SERVICE_ACCOUNT \
-# --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
-# --image=cos-stable-81-12871-1196-0 \
-# --image-project=cos-cloud \
-# --boot-disk-size=10GB \
-# --boot-disk-type=pd-standard \
-# --boot-disk-device-name=$US_WEST_DISK \
-# --container-image=$APP_TAG \
-# --container-restart-policy=always \
-# --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
-# --container-env-file ./.env.prod.mumbai \
-# --labels=container-vm=cos-stable-81-12871-1196-0
-
-
-# echo "Creating new worker instance template $NEW_WORKER_TEMPLATE from $WORKER_TAG"
-# gcloud beta compute --project=redislabs-university instance-templates \
-# create-with-container $NEW_WORKER_TEMPLATE \
-# --container-image $WORKER_TAG \
-# --machine-type=e2-medium \
-# --network=projects/redislabs-university/global/networks/docsearch \
-# --network-tier=PREMIUM \
-# --metadata=google-logging-enabled=false \
-# --can-ip-forward \
-# --maintenance-policy=MIGRATE \
-# --service-account=$SERVICE_ACCOUNT \
-# --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
-# --image=cos-stable-81-12871-1196-0 \
-# --image-project=cos-cloud \
-# --boot-disk-size=10GB \
-# --boot-disk-type=pd-standard \
-# --boot-disk-device-name=$US_WEST_DISK \
-# --container-restart-policy=always \
-# --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
-# --container-env-file ./.env.prod \
-# --labels=container-vm=cos-stable-81-12871-1196-0
+gcloud beta compute --project=redislabs-university instance-templates \
+create-with-container $NEW_APP_TEMPLATE \
+--machine-type=e2-medium \
+--network=projects/redislabs-university/global/networks/docsearch \
+--network-tier=PREMIUM \
+--metadata=google-logging-enabled=false \
+--can-ip-forward \
+--maintenance-policy=MIGRATE \
+--service-account=$SERVICE_ACCOUNT \
+--scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
+--image=cos-stable-81-12871-1196-0 \
+--image-project=cos-cloud \
+--boot-disk-size=10GB \
+--boot-disk-type=pd-standard \
+--boot-disk-device-name=$US_WEST_DISK \
+--container-image=$APP_TAG \
+--container-restart-policy=always \
+--container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
+--container-env-file ./.env.prod.mumbai \
+--labels=container-vm=cos-stable-81-12871-1196-0
 
 
+echo "Creating new worker instance template $NEW_WORKER_TEMPLATE from $WORKER_TAG"
+gcloud beta compute --project=redislabs-university instance-templates \
+create-with-container $NEW_WORKER_TEMPLATE \
+--container-image $WORKER_TAG \
+--machine-type=e2-medium \
+--network=projects/redislabs-university/global/networks/docsearch \
+--network-tier=PREMIUM \
+--metadata=google-logging-enabled=false \
+--can-ip-forward \
+--maintenance-policy=MIGRATE \
+--service-account=$SERVICE_ACCOUNT \
+--scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append \
+--image=cos-stable-81-12871-1196-0 \
+--image-project=cos-cloud \
+--boot-disk-size=10GB \
+--boot-disk-type=pd-standard \
+--boot-disk-device-name=$US_WEST_DISK \
+--container-restart-policy=always \
+--container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
+--container-env-file ./.env.prod.mumbai \
+--labels=container-vm=cos-stable-81-12871-1196-0
 
-# echo
-# echo "Start rolling update of production app servers in asia-south1-c"
-# echo "--------------------------------"
-# gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-mumbai \
-#         --version template=$NEW_TEMPLATE --zone asia-south1-c
 
-# echo
-# echo "Start rolling update of production worker servers in asia-south1-c"
-# echo "--------------------------------"
-# gcloud compute instance-groups managed rolling-action start-update docsearch-worker-production-mumbai \
-#         --version template=$NEW_WORKER_TEMPLATE --zone asia-south1-c
+
+echo
+echo "Start rolling update of production app servers in asia-south1-c"
+echo "--------------------------------"
+gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-mumbai \
+        --version template=$NEW_TEMPLATE --zone asia-south1-c
+
+echo
+echo "Start rolling update of production worker servers in asia-south1-c"
+echo "--------------------------------"
+gcloud compute instance-groups managed rolling-action start-update docsearch-worker-production-mumbai \
+        --version template=$NEW_WORKER_TEMPLATE --zone asia-south1-c
 
 
 # # zurich
@@ -216,7 +216,7 @@ gcloud compute instance-groups managed rolling-action start-update docsearch-wor
 
 # gcloud beta compute --project=redislabs-university instance-templates \
 # create-with-container $NEW_APP_TEMPLATE \
-# --machine-type=e2-micro \
+# --machine-type=e2-medium \
 # --network=projects/redislabs-university/global/networks/docsearch \
 # --network-tier=PREMIUM \
 # --metadata=google-logging-enabled=false \
@@ -255,7 +255,7 @@ gcloud compute instance-groups managed rolling-action start-update docsearch-wor
 # --boot-disk-device-name=$US_WEST_DISK \
 # --container-restart-policy=always \
 # --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
-# --container-env-file ./.env.prod \
+# --container-env-file ./.env.prod.zurich \
 # --labels=container-vm=cos-stable-81-12871-1196-0
 
 
