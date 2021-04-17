@@ -14,9 +14,14 @@ KEY_PREFIX = os.environ.get('KEY_PREFIX', DEFAULT_PREFIX)
 ENV = os.environ.get('ENV')
 IS_DEV = ENV in ('development', 'test')
 
+# The front-end is currently querying with this URL. Temporarily allow it
+# as an alternate for the configured URL.
+ALTERNATE_DOCS_URL = "https://docs.redislabs.com/latest"
+
 # Sites to index in development environments.
 DEV_SITES = {
     DOCS_PROD.url: DOCS_PROD,
+    ALTERNATE_DOCS_URL: DOCS_PROD,
     DEVELOPERS.url: DEVELOPERS,
     CORPORATE.url: CORPORATE,
     OSS.url: OSS,
@@ -27,6 +32,7 @@ DEV_SITES = {
 # Sites to index in production.
 PROD_SITES = {
     DOCS_PROD.url: DOCS_PROD,
+    ALTERNATE_DOCS_URL: DOCS_PROD,
     DEVELOPERS.url: DEVELOPERS,
 }
 
