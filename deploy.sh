@@ -29,7 +29,7 @@ echo "Creating new app instance template $NEW_APP_TEMPLATE from $APP_TAG"
 
 gcloud beta compute --project=redislabs-university instance-templates \
 create-with-container $NEW_APP_TEMPLATE \
---machine-type=e2-micro \
+--machine-type=e2-medium \
 --network=projects/redislabs-university/global/networks/docsearch \
 --network-tier=PREMIUM \
 --metadata=google-logging-enabled=false \
