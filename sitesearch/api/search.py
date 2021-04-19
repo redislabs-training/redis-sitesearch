@@ -1,7 +1,9 @@
 import json
 import logging
+import time
 
 import falcon
+import newrelic
 import redis
 
 from sitesearch.transformer import transform_documents
@@ -80,7 +82,9 @@ class SearchResource(Resource):
         query_len = len(query)
 
         if query_len == 2 and query[1] == '*':
-            query = f"{SINGLE_CHAR_MAP[query[0]]}*"
+            char = query[0]
+            if char in SINGLE_CHAR_MAP:
+                query = f"{SINGLE_CHAR_MAP[query[0]]}*"
 
         # Return an error if a site URL was given but it's invalid.
         if site_url and site_url not in self.app_config.sites:
@@ -103,6 +107,7 @@ class SearchResource(Resource):
         search_client = get_search_connection(index_alias)
         q = parse(query, section, search_site).paging(start, num)
 
+        start = time.time()
         try:
             res = search_client.search(q)
         except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
@@ -112,7 +117,8 @@ class SearchResource(Resource):
         else:
             docs = res.docs
             total = res.total
+        end = time.time()
+        newrelic.agent.record_custom_metric('search/query_ms', end - start)
 
         docs = transform_documents(docs, search_site, q.query_string())
-
         resp.body = json.dumps({"total": total, "results": docs})
