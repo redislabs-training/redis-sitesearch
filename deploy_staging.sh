@@ -20,7 +20,6 @@ docker build -t $WORKER_TAG . -f docker/worker/Dockerfile
 echo "Pushing tags..."
 docker push $APP_TAG
 docker push $WORKER_TAG
-docker push $SCHEDULER_TAG
 
 echo "Creating new app instance template $NEW_APP_TEMPLATE from $APP_TAG"
 
