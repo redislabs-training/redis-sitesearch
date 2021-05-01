@@ -80,12 +80,10 @@ You should see output like this, indicating that supervisor started the processe
 ```
 worker_1   | 2021-01-12 21:17:51,091 INFO success: worker entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 app_1   | 2021-01-12 21:17:51,092 INFO success: app entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-scheduler_1   | 2021-01-12 21:17:51,095 INFO success: scheduler entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 ```
 
 * The "app" process is the Python search API
 * The "worker" process is an RQ worker that will process any indexing tasks it sees
-* The "scheduler" worker is a process that runs an indexing task every 60 minutes
 
 You will also see output from a Redis container.
 
@@ -98,17 +96,31 @@ worker_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser err
 
 This output is normal -- some pages don't have breadcrumbs, and we skip 404 pages. Other times, the scraper encounters PDF or other non-HTML files and gives up trying to index them.
 
-#### Scheduled indexing
+#### Indexing
 
-The app indexes on a schedule, every 60 minutes. So if you leave it running, it will reindex once per hour.
+There are two ways to run an indexing job: via the API and the command-line.
 
-#### Manually indexing
+To index via the API, send a POST request to the /indexer endpoint. With curl, the request looks like this:
 
-While you work, you might want to reindex to test a change to the indexing process.
+```
+$ curl -X POST -H "Authorization: token whatever-you-want" -H "Content-Length: 0" http://localhost:8080/indexer
+{"jobs": ["f602a492-8c21-4675-9f42-3854db3e6572", "3654c138-3160-4516-8d0f-8dd6f930529a", "d6d418f0-5d89-4589-85d6-ffbfddb1eba7", "a7845451-ec07-4c4f-b672-8fc69c7421e9", "b4e7a11f-03de-4ede-b691-2f7b32e88c01", "3a00af31-e5f1-4f7e-8dd3-9f1142d386b6", "6c0695b3-ea1b-421b-b010-d1e84cb197b3"]}
+```
 
-You have two options to force the app to reindex:
-* Restart the app: `docker-compose restart`
-* Manually trigger reindexing with the `index` CLI command: `docker-compose exec app index`
+Indexing via the API is asynchronous. The /indexer endpoint creates a [Redis Queue](https://python-rq.org) job for each site that the app will attempt to index. The response to your POST includes the IDs.
+
+You can make a GET request to the /jobs/<job_id> endpoint to get the status of a job:
+
+```
+$ curl -H "Authorization: token whatever-you-want" http://localhost:8080/jobs/d6d418f0-5d89-4589-85d6-ffbfddb1eba7 
+{"id": "d6d418f0-5d89-4589-85d6-ffbfddb1eba7", "url": "https://developer.redislabs.com", "status": "queued", "created_at": "2021-05-01T00:13:05.263071", "ended_at": null}
+```
+
+You can also trigger reindexing with the `index` CLI command, like this:
+
+        $ docker-compose exec app index https://developer.redislabs.com
+
+The `index` command takes the URL of a site that the app is configured to index. The command indexes that site synchronously, without using RQ.
 
 ### New Relic
 
