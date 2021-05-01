@@ -22,8 +22,8 @@ The development environment is provided as a Docker container. Running and deplo
 
 This project was built and tested using the following Docker and docker-compose versions:
 
-Docker version 19.03.13, build 4484c46d9d
-docker-compose version 1.27.4, build 40524192
+        Docker version 19.03.13, build 4484c46d9d
+        docker-compose version 1.27.4, build 40524192
 
 Ensure you are running at least these versions before you continue.
 
