@@ -13,6 +13,7 @@ def create_app(config=None):
 
     cors = CORS(allow_origins_list=[
         'https://docs.redislabs.com',
+        'https://developer.redislabs.com',
         'http://localhost:3000',
         'http://localhost:1313',
         'http://localhost:8000',

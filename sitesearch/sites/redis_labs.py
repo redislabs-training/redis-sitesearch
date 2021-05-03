@@ -99,7 +99,7 @@ DEVELOPERS = SiteConfiguration(
     landing_pages={},
     allowed_domains=('developer.redislabs.com',),
     schema=(
-        TextField("title", weight=10),
+        TextField("title", weight=20),
         TextField("section_title"),
         TextField("body", weight=1.5),
         TextField("url"),

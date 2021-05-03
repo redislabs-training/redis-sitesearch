@@ -7,6 +7,7 @@ from dataclasses import asdict
 from queue import Queue
 from threading import Thread
 from typing import Dict, List, Callable, Tuple
+import ipdb
 from redis import ResponseError
 
 import redis.exceptions
@@ -122,8 +123,11 @@ class DocumentParser:
 
         return docs
 
-    def prepare_text(self, text: str) -> str:
-        return text.strip().strip("\n").replace("\n", " ")
+    def prepare_text(self, text: str, strip_symbols: bool = False) -> str:
+        base = text.strip().strip("\n").replace("\n", " ")
+        if strip_symbols:
+            base = base.replace("#", " ")
+        return base
 
     def prepare_document(self, url: str, html: str) -> List[SearchDocument]:
         """
@@ -139,7 +143,7 @@ class DocumentParser:
         safe_url = url.split('?')[0].rstrip('/')
 
         try:
-            title = self.prepare_text(soup.title.string.split("|")[0])
+            title = self.prepare_text(soup.title.string.split("|")[0], True)
         except AttributeError as e:
             raise ParseError("Failed -- missing title") from e
 
@@ -153,9 +157,13 @@ class DocumentParser:
                     break
 
         s = get_section(self.root_url, url)
-
         h2s = content.find_all('h2')
-        body = self.prepare_text(content.get_text())
+
+        # Some pages use h3s for section titles...
+        if not h2s:
+            h2s = content.find_all('h3')
+
+        body = self.prepare_text(content.get_text(), True)
         doc = SearchDocument(doc_id=f"{url}:{title}",
                              title=title,
                              section_title="",
