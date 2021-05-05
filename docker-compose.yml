@@ -1,21 +1,37 @@
 version: "3.8"
 
 services:
-  app:
-    build: .
+  redis:
+    build:
+      context: ./
+      dockerfile: docker/redis/Dockerfile
     ports:
-      - "6379:6379"
-      - "8080:8080"
+      - "16379:6379"
     volumes:
       - $PWD/data:/data
-      - $PWD:/src
     env_file:
       - .env
 
-  test:
-    build: .
-    entrypoint: "/src/test.sh"
+  app:
+    build:
+      context: ./
+      dockerfile: docker/app/Dockerfile
+    ports:
+      - "8080:8080"
     volumes:
-      - $PWD:/src
+      - $PWD:/redis-sitesearch
     env_file:
-      - .env.test
+      - .env
+    depends_on:
+      - redis
+
+  worker:
+    build:
+      context: ./
+      dockerfile: docker/worker/Dockerfile
+    volumes:
+      - $PWD:/redis-sitesearch
+    env_file:
+      - .env
+    depends_on:
+      - redis

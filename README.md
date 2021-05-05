@@ -16,33 +16,36 @@ redis-sitesearch was originally developed by Redis Labs to provide a search API 
 
 The development environment is provided as a Docker container. Running and deploying it all involve using Docker, and this section describes how to do so.
 
-**Note**: If you desire not to use Docker, you can reverse-engineer the installation steps from the Dockerfile and docker-compose.yml file.
+**Note**: If you want to avoid using Docker, you can try to reverse-engineer the installation steps from the Dockerfile and docker-compose.yml file.
 
 ### Docker Requirements
 
 This project was built and tested using the following Docker and docker-compose versions:
 
-Docker version 19.03.13, build 4484c46d9d
-docker-compose version 1.27.4, build 40524192
+        Docker version 19.03.13, build 4484c46d9d
+        docker-compose version 1.27.4, build 40524192
 
 Ensure you are running at least these versions before you continue.
 
-### .env files
+### Environment Variables
 
-The app is configured using environment variables, so you'll need two different `.env` files depending on what you want to do:
+The app is configured using environment variables. For local development, you'll need a `.env` file, from which the app will read environment variables.
 
-- `.env`: Environment variables for local development
-- `.env.prod`: Environment variables to deploy to production
+An example is included, which you should copy from `.env.example` to `.env` from the root directory of the repository:
 
-Examples are included, which you can copy from `.env.example` to `.env` and from `.env.prod.example` to `.env.prod`.
+        cp .env.example .env
 
-### Redis Passwords
+**Deployment note**: If you deploy redis-sitesearch to Google Cloud Platform using the deploy.sh script, the script expects to configure environment variables from a .env.prod file. If you deploy to Amazon Lightsail, you need to configure environment variables in the Lightsail GUI.
 
-This application expects to use a password to authenticate with Redis. Both .env.prod.example and .env.example include the environment variable `REDIS_PASSWORD`.
+### Redis Password-protection
 
-In local development, running `docker-compose up` will start Redis in password-required mode with the password you set in the `REDIS_PASSWORD` environment variable from the `.env` file.
+This application expects to use a password to authenticate with Redis. The .env.example file includes the required environment variable, `REDIS_PASSWORD`.
 
-In production, the app will use the password from the `.env.prod` file.
+In local development, running `docker-compose up` will start Redis in password-required mode using the password you set in the `REDIS_PASSWORD` environment variable, and the app will connect using that password. So, for local development, you shouldn't have to think about the password.
+
+To connect to Redis using `redis-cli`, use the `-a` command-line flag or the `AUTH` command and enter the password from your .env file (or the password you manually set in the `REDIS_PASSWORD` environment variable, if you didn't use the .env file).
+
+In production, the app will use whatever password you configure in the production environment's `REDIS_PASSWORD` environment variable.
 
 ### Virtualenv
 
@@ -53,6 +56,10 @@ If you want code completion to work in an IDE, or you want to run commands outsi
 Then you can run the following to activate your virtualenv:
 
         source env/bin/activate
+
+Finally, install dependencies:
+
+        pip install -r requirements.txt
 
 **Note**: This project was built with and is only tested to work on Python 3.8.
 
@@ -66,41 +73,54 @@ This command builds the necessary images and brings up the app.
 
 ### Indexing Documents
 
-As soon as the app finishes starting up, it begins indexing site content.
+As soon as the app finishes starting up, it begins indexing sites configured in the `DEV_SITES` dictionary in the file `sitesearch/config.py`.
 
 You should see output like this, indicating that supervisor started the processes:
 
 ```
-app_1   | 2021-01-12 21:17:51,091 INFO success: worker entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+worker_1   | 2021-01-12 21:17:51,091 INFO success: worker entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 app_1   | 2021-01-12 21:17:51,092 INFO success: app entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-app_1   | 2021-01-12 21:17:51,093 INFO success: redis entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-app_1   | 2021-01-12 21:17:51,095 INFO success: scheduler entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 ```
 
 * The "app" process is the Python search API
 * The "worker" process is an RQ worker that will process any indexing tasks it sees
-* The "scheduler" worker is a process that runs an indexing task every 60 minutes
+
+You will also see output from a Redis container.
 
 You might see errors and warnings as the indexing job proceeds, like this:
 
 ```
-app_1   | 2021-01-12 21:18:07 [sitesearch.indexer] ERROR: Document parser error -- Could not find breadcrumbs: https://docs.redislabs.com/latest/
-app_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser error -- Skipping 404 page: https://docs.redislabs.com/latest/404.html
+worker_1   | 2021-01-12 21:18:07 [sitesearch.indexer] ERROR: Document parser error -- Could not find breadcrumbs: https://docs.redislabs.com/latest/
+worker_1   | 2021-01-12 21:18:08 [sitesearch.indexer] ERROR: Document parser error -- Skipping 404 page: https://docs.redislabs.com/latest/404.html
 ```
 
-This output is normal -- some pages don't have breadcrumbs, and we skip 404 pages.
+This output is normal -- some pages don't have breadcrumbs, and we skip 404 pages. Other times, the scraper encounters PDF or other non-HTML files and gives up trying to index them.
 
-#### Scheduled indexing
+#### Indexing
 
-The app indexes on a schedule, every 60 minutes. So if you leave it running, it will reindex once per hour.
+There are two ways to run an indexing job: via the API and the command-line.
 
-#### Manually indexing
+To index via the API, send a POST request to the /indexer endpoint. With curl, the request looks like this:
 
-While you work, you might want to reindex to test a change to the indexing process.
+```
+$ curl -X POST -H "Authorization: token whatever-you-want" -H "Content-Length: 0" http://localhost:8080/indexer
+{"jobs": ["f602a492-8c21-4675-9f42-3854db3e6572", "3654c138-3160-4516-8d0f-8dd6f930529a", "d6d418f0-5d89-4589-85d6-ffbfddb1eba7", "a7845451-ec07-4c4f-b672-8fc69c7421e9", "b4e7a11f-03de-4ede-b691-2f7b32e88c01", "3a00af31-e5f1-4f7e-8dd3-9f1142d386b6", "6c0695b3-ea1b-421b-b010-d1e84cb197b3"]}
+```
 
-You have two options to force the app to reindex:
-* Restart the app: `docker-compose restart`
-* Manually trigger reindexing with the `index` CLI command: `docker-compose exec app index`
+Indexing via the API is asynchronous. The /indexer endpoint creates a [Redis Queue](https://python-rq.org) job for each site that the app will attempt to index. The response to your POST includes the IDs.
+
+You can make a GET request to the /jobs/<job_id> endpoint to get the status of a job:
+
+```
+$ curl -H "Authorization: token whatever-you-want" http://localhost:8080/jobs/d6d418f0-5d89-4589-85d6-ffbfddb1eba7 
+{"id": "d6d418f0-5d89-4589-85d6-ffbfddb1eba7", "url": "https://developer.redislabs.com", "status": "queued", "created_at": "2021-05-01T00:13:05.263071", "ended_at": null}
+```
+
+You can also trigger reindexing with the `index` CLI command, like this:
+
+        $ docker-compose exec app index https://developer.redislabs.com
+
+The `index` command takes the URL of a site that the app is configured to index. The command indexes that site synchronously, without using RQ.
 
 ### New Relic
 
@@ -138,17 +158,19 @@ This is well and good -- they are restarting.
 
 To run tests, use this command:
 
-        docker-compose run test
+        docker-compose exec app pytest -s
 
-This runs `pytest` within the container.
+This runs `pytest` within the app container.
 
 If you have a `.env` file, you can run `pytest` locally (after you've activated your virtualenv), and the tests will pick up the necessary environment variables from your `.env` file.
 
+**NOTE**: The .env.example file in this repository configures the app to look at the Docker host for the Redis container, which is `redis`. To run the app and/or tests outside of Docker, you'll need to change the `REDIS_HOST` environment variable to "localhost".
+
 ### Local vs. Docker redis
 
-The redis instance that this project's container starts exposes the default redis port locally (6379). So, after you run `docker-compose up` you can connect to redis outside of the Docker container on that port.
+The Redis container that this project starts runs on port 6379 _within Docker_. If you want to connect to it from tools like redis-cli on your localhost, you can do so using port 16379.
 
-However, note that this won't work if you're already running redis locally on the default port -- so make sure you stop that if you want to connect to the redis running on Docker.
+The app uses port 16379 to avoid conflicting with any Redis instances running on the default port on localhost.
 
 ## Deploying
 

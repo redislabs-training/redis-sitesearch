@@ -2,12 +2,12 @@ import click
 import logging
 import redis
 
-from sitesearch.config import Config
+from sitesearch.config import AppConfiguration
 from sitesearch.transformer import transform_documents
 from sitesearch.connections import get_search_connection, get_redis_connection
 from sitesearch.query_parser import parse
 
-config = Config()
+config = AppConfiguration()
 client = get_search_connection(config.default_search_site)
 redis_client = get_redis_connection()
 log = logging.getLogger(__name__)

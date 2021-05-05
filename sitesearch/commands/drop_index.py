@@ -1,20 +1,21 @@
 import logging
+from sitesearch.models import SiteConfiguration
 from sitesearch.indexer import Indexer
 
 import click
 from redis.exceptions import ResponseError
 
 from sitesearch.connections import get_search_connection
-from sitesearch.config import Config
+from sitesearch.config import AppConfiguration
 
 
-config = Config()
+config = AppConfiguration()
 log = logging.getLogger(__name__)
 
 
 @click.argument('site')
 @click.command()
-def drop_index(site):
+def drop_index(site: str):
     """Index the app's configured sites in RediSearch."""
     site = config.sites.get(site)
 
@@ -30,5 +31,5 @@ def drop_index(site):
     except ResponseError:
         log.info("Search index does not exist: %s", site.index_alias)
 
-    indexer = Indexer(site)
+    indexer = Indexer(site, config)
     redis_client.redis.srem(indexer.index_name)

@@ -14,7 +14,7 @@ SYNONYMS = [
     ),
     SynonymGroup(
         group_id='active',
-        synonyms={'active', 'active-active', 'active active'}
+        synonyms={'active', 'active active'}
     ),
     SynonymGroup(
         group_id='json',
@@ -85,6 +85,8 @@ DOCS_PROD = SiteConfiguration(
     content_classes=(".main-content",)
 )
 
+# Uncomment this and replace 'url' with your staging URL to test staging
+# branches.
 DOCS_STAGING = dataclasses.replace(
     DOCS_PROD,
 
@@ -97,7 +99,7 @@ DEVELOPERS = SiteConfiguration(
     landing_pages={},
     allowed_domains=('developer.redislabs.com',),
     schema=(
-        TextField("title", weight=10),
+        TextField("title", weight=20),
         TextField("section_title"),
         TextField("body", weight=1.5),
         TextField("url"),

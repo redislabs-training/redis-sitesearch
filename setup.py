@@ -8,7 +8,7 @@ setuptools.setup(
     version="1.0",
     author="Andrew Brookins",
     author_email="andrew.brookins@redislabs.com",
-    description="Redis-powered site search",
+    description="Redis-powered website search by Redis Labs.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/redislabs-training/redis-sitesearch",
@@ -23,8 +23,8 @@ setuptools.setup(
         'console_scripts': [
             'index=sitesearch.commands.index:index',
             'search=sitesearch.commands.search:search',
-            'scheduler=sitesearch.commands.scheduler:scheduler',
-            'drop-index=sitesearch.commands.drop_index:drop_index'
+            'drop_index=sitesearch.commands.drop_index:drop_index',
+            'clear_old_indexes=sitesearch.commands.clear_indexes:clear_indexes'
         ],
     }
 )

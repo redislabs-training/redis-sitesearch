@@ -1,7 +1,6 @@
-from dataclasses import InitVar, dataclass, field, replace
+from dataclasses import dataclass, replace
 from typing import Dict, List, Set, Tuple, Callable, Pattern
 
-from sitesearch import keys
 from redisearch.client import Field
 
 TYPE_PAGE = "page"
@@ -50,10 +49,6 @@ class SiteConfiguration:
         for syn_group in self.synonym_groups:
             synonyms |= syn_group.synonyms
         return synonyms
-
-    @property
-    def index_alias(self) -> str:
-        return keys.index_alias(self.url)
 
     def landing_page(self, query) -> SearchDocument:
         page = self.landing_pages.get(query, None)

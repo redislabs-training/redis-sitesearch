@@ -1,7 +1,7 @@
-from sitesearch.config import Config
+from sitesearch.config import AppConfiguration
 from sitesearch.query_parser import parse
 
-config = Config()
+config = AppConfiguration()
 
 
 def test_strips_dash_star_postfixes():

@@ -1,10 +1,10 @@
 from redisearch import Document
-from sitesearch.config import Config
+from sitesearch.config import AppConfiguration
 from sitesearch.models import TYPE_PAGE
 from sitesearch.transformer import transform_documents
 
 
-config = Config()
+config = AppConfiguration()
 
 
 def test_transform_documents_elides_body_if_longer_than_max():
