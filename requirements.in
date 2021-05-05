@@ -1,15 +1,17 @@
+fastapi==0.63.0
 click==7.1.2
 beautifulsoup4==4.9.1
 redis==3.5.3
 gunicorn==20.0.4
-falcon-cors==1.1.7
 python-dotenv==0.14.0
-Cython==0.29.21
 rq==1.7.0
+python-dotenv==0.14.0
+rq==1.5.2
+rq-scheduler==0.10.0
 scrapy==2.3.0
 gevent==20.9.0
 hiredis==1.1.0
 newrelic==6.0.1.155
 redisearch==2.0.0
 idna<3
---no-binary falcon falcon==2.0.0
+redisearch==2.0.0
