@@ -15,7 +15,6 @@ daemon = False
 worker_temp_dir = '/dev/shm'
 reload = True
 
-# Gevent worker settings
 worker_class = 'uvicorn.workers.UvicornWorker'
 worker_connections = 5000
 

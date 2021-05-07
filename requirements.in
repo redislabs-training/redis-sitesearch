@@ -1,6 +1,5 @@
 fastapi==0.63.0
 httpx==0.18.1
-uvicorn==0.13.4
 uvicorn[standard]==0.13.4
 click==7.1.2
 beautifulsoup4==4.9.1
