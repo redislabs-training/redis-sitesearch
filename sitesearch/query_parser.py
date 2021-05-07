@@ -6,7 +6,8 @@ from redisearch import Query
 UNSAFE_CHARS = re.compile('[\\[\\]\\<\\>+]')
 
 
-def parse(query: str, section: str, search_site: SiteConfiguration) -> Query:
+def parse(index_alias: str, query: str, section: str, start: int, num: int,
+          search_site: SiteConfiguration) -> Query:
     # Dash postfixes confuse the query parser.
     query = query.strip().replace("-*", "*")
     query = UNSAFE_CHARS.sub(' ', query)
@@ -24,8 +25,4 @@ def parse(query: str, section: str, search_site: SiteConfiguration) -> Query:
         # Boost results in the section the user is currently browsing.
         query = f"((@s:{section}) => {{$weight: 10}} {query}) | {query}"
 
-    return Query(query).summarize(
-        'body', context_len=10, num_frags=1
-    ).highlight(
-        ('title', 'body', 'section_title')
-    )
+    return f"FT.SEARCH {index_alias} {query} SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT {start} {num}"

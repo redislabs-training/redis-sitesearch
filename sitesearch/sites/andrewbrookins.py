@@ -10,7 +10,7 @@ BLOG = SiteConfiguration(
     synonym_groups=[],
     landing_pages={},
     allowed_domains=('andrewbrookins.com',),
-    schema=(
+    search_schema=(
         TextField("title", weight=10),
         TextField("section_title"),
         TextField("body", weight=1.5),

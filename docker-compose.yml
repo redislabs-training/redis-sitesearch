@@ -35,3 +35,25 @@ services:
       - .env
     depends_on:
       - redis
+
+  test_redis:
+    build:
+      context: ./
+      dockerfile: docker/redis/Dockerfile
+    ports:
+      - "26379:6379"
+    env_file:
+      - .env.test
+
+  test:
+    build:
+      context: ./
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - $PWD:/redis-sitesearch
+    env_file:
+      - .env.test
+    depends_on:
+      - test_redis
+    entrypoint: "pytest"
+

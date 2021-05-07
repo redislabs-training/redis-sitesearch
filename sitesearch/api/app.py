@@ -1,28 +1,35 @@
-import falcon
-from falcon_cors import CORS
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from sitesearch.config import AppConfiguration
-from .search import SearchResource
-from .indexer import IndexerResource
-from .job import JobResource
-from .health import HealthCheckResource
+from sitesearch.api import search, indexer, health, job
 
 
 def create_app(config=None):
     config = config or AppConfiguration()
 
-    cors = CORS(allow_origins_list=[
+    origins = [
         'https://docs.redislabs.com',
         'https://developer.redislabs.com',
         'http://localhost:3000',
         'http://localhost:1313',
         'http://localhost:8000',
-    ], allow_all_headers=True)
+    ]
 
-    api = falcon.API(middleware=[cors.middleware])
-    api.add_route('/search', SearchResource(config))
-    api.add_route('/indexer', IndexerResource(config))
-    api.add_route('/jobs/{job_id}', JobResource(config))
-    api.add_route('/health', HealthCheckResource(config))
+    app = FastAPI()
 
-    return api
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    ) 
+
+    app.include_router(search.router)
+    app.include_router(indexer.router)
+    app.include_router(health.router)
+    app.include_router(job.router)
+
+    return app

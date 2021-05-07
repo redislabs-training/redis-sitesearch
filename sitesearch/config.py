@@ -1,8 +1,10 @@
 import os
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from dotenv import load_dotenv
+from pydantic import BaseSettings
 
+from sitesearch import keys
 from sitesearch.models import SiteConfiguration
 from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OSS, DOCS_STAGING
 from sitesearch.sites.andrewbrookins import BLOG
@@ -37,20 +39,45 @@ PROD_SITES = {
 }
 
 
-class AppConfiguration:
-    """Settings that apply globally to the entire app."""
-    def __init__(self,
-                 default_search_site: SiteConfiguration = DOCS_PROD,
-                 is_dev: bool = IS_DEV,
-                 key_prefix: str = KEY_PREFIX,
-                 env: str = ENV,
-                 sites: Optional[Dict[str, SiteConfiguration]] = DEV_SITES):
+# class AppConfiguration:
+#     """Settings that apply globally to the entire app."""
+#     def __init__(self,
+#                  default_search_site: SiteConfiguration = DOCS_PROD,
+#                  is_dev: bool = IS_DEV,
+#                  key_prefix: str = KEY_PREFIX,
+#                  env: str = ENV,
+#                  sites: Optional[Dict[str, SiteConfiguration]] = DEV_SITES):
 
-        self.default_search_site = default_search_site
-        self.is_dev = is_dev
-        self.key_prefix = key_prefix
-        self.sites = sites
-        self.env = env
+#         self.default_search_site = default_search_site
+#         self.is_dev = is_dev
+#         self.key_prefix = key_prefix
+#         self.sites = sites
+#         self.env = env
+#         self.keys = keys.Keys(self.key_prefix)
+
+#         if not IS_DEV:
+#             self.sites = PROD_SITES
+
+
+class AppConfiguration(BaseSettings):         
+    default_search_site: SiteConfiguration = DOCS_PROD
+    is_dev: bool = IS_DEV
+    key_prefix: str = KEY_PREFIX
+    env: str = ENV
+    sites: Optional[Dict[str, SiteConfiguration]] = DEV_SITES
+    keys: Optional['keys.Keys'] = None
+
+    class Config:
+        arbitrary_types_allowed = True
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
 
         if not IS_DEV:
             self.sites = PROD_SITES
+
+        self.keys = keys.Keys(self.key_prefix)
+
+
+def get_config() -> AppConfiguration:
+    return AppConfiguration()

@@ -61,7 +61,7 @@ DOCS_PROD = SiteConfiguration(
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
     allowed_domains=('docs.redislabs.com',),
-    schema=(
+    search_schema=(
         TextField("title", weight=10),
         TextField("section_title"),
         TextField("body", weight=1.5),
@@ -98,7 +98,7 @@ DEVELOPERS = SiteConfiguration(
     synonym_groups=SYNONYMS,
     landing_pages={},
     allowed_domains=('developer.redislabs.com',),
-    schema=(
+    search_schema=(
         TextField("title", weight=20),
         TextField("section_title"),
         TextField("body", weight=1.5),
@@ -122,7 +122,7 @@ CORPORATE = SiteConfiguration(
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
     allowed_domains=('redislabs.com',),
-    schema=(
+    search_schema=(
         TextField("title", weight=10),
         TextField("section_title"),
         TextField("body", weight=1.5),
@@ -150,7 +150,7 @@ OSS = SiteConfiguration(
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
     allowed_domains=("redis.io",),
-    schema=(
+    search_schema=(
         TextField("title", weight=10),
         TextField("section_title"),
         TextField("body", weight=1.5),

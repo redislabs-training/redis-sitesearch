@@ -1,44 +1,38 @@
-import json
 import logging
 import os
 
-from falcon.errors import HTTPUnauthorized
+from fastapi import APIRouter
+from fastapi.param_functions import Depends
+from fastapi.security.api_key import APIKey
 from rq.registry import StartedJobRegistry
 
 from sitesearch import tasks
-from sitesearch.connections import get_rq_redis_client
+from sitesearch.api.authentication import get_api_key
 from sitesearch.cluster_aware_rq import ClusterAwareQueue
-from sitesearch.api.resource import Resource
+from sitesearch.config import AppConfiguration, get_config
+from sitesearch.connections import get_rq_redis_client
 
 redis_client = get_rq_redis_client()
 log = logging.getLogger(__name__)
 queue = ClusterAwareQueue(connection=redis_client)
 registry = StartedJobRegistry('default', connection=redis_client)
+router = APIRouter()
 
 API_KEY = os.environ['API_KEY']
 JOB_QUEUED = 'queued'
 
 
-class IndexerResource(Resource):
-    """Start indexing jobs."""
-    def on_post(self, req, resp):
-        """Start indexing jobs for all configured sites."""
-        token = req.get_header('Authorization')
-        challenges = ['Token']
-        jobs = []
+@router.post("/indexer")
+async def indexer(apiKey: APIKey = Depends(get_api_key),
+                  config: AppConfiguration = Depends(get_config)):
+    """Start indexing jobs for all configured sites."""
+    jobs = []
 
-        if token is None:
-            description = ('Please provide an auth token '
-                           'as part of the request.')
-            raise HTTPUnauthorized('Auth token required', description, challenges)
+    for site in config.sites.values():
+        job = queue.enqueue(tasks.index,
+                            args=[site],
+                            kwargs={"force": True},
+                            job_timeout=tasks.INDEXING_TIMEOUT)
+        jobs.append(job.id)
 
-        for site in self.app_config.sites.values():
-            job = queue.enqueue(tasks.index,
-                                args=[site],
-                                kwargs={
-                                    "force": True
-                                },
-                                job_timeout=tasks.INDEXING_TIMEOUT)
-            jobs.append(job.id)
-
-        resp.body = json.dumps({"jobs": jobs})
+    return {"jobs": jobs}

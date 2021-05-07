@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
 
 RUN apt-get update
 RUN apt-get install -y supervisor nginx

@@ -2,6 +2,7 @@ import os
 import logging
 
 from dotenv import load_dotenv
+from aioredis import Redis as AsyncRedis
 from redis import Redis
 from redisearch import Client
 
@@ -24,6 +25,17 @@ def get_redis_connection(password=REDIS_PASSWORD,
                  port=port,
                  decode_responses=decode_responses,
                  retry_on_timeout=True)
+
+
+def get_async_redis_connection(password=REDIS_PASSWORD,
+                               host=REDIS_HOST,
+                               port=REDIS_PORT,
+                               decode_responses=True):
+    return AsyncRedis(password=password,
+                      host=host,
+                      port=port,
+                      decode_responses=decode_responses,
+                      retry_on_timeout=True)
 
 
 def get_search_connection(index: str,

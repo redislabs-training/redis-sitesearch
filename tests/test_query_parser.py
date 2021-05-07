@@ -5,36 +5,35 @@ config = AppConfiguration()
 
 
 def test_strips_dash_star_postfixes():
-    query = parse("python-*", None, config.default_search_site)
-    assert query.query_string() == "python*"
+    query = parse("index", "python-*", None, 0, 10, config.default_search_site)
+    assert query == "FT.SEARCH index python* SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"
 
 
 def test_strips_unsafe_chars():
-    query = parse("this is a [test]", None, config.default_search_site)
-    assert query.query_string() == "this is a  test"
+    query = parse("index", "this is a [test]", None, 0, 10, config.default_search_site)
+    assert query == "FT.SEARCH index this is a  test SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"
 
 
 def test_summarizes_body():
-    query = parse("test", None, config.default_search_site)
-    assert 'body' in query._summarize_fields
+    query = parse("index", "test", None, 0, 10, config.default_search_site)
+    assert "SUMMARIZE FIELDS 1 body" in query
 
 
 def test_highlights_fields():
-    query = parse("test", None, config.default_search_site)
-    for field in ['title', 'body', 'section_title']:
-        assert field in query._highlight_fields
+    query = parse("index", "test", None, 0, 10, config.default_search_site)
+    assert "HIGHLIGHT FIELDS 3 title body section_title" in query
 
 
 def test_exact_search_for_synonym_terms():
-    query = parse("insight*", None, config.default_search_site)
-    assert query.query_string() == "insight"
+    query = parse("index", "insight*", None, 0, 10, config.default_search_site)
+    assert query == "FT.SEARCH index insight SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"
 
 
 def test_allow_fuzzy_search_for_non_synonym_terms():
-    query = parse("test*", None, config.default_search_site)
-    assert query.query_string() == "test*"
+    query = parse("index", "test*", None, 0, 10, config.default_search_site)
+    assert query == "FT.SEARCH index test* SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"
 
 
 def test_boosts_current_section_if_given():
-    query = parse("test", "test", config.default_search_site)
-    assert query.query_string() == "((@s:test) => {$weight: 10} test) | test"
+    query = parse("index", "test", "test", 0, 10, config.default_search_site)
+    assert query == "FT.SEARCH index ((@s:test) => {$weight: 10} test) | test SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"

@@ -1,12 +1,12 @@
 import os
+import asyncio
 
 import pytest
-import redis as redis_client
-from falcon import testing
-
+import aioredis
+from httpx import AsyncClient
 from sitesearch.api.app import create_app
 from sitesearch.config import AppConfiguration
-from sitesearch.connections import get_redis_connection
+from sitesearch.connections import get_async_redis_connection
 from sitesearch.indexer import DocumentParser, Indexer
 from sitesearch.sites.redis_labs import DOCS_PROD
 
@@ -19,17 +19,18 @@ TEST_URL = f"{DOCS_PROD.url}/test"
 
 @pytest.fixture(autouse=True)
 def redis():
-    yield get_redis_connection()
+    yield get_async_redis_connection()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app_config():
     yield AppConfiguration(key_prefix="sitesearch:test", env="test")
 
 
-@pytest.fixture(scope="session")
-def client(app_config):
-    yield testing.TestClient(create_app(app_config))
+@pytest.fixture(scope="function")
+async def client(app_config):
+    async with AsyncClient(app=create_app(app_config), base_url="http://test") as ac:
+        yield ac
 
 
 @pytest.fixture
@@ -65,15 +66,20 @@ def docs(parse_file, app_config):
     yield docs
 
 
-def _delete_test_keys(prefix: str, conn: redis_client.Redis):
-    for key in conn.scan_iter(f"{prefix}:*"):
-        conn.delete(key)
+async def _delete_test_keys(prefix: str, conn: aioredis.Redis):
+    async for key in conn.scan_iter(f"{prefix}:*"):
+        await conn.delete(key)
 
 
 @pytest.fixture(scope="function", autouse=True)
-def delete_test_keys(request, app_config):
-    def cleanup():
-        conn = get_redis_connection()
-        _delete_test_keys(app_config.key_prefix, conn)
+async def delete_test_keys(request, app_config):
+    conn = get_async_redis_connection()
+    await _delete_test_keys(app_config.key_prefix, conn)
 
-    request.addfinalizer(cleanup)
+
+@pytest.fixture(scope="session")
+def event_loop(request):
+    """Create an instance of the default event loop for each test case."""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
