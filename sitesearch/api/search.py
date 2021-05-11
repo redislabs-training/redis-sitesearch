@@ -5,7 +5,6 @@ from typing import Optional
 import newrelic
 import redis
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import UJSONResponse
 
 from redisearch import Result
 from sitesearch import indexer
@@ -53,15 +52,15 @@ SINGLE_CHAR_MAP = {
 }
 
 router = APIRouter()
+config = get_config()
 
 
-@router.get("/search", response_class=UJSONResponse)
+@router.get("/search")
 async def search(q: str,
                  from_url: Optional[str] = None,
                  start: Optional[int] = None,
                  num: Optional[int] = None,
-                 site_url: Optional[str] = None,
-                 config: AppConfiguration = Depends(get_config)):
+                 site_url: Optional[str] = None):
     """
     Make a full-text search against a site in the index.
 
@@ -106,7 +105,7 @@ async def search(q: str,
     index_alias = await config.keys.index_alias(search_site.url)
     query = await parse(index_alias, q, section, start, num, search_site)
 
-    # start = time.time()
+    start = time.time()
     try:
         raw_result = await redis_client.execute_command(query)
     except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
@@ -121,8 +120,8 @@ async def search(q: str,
                         with_scores=False)
         total = result.total
         docs = result.docs
-    # end = time.time()
-    # newrelic.agent.record_custom_metric('search/q_ms', end - start)
+    end = time.time()
+    newrelic.agent.record_custom_metric('search/q_ms', end - start)
     # print(query)
 
     docs = await transform_documents(docs, search_site, q)
