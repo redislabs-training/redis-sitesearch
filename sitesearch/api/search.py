@@ -123,7 +123,7 @@ async def search(q: str,
         docs = result.docs
     end = time.time()
     newrelic.agent.record_custom_metric('search/q_ms', end - start)
-    print(query)
+    # print(query)
 
     docs = transform_documents(docs, search_site, q)
     return {"total": total, "results": docs}
