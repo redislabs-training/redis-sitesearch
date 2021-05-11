@@ -1,4 +1,6 @@
+fastapi-cprofile
 fastapi==0.63.0
+ujson==4.0.2
 httpx==0.18.1
 uvicorn[standard]==0.13.4
 click==7.1.2

@@ -2,16 +2,17 @@ import logging
 import time
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Depends, status
 import newrelic
 import redis
-from redisearch import Result
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import UJSONResponse
 
-from sitesearch.transformer import transform_documents
-from sitesearch.connections import get_async_redis_connection
-from sitesearch.config import AppConfiguration, get_config
-from sitesearch.query_parser import parse
+from redisearch import Result
 from sitesearch import indexer
+from sitesearch.config import AppConfiguration, get_config
+from sitesearch.connections import get_async_redis_connection
+from sitesearch.query_parser import parse
+from sitesearch.transformer import transform_documents
 
 redis_client = get_async_redis_connection()
 log = logging.getLogger(__name__)
@@ -54,7 +55,7 @@ SINGLE_CHAR_MAP = {
 router = APIRouter()
 
 
-@router.get("/search")
+@router.get("/search", response_class=UJSONResponse)
 async def search(q: str,
                  from_url: Optional[str] = None,
                  start: Optional[int] = None,

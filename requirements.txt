@@ -39,8 +39,12 @@ cssselect==1.1.0
     # via
     #   parsel
     #   scrapy
-fastapi==0.63.0
+fastapi-cprofile==0.0.2
     # via -r requirements.in
+fastapi==0.63.0
+    # via
+    #   -r requirements.in
+    #   fastapi-cprofile
 gevent==20.9.0
     # via -r requirements.in
 greenlet==1.0.0
@@ -160,6 +164,8 @@ typing-extensions==3.10.0.0
     # via
     #   aioredis
     #   pydantic
+ujson==4.0.2
+    # via -r requirements.in
 uvicorn[standard]==0.13.4
     # via -r requirements.in
 uvloop==0.15.2
