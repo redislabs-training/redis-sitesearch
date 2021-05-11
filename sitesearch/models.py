@@ -50,7 +50,7 @@ class SiteConfiguration:
             synonyms |= syn_group.synonyms
         return synonyms
 
-    def landing_page(self, query) -> SearchDocument:
+    async def landing_page(self, query) -> SearchDocument:
         page = self.landing_pages.get(query, None)
         if page:
             root_url = self.url.rstrip('/')

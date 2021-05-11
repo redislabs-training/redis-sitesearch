@@ -101,12 +101,12 @@ async def search(q: str,
                             detail="You must specify a valid search site.")
 
     search_site = config.sites.get(site_url)
-    section = indexer.get_section(site_url, from_url)
+    section = await indexer.get_section(site_url, from_url)
     num = min(num, MAX_NUM)
-    index_alias = config.keys.index_alias(search_site.url)
-    query = parse(index_alias, q, section, start, num, search_site)
+    index_alias = await config.keys.index_alias(search_site.url)
+    query = await parse(index_alias, q, section, start, num, search_site)
 
-    start = time.time()
+    # start = time.time()
     try:
         raw_result = await redis_client.execute_command(query)
     except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
@@ -121,9 +121,9 @@ async def search(q: str,
                         with_scores=False)
         total = result.total
         docs = result.docs
-    end = time.time()
-    newrelic.agent.record_custom_metric('search/q_ms', end - start)
+    # end = time.time()
+    # newrelic.agent.record_custom_metric('search/q_ms', end - start)
     # print(query)
 
-    docs = transform_documents(docs, search_site, q)
+    docs = await transform_documents(docs, search_site, q)
     return {"total": total, "results": docs}

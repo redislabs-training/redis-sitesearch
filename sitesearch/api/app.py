@@ -26,7 +26,7 @@ def create_app(config=None):
     #     allow_methods=["*"],
     #     allow_headers=["*"],
     # ) 
-    app.add_middleware(CProfileMiddleware, enable=True, print_each_request = True, strip_dirs = False, sort_by='cumulative')
+    # app.add_middleware(CProfileMiddleware, enable=True, print_each_request = True, strip_dirs = False, sort_by='cumulative')
 
     app.include_router(search.router)
     app.include_router(indexer.router)

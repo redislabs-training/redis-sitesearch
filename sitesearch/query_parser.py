@@ -1,13 +1,12 @@
 import re
 
 from sitesearch.models import SiteConfiguration
-from redisearch import Query
 
 UNSAFE_CHARS = re.compile('[\\[\\]\\<\\>+]')
 
 
-def parse(index_alias: str, query: str, section: str, start: int, num: int,
-          search_site: SiteConfiguration) -> Query:
+async def parse(index_alias: str, query: str, section: str, start: int, num: int,
+          search_site: SiteConfiguration) -> str:
     # Dash postfixes confuse the query parser.
     query = query.strip().replace("-*", "*")
     query = UNSAFE_CHARS.sub(' ', query)
