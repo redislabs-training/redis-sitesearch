@@ -100,9 +100,9 @@ async def search(q: str,
                             detail="You must specify a valid search site.")
 
     search_site = config.sites.get(site_url)
-    section = await indexer.get_section(site_url, from_url)
+    section = indexer.get_section(site_url, from_url)
     num = min(num, MAX_NUM)
-    index_alias = await config.keys.index_alias(search_site.url)
+    index_alias = config.keys.index_alias(search_site.url)
     query = await parse(index_alias, q, section, start, num, search_site)
 
     start = time.time()

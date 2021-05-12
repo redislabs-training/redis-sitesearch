@@ -52,7 +52,7 @@ def next_element(elem):
             return elem
 
 
-async def get_section(root_url: str, url: str) -> str:
+def get_section(root_url: str, url: str) -> str:
     """Given a root URL and an input URL, determine the "section" of the current URL.
 
     The section is the first portion of the path above the root, e.g. in the URL:
