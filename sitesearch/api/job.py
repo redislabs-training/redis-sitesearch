@@ -16,7 +16,7 @@ router = APIRouter()
 JOB_QUEUED = 'queued'
 
 
-@router.get("/job", dependencies=[Security(get_api_key)] )
+@router.get("/jobs/{job_id}", dependencies=[Security(get_api_key)] )
 async def job(job_id: str):
     """Get the status of a job by its ID."""
     try:
@@ -30,5 +30,6 @@ async def job(job_id: str):
         "url": job.args[0].url,
         "status": job.get_status(),
         "created_at": job.created_at.isoformat() if job.created_at else None,
-        "ended_at": job.ended_at.isoformat() if job.ended_at else None
+        "ended_at": job.ended_at.isoformat() if job.ended_at else None,
+        "exc_info": job.exc_info
     }

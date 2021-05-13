@@ -33,13 +33,6 @@ class Keys:
         """
         return f"{self.prefix}:{url}"
 
-    def startup_indexing_job_ids(self) -> str:
-        """A Set containing the startup indexing task IDs.
-
-        We clear this out as the tasks finish.
-        """
-        return f"{self.prefix}:startup_indexing_tasks"
-
     def site_urls_current(self, index_alias: str) -> str:
         """All the URLs currently indexed for a site."""
         return f"{self.prefix}:{index_alias}:{{urls}}:current"
