@@ -35,7 +35,7 @@ def clear_old_indexes(site: SiteConfiguration, config: Optional[AppConfiguration
     try:
         current_index = redis_client.info()['index_name']
     except ResponseError:
-        log.info("Index alias does not exist: %s", index_alias)
+        log.error("Index alias does not exist: %s", index_alias)
         current_index = None
 
     old_indexes = [

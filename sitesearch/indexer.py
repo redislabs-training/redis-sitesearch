@@ -519,7 +519,6 @@ class Indexer:
             url_without_slash = item.url.rstrip("/")
             # Don't index the root page. There is probably a better way to
             # do this with Scrapy!
-            log.info(item.url.rstrip("/"))
             if url_without_slash == self.site.url.rstrip("/"):
                 return
             self.seen_urls[url_without_slash] = item.title
