@@ -24,4 +24,6 @@ async def parse(index_alias: str, query: str, section: str, start: int, num: int
         # Boost results in the section the user is currently browsing.
         query = f"((@s:{section}) => {{$weight: 10}} {query}) | {query}"
 
-    return f"FT.SEARCH {index_alias} {query} SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT {start} {num}"
+    options = f'SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT {start} {num}'.split(' ')
+
+    return [index_alias, query] + options

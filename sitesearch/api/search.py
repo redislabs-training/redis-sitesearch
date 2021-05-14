@@ -104,10 +104,11 @@ async def search(q: str,
     num = min(num, MAX_NUM)
     index_alias = config.keys.index_alias(search_site.url)
     query = await parse(index_alias, q, section, start, num, search_site)
+    print(query)
 
     start = time.time()
     try:
-        raw_result = await redis_client.execute_command(query)
+        raw_result = await redis_client.execute_command("FT.SEARCH", *query)
     except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
         log.error("Search q failed: %s", e)
         total = 0
@@ -122,7 +123,6 @@ async def search(q: str,
         docs = result.docs
     end = time.time()
     newrelic.agent.record_custom_metric('search/q_ms', end - start)
-    # print(query)
 
     docs = await transform_documents(docs, search_site, q)
     return {"total": total, "results": docs}
