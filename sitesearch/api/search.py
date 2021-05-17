@@ -60,7 +60,7 @@ async def search(q: str,
                  from_url: Optional[str] = None,
                  start: Optional[int] = None,
                  num: Optional[int] = None,
-                 site_url: Optional[str] = None):
+                 site: Optional[str] = None):
     """
     Make a full-text search against a site in the index.
 
@@ -86,7 +86,7 @@ async def search(q: str,
     from_url = from_url if from_url else ''
     start = start if isinstance(start, int) else 0
     num = num if isinstance(num, int) else DEFAULT_NUM
-    site_url = site_url if site_url else config.default_search_site.url
+    site_url = site if site else config.default_search_site.url
     q_len = len(q)
 
     if q_len == 2 and q[1] == '*':
