@@ -3,6 +3,7 @@ from typing import Dict, Optional
 
 from dotenv import load_dotenv
 
+from sitesearch.keys import Keys
 from sitesearch.models import SiteConfiguration
 from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OSS, DOCS_STAGING
 from sitesearch.sites.andrewbrookins import BLOG
@@ -49,8 +50,13 @@ class AppConfiguration:
         self.default_search_site = default_search_site
         self.is_dev = is_dev
         self.key_prefix = key_prefix
+        self.keys = Keys(key_prefix)
         self.sites = sites
         self.env = env
 
         if not IS_DEV:
             self.sites = PROD_SITES
+
+
+def get_config() -> AppConfiguration:
+    return AppConfiguration()

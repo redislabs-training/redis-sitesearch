@@ -15,9 +15,11 @@ daemon = False
 worker_temp_dir = '/dev/shm'
 reload = True
 
-# Gevent worker settings
-worker_class = 'gevent'
-worker_connections = 5000
+# https://docs.gunicorn.org/en/latest/faq.html#how-do-i-avoid-gunicorn-excessively-blocking-in-os-fchmod
+worker_temp_dir = '/dev/shm'
+
+worker_class = 'uvicorn.workers.UvicornWorker'
+worker_connections = 10000
 
 # These settings only really help with sync and thread
 # worker types, but let's configure them anyway.

@@ -2,10 +2,8 @@ import logging
 from typing import Optional
 from redis import ResponseError
 
-from rq import get_current_job
-
 from sitesearch.config import AppConfiguration
-from sitesearch.connections import get_rq_redis_client, get_search_connection
+from sitesearch.connections import get_search_connection
 from sitesearch.indexer import Indexer
 from sitesearch.keys import Keys
 from sitesearch.models import SiteConfiguration
@@ -20,17 +18,10 @@ INDEXING_TIMEOUT = 60*60  # One hour
 
 
 def index(site: SiteConfiguration, config: Optional[AppConfiguration] = None, force=False):
-    redis_client = get_rq_redis_client()
     if config is None:
         config = AppConfiguration()
     indexer = Indexer(site, config)
     indexer.index(force)
-
-    job = get_current_job()
-    if job:
-        keys = Keys(prefix=config.key_prefix)
-        log.info("Removing indexing job ID: %s", job.id)
-        redis_client.srem(keys.startup_indexing_job_ids(), job.id)
 
     return True
 
@@ -44,7 +35,7 @@ def clear_old_indexes(site: SiteConfiguration, config: Optional[AppConfiguration
     try:
         current_index = redis_client.info()['index_name']
     except ResponseError:
-        log.info("Index alias does not exist: %s", index_alias)
+        log.error("Index alias does not exist: %s", index_alias)
         current_index = None
 
     old_indexes = [

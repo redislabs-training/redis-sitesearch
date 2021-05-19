@@ -33,15 +33,15 @@ Validator = Callable[[SearchDocument], None]
 @dataclass(frozen=True)
 class SiteConfiguration:
     url: str
-    schema: Tuple[Field]
+    search_schema: Tuple[Field, ...]
     synonym_groups: List[SynonymGroup]
-    scorers: Tuple[Scorer]
-    validators: Tuple[Validator]
+    scorers: Tuple[Scorer, ...]
+    validators: Tuple[Validator, ...]
     landing_pages: Dict[str, SearchDocument]
-    allow: Tuple[Pattern]
-    deny: Tuple[Pattern]
-    allowed_domains: Tuple[str]
-    content_classes: Tuple[str] = None
+    allow: Tuple[Pattern, ...]
+    deny: Tuple[Pattern, ...]
+    allowed_domains: Tuple[str, ...]
+    content_classes: Tuple[str, ...] = None
 
     @property
     def all_synonyms(self) -> Set[str]:
@@ -50,7 +50,7 @@ class SiteConfiguration:
             synonyms |= syn_group.synonyms
         return synonyms
 
-    def landing_page(self, query) -> SearchDocument:
+    async def landing_page(self, query) -> SearchDocument:
         page = self.landing_pages.get(query, None)
         if page:
             root_url = self.url.rstrip('/')

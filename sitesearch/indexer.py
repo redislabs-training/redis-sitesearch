@@ -7,7 +7,6 @@ from dataclasses import asdict
 from queue import Queue
 from threading import Thread
 from typing import Dict, List, Callable, Tuple
-import ipdb
 from redis import ResponseError
 
 import redis.exceptions
@@ -372,7 +371,7 @@ class Indexer:
         to RediSearch after creating the index.
         """
         definition = IndexDefinition(prefix=[self.keys.index_prefix(self.url)])
-        self.search_client.create_index(self.site.schema,
+        self.search_client.create_index(self.site.search_schema,
                                         definition=definition)
 
         if self.site.synonym_groups:
@@ -520,7 +519,6 @@ class Indexer:
             url_without_slash = item.url.rstrip("/")
             # Don't index the root page. There is probably a better way to
             # do this with Scrapy!
-            log.info(item.url.rstrip("/"))
             if url_without_slash == self.site.url.rstrip("/"):
                 return
             self.seen_urls[url_without_slash] = item.title
