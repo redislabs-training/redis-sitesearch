@@ -24,6 +24,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: 'curl -X POST -H "X-API-KEY: $API_TOKEN" -H "Content-Length: 0" https://search-service.redislabs.com/indexer'
-        env:
-          API_TOKEN: ${{secrets.API_TOKEN}}
+        run: 'curl -X POST -H "X-API-KEY: ${{secrets.API_TOKEN}}" -H "Content-Length: 0" https://search-service.redislabs.com/indexer'
