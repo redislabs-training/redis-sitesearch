@@ -18,6 +18,6 @@ async def test_cloud_landing_page(client):
 
 
 @pytest.mark.asyncio
-async def test_escapes_good_symbols(client):
+async def test_escapes_good_symbols(docs, client):
     result = await client.get('/search?q=active-active')
-    assert result.json()['results'][0]['section_title'] == 'Data persistence and Redis on Flash with Active-Active'
+    assert "<b>Active</b>-Active" in result.json()['results'][0]['title']

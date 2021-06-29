@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 from sitesearch.models import SiteConfiguration
 
@@ -6,11 +7,12 @@ UNSAFE_CHARS = re.compile('[\\[\\]\\<\\>+]')
 
 
 async def parse(index_alias: str, query: str, section: str, start: int, num: int,
-          search_site: SiteConfiguration) -> str:
+                search_site: SiteConfiguration) -> List[str]:
     # Dash postfixes confuse the query parser.
     query = query.strip().replace("-*", "*")
     query = UNSAFE_CHARS.sub(' ', query)
     query = query.strip()
+    query = query.replace('-', '\\-')
 
     # For queries of a term that should result in an exact match, e.g.
     # "insight" (a synonym of RedisInsight), or "active-active", strip any star

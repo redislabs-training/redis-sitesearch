@@ -114,7 +114,7 @@ class DocumentParser:
 
             docs.append(
                 SearchDocument(doc_id=_id,
-                               title=doc.title,
+                               title=title,
                                hierarchy=doc.hierarchy,
                                s=doc.s,
                                section_title=part_title or "",

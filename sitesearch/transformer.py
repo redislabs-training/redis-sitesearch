@@ -58,10 +58,10 @@ async def transform_documents(docs: List[Any],
             doc.body = await elide_text(doc.body, max_body_length)
 
         transformed.append({
-            "title": doc.title,
-            "section_title": doc.section_title,
+            "title": doc.title.replace("\\", ""),
+            "section_title": doc.section_title.replace("\\", ""),
             "hierarchy": hierarchy,
-            "body": doc.body,
+            "body": doc.body.replace("\\", ""),
             "url": doc.url
         })
 
