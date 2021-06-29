@@ -109,6 +109,9 @@ class DocumentParser:
                 BeautifulSoup('\n'.join(page), 'html.parser').get_text())
             _id = f"{doc.url}:{doc.title}:{part_title}:{i}"
 
+            part_title = part_title.replace("-", "\\-")
+            title = doc.title.replace("-", "\\-")
+
             docs.append(
                 SearchDocument(doc_id=_id,
                                title=doc.title,
@@ -126,6 +129,7 @@ class DocumentParser:
         base = text.strip().strip("\n").replace("\n", " ")
         if strip_symbols:
             base = base.replace("#", " ")
+        base = base.replace("-", "\\-")
         return base
 
     def prepare_document(self, url: str, html: str) -> List[SearchDocument]:

@@ -104,7 +104,6 @@ async def search(q: str,
     num = min(num, MAX_NUM)
     index_alias = config.keys.index_alias(search_site.url)
     query = await parse(index_alias, q, section, start, num, search_site)
-    print(query)
 
     start = time.time()
     try:
