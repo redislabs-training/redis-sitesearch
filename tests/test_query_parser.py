@@ -46,3 +46,12 @@ async def test_allow_fuzzy_search_for_non_synonym_terms():
 async def test_boosts_current_section_if_given():
     query = await parse("index", "test", "test", 0, 10, config.default_search_site)
     assert ' '.join(query) == "index ((@s:test) => {$weight: 10} test) | test SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"
+
+
+@pytest.mark.asyncio
+async def test_escapes_configured_literal_terms():
+    query = await parse("index", "active-active", None, 0, 10, config.default_search_site)
+    assert ' '.join(query) == "index active\\-active SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"
+
+    query = await parse("index", "leader-follower active-active", None, 0, 10, config.default_search_site)
+    assert ' '.join(query) == "index leader\\-follower active\\-active SUMMARIZE FIELDS 1 body FRAGS 1 LEN 10 HIGHLIGHT FIELDS 3 title body section_title LIMIT 0 10"

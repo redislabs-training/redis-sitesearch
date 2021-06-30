@@ -23,6 +23,7 @@ from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_search_connection
 from sitesearch.errors import ParseError
 from sitesearch.models import SearchDocument, SiteConfiguration, TYPE_PAGE, TYPE_SECTION
+from sitesearch.query_parser import TokenEscaper
 
 ROOT_PAGE = "Redis Labs Documentation"
 MAX_THREADS = multiprocessing.cpu_count() * 5
@@ -73,10 +74,11 @@ def get_section(root_url: str, url: str) -> str:
 
 
 class DocumentParser:
-    def __init__(self, root_url, validators, content_classes):
-        self.root_url = root_url
-        self.validators = validators
-        self.content_classes = content_classes
+    def __init__(self, site_config: SiteConfiguration):
+        self.root_url = site_config.url
+        self.validators = site_config.validators
+        self.content_classes = site_config.content_classes
+        self.escaper = TokenEscaper(site_config.literal_terms)
 
     def extract_parts(self, doc,
                       h2s: List[element.Tag]) -> List[SearchDocument]:
@@ -105,15 +107,14 @@ class DocumentParser:
                 page.append(str(elem))
                 elem = next_element(elem)
 
+            doc_id = f"{doc.url}:{doc.title}:{part_title}:{i}"
+            title = self.prepare_text(doc.title)
+            part_title = self.prepare_text(part_title)
             body = self.prepare_text(
                 BeautifulSoup('\n'.join(page), 'html.parser').get_text())
-            _id = f"{doc.url}:{doc.title}:{part_title}:{i}"
-
-            part_title = part_title.replace("-", "\\-")
-            title = doc.title.replace("-", "\\-")
 
             docs.append(
-                SearchDocument(doc_id=_id,
+                SearchDocument(doc_id=doc_id,
                                title=title,
                                hierarchy=doc.hierarchy,
                                s=doc.s,
@@ -129,8 +130,7 @@ class DocumentParser:
         base = text.strip().strip("\n").replace("\n", " ")
         if strip_symbols:
             base = base.replace("#", " ")
-        base = base.replace("-", "\\-")
-        return base
+        return self.escaper.escape(base)
 
     def prepare_document(self, url: str, html: str) -> List[SearchDocument]:
         """
@@ -208,33 +208,30 @@ class DocumentationSpiderBase(scrapy.Spider):
 
         RedisDocsSpider = type(
             'RedisDocsSpider',
-            (DocumentationSpiderBase,),
-            {"url": "http://example.com"})
+            (DocumentationSpiderBase,), {"site_config": docs_site_config})
 
-    If `validators` is defined, the indexer will call each validator
-    function for every `SearchDocument` that this scraper produces
-    before indexing it.
+    If `site_config.validators` is defined, the indexer will call each
+    validator function for every `SearchDocument` that this scraper
+    produces before indexing it.
 
-    If `allow` or `deny` are defined, this scraper will send them in
-    as arguments to LinkExtractor when extracting links on a page,
-    allowing fine-grained control of URL patterns to exclude or allow.
+    If `site_config.allow` or `site_config.deny` are defined, this
+    scraper will send them in as arguments to LinkExtractor when
+    extracting links on a page, allowing fine-grained control of URL
+    patterns to exclude or allow.
     """
     name: str = "documentation"
     doc_parser_class = DocumentParser
 
     # Sub-classes should override these fields.
     url: str = None
-    content_classes: str = None
-    validators = ValidatorList
-    allow: Tuple[str] = ()
-    deny: Tuple[str] = ()
-    allowed_domains: Tuple[str] = ()
+    site_config: SiteConfiguration
 
     def __init__(self, *args, **kwargs):
-        self.doc_parser = self.doc_parser_class(self.url, self.validators,
-                                                self.content_classes)
+        self.url = self.site_config.url
+        self.doc_parser = self.doc_parser_class(self.site_config)
         super().__init__(*args, **kwargs)
-        self.extractor = LinkExtractor(allow=self.allow, deny=self.deny)
+        self.extractor = LinkExtractor(allow=self.site_config.allow,
+                                       deny=self.site_config.deny)
 
     def follow_links(self, response):
         try:
@@ -293,6 +290,7 @@ class Indexer:
         self.keys = Keys(app_config.key_prefix)
         self.index_alias = self.keys.index_alias(self.site.url)
         self.index_name = f"{self.index_alias}-{time.time()}"
+        self.escaper = TokenEscaper(site.literal_terms)
 
         if search_client is None:
             search_client = get_search_connection(self.index_name)
@@ -508,14 +506,7 @@ class Indexer:
 
         docs_to_process = Queue()
         Spider = type(
-            'Spider', (DocumentationSpiderBase, ), {
-                "url": self.url,
-                "validators": self.site.validators,
-                "allow": self.site.allow,
-                "allowed_domains": self.site.allowed_domains,
-                "deny": self.site.deny,
-                "content_classes": self.site.content_classes
-            })
+            'Spider', (DocumentationSpiderBase, ), {"site_config": self.site})
 
         def enqueue_document(signal, sender, item: SearchDocument, response,
                              spider):

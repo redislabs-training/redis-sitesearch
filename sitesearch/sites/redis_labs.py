@@ -56,6 +56,11 @@ SYNONYMS = [
     )
 ]
 
+LITERAL_TERMS = (
+    'active-active',
+    'leader-follower'
+)
+
 DOCS_PROD = SiteConfiguration(
     url="https://docs.redislabs.com/latest/",
     synonym_groups=SYNONYMS,
@@ -82,7 +87,8 @@ DOCS_PROD = SiteConfiguration(
         r'https:\/\/docs\.redislabs\.com\/latest\/index\.html'
     ),
     allow=(),
-    content_classes=(".main-content",)
+    content_classes=(".main-content",),
+    literal_terms=LITERAL_TERMS
 )
 
 # Uncomment this and replace 'url' with your staging URL to test staging
@@ -114,7 +120,8 @@ DEVELOPERS = SiteConfiguration(
         r'.*\.pdf',
         r'.*\.tgz',
     ),
-    content_classes=(".markdown", ".margin-vert--md", ".main-wrapper")
+    content_classes=(".markdown", ".margin-vert--md", ".main-wrapper"),
+    literal_terms=LITERAL_TERMS
 )
 
 CORPORATE = SiteConfiguration(
@@ -142,7 +149,8 @@ CORPORATE = SiteConfiguration(
         r'\/tag\/.*',
     ),
     allow=(),
-    content_classes=(".bounds-content", ".bounds-inner")
+    content_classes=(".bounds-content", ".bounds-inner"),
+    literal_terms=LITERAL_TERMS
 )
 
 OSS = SiteConfiguration(
@@ -169,5 +177,6 @@ OSS = SiteConfiguration(
         r'.*\.tgz',
     ),
     allow=(),
-    content_classes=(".site-content",)
+    content_classes=(".site-content",),
+    literal_terms=LITERAL_TERMS
 )
