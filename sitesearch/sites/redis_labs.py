@@ -58,7 +58,18 @@ SYNONYMS = [
 
 LITERAL_TERMS = (
     'active-active',
-    'leader-follower'
+    'active-passive',
+    'leader-follower',
+    'append-only',
+    'out-of-memory',
+    'role-based',
+    'geo-distributed',
+    'read-only',
+    'conflict-free',
+    'multi-master',
+    'auto-scaling',
+    'multi-tenant',
+    're-sharding'
 )
 
 DOCS_PROD = SiteConfiguration(

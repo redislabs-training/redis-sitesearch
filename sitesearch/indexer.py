@@ -516,7 +516,9 @@ class Indexer:
             # do this with Scrapy!
             if url_without_slash == self.site.url.rstrip("/"):
                 return
-            self.seen_urls[url_without_slash] = item.title
+            # Remove any escape slashes -- we don't want to include escape characters
+            # within the hierarchy JSON because json.loads() can't parse them...
+            self.seen_urls[url_without_slash] = item.title.replace("//", "")
             docs_to_process.put(item)
 
         def index_documents():

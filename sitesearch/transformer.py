@@ -24,7 +24,7 @@ def unescape(string: str) -> str:
     querying should special-case to support searching with punctuation.
     These are tokens like "active-active".
     """
-    return string.replace("//", "")
+    return string.replace("\\", "")
 
 
 def transform_documents(docs: List[Any],

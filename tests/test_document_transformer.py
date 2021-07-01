@@ -87,3 +87,24 @@ async def test_transform_documents_injects_landing_page_doc():
 
     docs = transform_documents([], config.default_search_site, 'k8s*')
     assert docs[0]['title'] == 'Getting Started with Redis Enterprise Software using Kubernetes'
+
+
+@pytest.mark.asyncio
+async def test_transform_documents_unescapes_backslashes():
+    doc = Document(
+        id="123",
+        title="Title\\-1",
+        section_title="Section\\-1",
+        hierarchy='["one", "two"]',
+        url="http://example.com/1",
+        body="This is the body\\-",
+        type=TYPE_PAGE,
+        position=0
+    )
+
+    docs = transform_documents([doc], config.default_search_site, 'test')
+
+    assert docs[0]['title'] == "Title-1"
+    assert docs[0]['section_title'] == "Section-1"
+    assert docs[0]['body'] == "This is the body-"
+
