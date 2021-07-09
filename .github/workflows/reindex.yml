@@ -15,4 +15,6 @@ jobs:
       - name: Make a reindex API request
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
-        run: 'curl -X POST -H "X-API-KEY: $env:API_TOKEN" -H "Content-Length: 0" https://search-service.redislabs.com/indexer'
+        run: |
+          echo $env:API_TOKEN
+          curl -X POST -H "X-API-KEY: $env:API_TOKEN" -H "Content-Length: 0" https://search-service.redislabs.com/indexer'
