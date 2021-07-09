@@ -17,4 +17,4 @@ jobs:
           API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           echo "$API_TOKEN"
-          curl -X POST -H "X-API-KEY: $API_TOKEN" -H "Content-Length: 0" https://search-service.redislabs.com/indexer'
+          curl -X POST -H "X-API-KEY: $API_TOKEN" -H "Content-Length: 0" https://search-service.redislabs.com/indexer
