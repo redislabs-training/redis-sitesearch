@@ -1,15 +1,17 @@
 import datetime
 import json
+import hashlib
 import logging
 import multiprocessing
 import time
 from dataclasses import asdict
 from queue import Queue
 from threading import Thread
-from typing import Dict, List, Callable, Tuple
+from typing import Dict, List, Callable, Tuple, Set
 from redis import ResponseError
 
 import redis.exceptions
+from redisearch.query import Query
 import scrapy
 from bs4 import BeautifulSoup, element
 from redisearch import Client, IndexDefinition
@@ -31,6 +33,8 @@ DEBOUNCE_SECONDS = 60 * 5  # Five minutes
 SYNUPDATE_COMMAND = 'FT.SYNUPDATE'
 TWO_HOURS = 60*60*2
 INDEXING_LOCK_TIMEOUT = 60*60
+SECTION_ID =  "{url}:section:{hash}"
+PAGE_ID =  "{url}:page:{hash}"
 
 Scorer = Callable[[SearchDocument, float], None]
 ScorerList = List[Scorer]
@@ -39,6 +43,11 @@ Validator = Callable[[SearchDocument], None]
 ValidatorList = List[Validator]
 
 log = logging.getLogger(__name__)
+
+
+def md5(string: str):
+    """Return an md5 digest for an input string."""
+    return hashlib.md5(string.encode("utf-8")).hexdigest()
 
 
 class DebounceError(Exception):
@@ -107,15 +116,19 @@ class DocumentParser:
                 page.append(str(elem))
                 elem = next_element(elem)
 
-            doc_id = f"{doc.url}:{doc.title}:{part_title}:{i}"
-            title = self.prepare_text(doc.title)
             part_title = self.prepare_text(part_title)
             body = self.prepare_text(
                 BeautifulSoup('\n'.join(page), 'html.parser').get_text())
 
+            # Hash the body, title, and position of the section to help
+            # detect stale section documents after indexing is complete.
+            doc_hash = md5("".join([body, part_title, str(i)]))
+
+            doc_id = SECTION_ID.format(url=doc.url, hash=doc_hash)
+
             docs.append(
                 SearchDocument(doc_id=doc_id,
-                               title=title,
+                               title=doc.title,
                                hierarchy=doc.hierarchy,
                                s=doc.s,
                                section_title=part_title or "",
@@ -167,7 +180,14 @@ class DocumentParser:
             h2s = content.find_all('h3')
 
         body = self.prepare_text(content.get_text(), True)
-        doc = SearchDocument(doc_id=f"{url}:{title}",
+
+        # Hash the body, title, and position of the page to help detect stale
+        # page documents after indexing is complete.
+        doc_hash = md5("".join([body, title]))
+
+        doc_id = PAGE_ID.format(url=url, hash=doc_hash)
+
+        doc = SearchDocument(doc_id=doc_id,
                              title=title,
                              section_title="",
                              hierarchy=[],
@@ -308,6 +328,10 @@ class Indexer:
         # segment of its URL to known URLs.
         self.seen_urls: Dict[str, str] = {}
 
+        # This is the set of all known document IDs. We'll use this to remove
+        # outdated documents from the index.
+        self.seen_ids: Set[str] = set()
+
     @property
     def url(self):
         return self.site.url
@@ -397,6 +421,42 @@ class Indexer:
         for idx in old_indexes:
             self.redis.execute_command('FT.DROPINDEX', idx)
 
+    def clear_old_hashes(self):
+        """
+        Delete any stale Hashes from the index.
+
+        Stale Hashes are those whose IDs exist in the search index but not in
+        the latest set of seen IDs after scraping a site.
+
+        Every Hash ID includes both the URL of the page it came from and a hash
+        of the page's or section's content. When the content of a page or
+        section we're tracking in the index changes on the site, we'll get a new
+        Hash ID. Because the ID will differ from the one we've already seen,
+        the old Hash will show up as stale, and we can delete it.
+        """
+        all_hash_ids = set()
+        offset = 0
+        iter_by = 200
+
+        # Get the set of all Hash IDs that this index knows about.
+        while True:
+            q = Query("*").paging(offset, iter_by).return_fields("doc_id")
+            existing_docs = self.search_client.search(q).docs
+            if not existing_docs: # No more documents
+                break
+            all_hash_ids |= {getattr(d, 'doc_id', None) for d in existing_docs}
+            offset += iter_by
+
+        stale_ids = all_hash_ids - self.seen_ids
+        stale_ids.discard(None)
+
+        log.warning("Deleting stale IDs: %s", stale_ids)
+
+        # Remove the stale Hashes.
+        if stale_ids:
+            keys = [self.keys.document(self.url, id) for id in stale_ids]
+            self.redis.delete(*keys)
+
     def create_index_alias(self):
         """
         Switch the current alias to point to the new index and delete old indexes.
@@ -411,36 +471,6 @@ class Indexer:
             self.search_client.aliasadd(self.index_alias)
 
         self.clear_old_indexes()
-
-    def cleanup_urls(self):
-        """
-        Remove all Hashes for any URL that we previously indexed but is now
-        missing from the indexed site (because e.g., it was deleted from the
-        site).
-
-        Without special handling for this situation, we will retain Hashes
-        for a URL in the search index even if that URL is removed from the
-        site we are indexing.
-
-        To account for these stale URLs, we will keep a Set in Redis of all
-        the "current" indexed URLs for a site every time we index. Then, each
-        time we index the site, we'll take the difference of the Set of
-        current URLs and the Set of "new" URLs we just indexed. The result is
-        the Set of stale URLs, and we'll remove all Hashes for those URLs --
-        thus, we'll remove them from the search index, which follows Hashes.
-        """
-        current_urls_key = self.keys.site_urls_current(self.index_alias)
-        new_urls_key = self.keys.site_urls_new(self.index_alias)
-        old_urls = self.redis.sdiff(current_urls_key, new_urls_key)
-
-        with self.redis.pipeline(transaction=False) as p:
-            for url in old_urls:
-                # A URL can have multiple self.keys.if it had H2s, so here we scan
-                # through all of the URLs document self.keys.and delete them.
-                for doc_key in self.redis.scan_iter(self.keys.document(url, "*")):
-                    p.delete(doc_key)
-            p.rename(new_urls_key, current_urls_key)
-            p.execute()
 
     def build_hierarchy(self, doc: SearchDocument):
         """
@@ -519,6 +549,7 @@ class Indexer:
             # Remove any escape slashes -- we don't want to include escape characters
             # within the hierarchy JSON because json.loads() can't parse them...
             self.seen_urls[url_without_slash] = item.title.replace("//", "")
+            self.seen_ids |= {item.doc_id}
             docs_to_process.put(item)
 
         def index_documents():
@@ -543,7 +574,7 @@ class Indexer:
                            datetime.datetime.now().timestamp())
             docs_to_process.join()
             self.create_index_alias()
-            self.cleanup_urls()
+            self.clear_old_hashes()
             self.redis.delete(self.lock)
 
         dispatcher.connect(enqueue_document, signal=signals.item_scraped)

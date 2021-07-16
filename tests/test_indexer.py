@@ -71,10 +71,21 @@ def index_file(indexer, parse_file):
 
 
 def test_indexer_indexes_page_document(index_file, keys):
+    """Test indexing pages.
+    
+    NOTE: If this test fails, it may be that you changed the fixture HTML.
+    Changing the HTML may cause the test to fail because the MD5 hash of
+    the HTML will change, thus the "doc_id" will be different. If this happens,
+    you can find the new hash by adding `import ipdb; ipdb.set_trace()` into
+    this test and running the tests with the `-s` flag. Then check the value
+    of the mock calls, e.g.:
+    
+        ipdb> indexer.search_client.redis.hset.call_args_list[3]
+        call('<key>', mapping={'doc_id': 'https://docs.redislabs.com/latest//test:page:c63108b05d076d2cdff93c6065bf362e', ... )
+    """ 
     indexer = index_file(FILE_WITH_SECTIONS)
     expected_doc = {
-        'doc_id':
-        f'{TEST_URL}:Database Persistence with Redis Enterprise Software',
+        'doc_id': f'{TEST_URL}:page:c34e3cb81555c9fa4346342034476dd7',
         'title': 'Database Persistence with Redis Enterprise Software',
         'section_title': '',
         'hierarchy': '[]',
@@ -91,10 +102,21 @@ def test_indexer_indexes_page_document(index_file, keys):
 
 
 def test_indexer_indexes_page_section_documents(index_file, keys):
+    """Test indexing page sections.
+    
+    NOTE: If this test fails, it may be that you changed the fixture HTML.
+    Changing the HTML may cause the test to fail because the MD5 hash of
+    the HTML will change, thus the "doc_id" will be different. If this happens,
+    you can find the new hash by adding `import ipdb; ipdb.set_trace()` into
+    this test and running the tests with the `-s` flag. Then check the value
+    of the mock calls, e.g.:
+    
+        ipdb> indexer.search_client.redis.hset.call_args_list[3]
+        call('<key>', mapping={'doc_id': 'https://docs.redislabs.com/latest//test:section:c63108b05d076d2cdff93c6065bf362e', ... )
+    """
     indexer = index_file(FILE_WITH_SECTIONS)
     expected_section_docs = [{
-        'doc_id':
-        f'{TEST_URL}:Database Persistence with Redis Enterprise Software:Options for configuring data persistence:0',
+        'doc_id': f'{TEST_URL}:section:299d6e11b67f34e8a0d84347ae5efbd7',
         'title': 'Database Persistence with Redis Enterprise Software',
         'section_title': 'Options for configuring data persistence',
         'hierarchy': '[]',
@@ -106,8 +128,7 @@ def test_indexer_indexes_page_section_documents(index_file, keys):
         'position': 0,
         '__score': 0.75,
     }, {
-        'doc_id':
-        f'{TEST_URL}:Database Persistence with Redis Enterprise Software:Append only file (AOF) vs snapshot (RDB):1',
+        'doc_id': f'{TEST_URL}:section:f62925eb9d8dca6774a8db54459cf716',
         'title': 'Database Persistence with Redis Enterprise Software',
         'section_title': 'Append only file (AOF) vs snapshot (RDB)',
         'hierarchy': '[]',
@@ -119,8 +140,7 @@ def test_indexer_indexes_page_section_documents(index_file, keys):
         'position': 1,
         '__score': 0.75,
     }, {
-        'doc_id':
-        f'{TEST_URL}:Database Persistence with Redis Enterprise Software:Data persistence and Redis on Flash with Active-Active:2',
+        'doc_id': f'{TEST_URL}:section:c63108b05d076d2cdff93c6065bf362e',
         'title': 'Database Persistence with Redis Enterprise Software',
         'section_title': 'Data persistence and Redis on Flash with Active\\-Active',
         's': 'test',
@@ -137,8 +157,7 @@ def test_indexer_indexes_page_section_documents(index_file, keys):
     # we're focused on the section documents
     for i, doc in enumerate(expected_section_docs, start=1):
         key = keys.document(DOCS_PROD.url, doc['doc_id'])
-        assert indexer.search_client.redis.hset.call_args_list[i] == call(
-            key, mapping=doc)
+        assert indexer.search_client.redis.hset.call_args_list[i] == call(key, mapping=doc)
 
 
 def test_document_parser_skips_pages_without_title(parse_file):
@@ -180,8 +199,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys):
     indexer = index_file(FILE_WITH_H3s)
 
     expected_section_docs = [{
-        'doc_id':
-        'https://docs.redislabs.com/latest//test:RedisBloom Tutorial',
+        'doc_id': f'{TEST_URL}:page:5a6938363f1cb38ef2eec5397c4e67cc',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -193,8 +211,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys):
         'position': 0,
         '__score': 1.0
     }, {
-        'doc_id':
-        'https://docs.redislabs.com/latest//test:RedisBloom Tutorial::0',
+        'doc_id': f'{TEST_URL}:section:113820cc765e7328919bc24f7847482c',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -206,8 +223,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys):
         'position': 0,
         '__score': 0.75
     }, {
-        'doc_id':
-        'https://docs.redislabs.com/latest//test:RedisBloom Tutorial::1',
+        'doc_id': f'{TEST_URL}:section:0c0fe866d8e3ee6b792aed7c3738f4f6',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -219,8 +235,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys):
         'position': 1,
         '__score': 0.75
     }, {
-        'doc_id':
-        'https://docs.redislabs.com/latest//test:RedisBloom Tutorial::2',
+        'doc_id': f'{TEST_URL}:section:2178f498278a818fa1e0b08206a2347e',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -232,8 +247,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys):
         'position': 2,
         '__score': 0.75
     }, {
-        'doc_id':
-        'https://docs.redislabs.com/latest//test:RedisBloom Tutorial::3',
+        'doc_id': f'{TEST_URL}:section:f7eef8eb8ad1b02ab6f269da416ae08a',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -245,8 +259,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys):
         'position': 3,
         '__score': 0.75
     }, {
-        'doc_id':
-        'https://docs.redislabs.com/latest//test:RedisBloom Tutorial::4',
+        'doc_id': f'{TEST_URL}:section:14094b624de5c096352862568e38516c',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',

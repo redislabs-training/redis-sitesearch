@@ -1,5 +1,5 @@
 import dataclasses
-from redisearch.client import TextField
+from redisearch.client import TagField, TextField
 
 from sitesearch.models import SiteConfiguration, SynonymGroup
 from sitesearch.scorers import boost_pages, boost_top_level_pages
@@ -83,6 +83,7 @@ DOCS_PROD = SiteConfiguration(
         TextField("body", weight=1.5),
         TextField("url"),
         TextField("s", no_stem=True),
+        TagField("doc_id")
     ),
     scorers=(
         boost_pages,
