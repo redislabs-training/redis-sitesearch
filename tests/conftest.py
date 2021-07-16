@@ -46,9 +46,7 @@ def parse_file():
         with open(file, encoding='utf-8') as f:
             html = f.read()
 
-        return DocumentParser(DOCS_PROD.url, DOCS_PROD.validators,
-                              DOCS_PROD.content_classes).parse(
-                                  TEST_URL, html)
+        return DocumentParser(DOCS_PROD).parse(TEST_URL, html)
 
     yield fn
 

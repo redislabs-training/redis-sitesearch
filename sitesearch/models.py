@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass, replace
 from typing import Dict, List, Set, Tuple, Callable, Pattern
 
@@ -42,6 +43,7 @@ class SiteConfiguration:
     deny: Tuple[Pattern, ...]
     allowed_domains: Tuple[str, ...]
     content_classes: Tuple[str, ...] = None
+    literal_terms: Tuple[str, ...] = ""
 
     @property
     def all_synonyms(self) -> Set[str]:
@@ -50,7 +52,7 @@ class SiteConfiguration:
             synonyms |= syn_group.synonyms
         return synonyms
 
-    async def landing_page(self, query) -> SearchDocument:
+    def landing_page(self, query) -> SearchDocument:
         page = self.landing_pages.get(query, None)
         if page:
             root_url = self.url.rstrip('/')

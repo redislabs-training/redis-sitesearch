@@ -11,12 +11,23 @@ DEFAULT_MAX_LENGTH = 100
 log = logging.getLogger(__name__)
 
 
-async def elide_text(text: str, max_length: int) -> str:
+def elide_text(text: str, max_length: int) -> str:
     """Shorten a string to a max length and end it with an ellipsis."""
     return text if len(text) < max_length else f"{text[:max_length]}..."
 
 
-async def transform_documents(docs: List[Any],
+def unescape(string: str) -> str:
+    """
+    Remove escaping symbols RediSearch stores for literal tokens.
+
+    A SiteConfiguration configures "literal tokens" that indexing and
+    querying should special-case to support searching with punctuation.
+    These are tokens like "active-active".
+    """
+    return string.replace("\\", "")
+
+
+def transform_documents(docs: List[Any],
                         search_site: SiteConfiguration,
                         query: str,
                         max_body_length: int = DEFAULT_MAX_LENGTH) -> List[Dict[str, str]]:
@@ -24,7 +35,7 @@ async def transform_documents(docs: List[Any],
     Transform a list of Documents from RediSearch into a list of dictionaries.
     """
     transformed = []
-    landing_page = await search_site.landing_page(query.replace('*', ''))
+    landing_page = search_site.landing_page(query.replace('*', ''))
     pages_seen = set()
 
     if landing_page:
@@ -55,13 +66,13 @@ async def transform_documents(docs: List[Any],
         # TODO: The elide_text() function is not HTML aware, so you shouldn't use
         # it if the text includes HTML!
         if '<b>' not in doc.body:
-            doc.body = await elide_text(doc.body, max_body_length)
+            doc.body = elide_text(doc.body, max_body_length)
 
         transformed.append({
-            "title": doc.title,
-            "section_title": doc.section_title,
-            "hierarchy": hierarchy,
-            "body": doc.body,
+            "title": unescape(doc.title),
+            "section_title": unescape(doc.section_title),
+            "hierarchy": [unescape(h) for h in hierarchy],
+            "body": unescape(doc.body),
             "url": doc.url
         })
 

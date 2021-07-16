@@ -1,7 +1,6 @@
 import os
 from unittest import mock
 from unittest.mock import call
-import ipdb
 
 import pytest
 
@@ -49,8 +48,7 @@ def parse_file():
         with open(file, encoding='utf-8') as f:
             html = f.read()
 
-        return DocumentParser(DOCS_PROD.url, DOCS_PROD.validators,
-                              DOCS_PROD.content_classes).parse(TEST_URL, html)
+        return DocumentParser(DOCS_PROD).parse(TEST_URL, html)
 
     return fn
 
@@ -89,7 +87,7 @@ def test_indexer_indexes_page_document(index_file, keys):
         '__score': 1
     }
     key = keys.document(DOCS_PROD.url, expected_doc['doc_id'])
-    indexer.search_client.redis.hset.assert_any_call(key, mapping=expected_doc)
+    indexer.search_client.redis.hset.call_args_list[0] = call(key, mapping=expected_doc)
 
 
 def test_indexer_indexes_page_section_documents(index_file, keys):
@@ -122,14 +120,14 @@ def test_indexer_indexes_page_section_documents(index_file, keys):
         '__score': 0.75,
     }, {
         'doc_id':
-        f'{TEST_URL}:Database Persistence with Redis Enterprise Software:Data persistence and Redis on Flash:2',
+        f'{TEST_URL}:Database Persistence with Redis Enterprise Software:Data persistence and Redis on Flash with Active-Active:2',
         'title': 'Database Persistence with Redis Enterprise Software',
-        'section_title': 'Data persistence and Redis on Flash',
+        'section_title': 'Data persistence and Redis on Flash with Active\\-Active',
         's': 'test',
         'hierarchy': '[]',
         'url': TEST_URL,
         'body':
-        'If you are enabling data persistence for databases running on Redis Enterprise Flash, by default both master and slave shards are configured to write to disk. This is unlike a standard Redis Enterprise Software database where only the slave shards persist to disk. This master and slave dual data persistence with replication is done to better protect the database against node failures. Flash-based databases are expected to hold larger datasets and repair times for shards can be longer under node failures. Having dual-persistence provides better protection against failures under these longer repair times. However, the dual data persistence with replication adds some processor and network overhead, especially in the case of cloud configurations with persistent storage that is network attached (e.g. EBS-backed volumes in AWS). There may be times where performance is critical for your use case and you don’t want to risk data persistence adding latency. If that is the case, you can disable data-persistence on the master shards using the following\xa0rladmin command: rladmin tune db db: master_persistence disabled',
+        'active\\-active If you are enabling data persistence for databases running on Redis Enterprise Flash, by default both master and slave shards are configured to write to disk. This is unlike a standard Redis Enterprise Software database where only the slave shards persist to disk. This master and slave dual data persistence with replication is done to better protect the database against node failures. Flash-based databases are expected to hold larger datasets and repair times for shards can be longer under node failures. Having dual-persistence provides better protection against failures under these longer repair times. However, the dual data persistence with replication adds some processor and network overhead, especially in the case of cloud configurations with persistent storage that is network attached (e.g. EBS-backed volumes in AWS). There may be times where performance is critical for your use case and you don’t want to risk data persistence adding latency. If that is the case, you can disable data-persistence on the master shards using the following\xa0rladmin command: rladmin tune db db: master_persistence disabled',
         'type': 'section',
         'position': 2,
         '__score': 0.75
