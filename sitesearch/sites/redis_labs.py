@@ -69,7 +69,8 @@ LITERAL_TERMS = (
     'multi-master',
     'auto-scaling',
     'multi-tenant',
-    're-sharding'
+    're-sharding',
+    'crdb-cli'
 )
 
 DOCS_PROD = SiteConfiguration(
