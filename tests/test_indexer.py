@@ -102,8 +102,9 @@ def test_indexer_indexes_page_document(index_file, keys):
 
 
 def test_indexer_indexes_page_section_documents(index_file, keys):
-    """Test indexing page sections.
-    
+    """
+    Test indexing page sections.
+
     NOTE: If this test fails, it may be that you changed the fixture HTML.
     Changing the HTML may cause the test to fail because the MD5 hash of
     the HTML will change, thus the "doc_id" will be different. If this happens,
