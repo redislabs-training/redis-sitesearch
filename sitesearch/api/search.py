@@ -4,11 +4,11 @@ from typing import Optional
 
 import newrelic
 import redis
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 
 from redisearch import Result
 from sitesearch import indexer
-from sitesearch.config import AppConfiguration, get_config
+from sitesearch.config import get_config
 from sitesearch.connections import get_async_redis_connection
 from sitesearch.query_parser import parse
 from sitesearch.transformer import transform_documents
