@@ -425,14 +425,14 @@ class Indexer:
         """
         Delete any stale Hashes from the index.
 
-        Stale Hashes are those whose IDs exist in the search index but not in
-        the latest set of seen IDs after scraping a site.
-
-        Every Hash ID includes both the URL of the page it came from and a hash
-        of the page's or section's content. When the content of a page or
+        Stale Hashes are those whose document IDs exist in the search index but
+        not in the latest set of seen IDs after scraping a site.
+        
+        Every document ID includes both the URL of the page it came from and a
+        hash of the page's or section's content. When the content of a page or
         section we're tracking in the index changes on the site, we'll get a new
-        Hash ID. Because the ID will differ from the one we've already seen,
-        the old Hash will show up as stale, and we can delete it.
+        document ID. Because the ID will differ from the one we've already seen,
+        the old document will show up as stale, and we can delete it.
         """
         all_hash_ids = set()
         offset = 0
