@@ -7,7 +7,7 @@ import time
 from dataclasses import asdict
 from queue import Queue
 from threading import Thread
-from typing import Dict, List, Callable, Tuple, Set
+from typing import Dict, List, Callable, Set
 from redis import ResponseError
 
 import redis.exceptions
