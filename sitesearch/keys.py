@@ -1,6 +1,6 @@
 
-
 class Keys:
+    """All of the Redis keys used for this application."""
     def __init__(self, prefix: str):
         self.prefix = prefix
 
