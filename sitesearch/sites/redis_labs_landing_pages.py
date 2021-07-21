@@ -126,7 +126,7 @@ TIMESERIES_LANDING_PAGE = SearchDocument(
     section_title="",
     hierarchy=["Redis Modules", "RedisTimeSeries"],
     s="modules",
-    url="/modules/redis-timeseries/",
+    url="/modules/redistimeseries/",
     body="RedisTimeSeries is a Redis module developed by Redis Labs to enhance your "
          "experience managing time series data with Redis.",
     type=TYPE_PAGE,
