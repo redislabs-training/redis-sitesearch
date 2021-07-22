@@ -14,6 +14,10 @@ def create_app(config=None):
         'http://localhost:3000',
         'http://localhost:1313',
         'http://localhost:8000',
+        'http://docs-test.redislabs.com.s3-website-us-west-1.amazonaws.com',
+        'https://docs-test.redislabs.com.s3-website-us-west-1.amazonaws.com',
+        'https://docs-test.redislabs.com',
+        'http://docs-test.redislabs.com'
     ]
 
     app = FastAPI()

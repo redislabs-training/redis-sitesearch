@@ -186,4 +186,4 @@ gcloud compute instance-groups managed rolling-action start-update docsearch-app
  echo "Start rolling update of production app servers in europe-west6-a"
  echo "--------------------------------"
  gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-europe  \
-         --version template=$NEW_APP_TEMPLATE_ZURICH --zone europe-west6-a
+         --version template=$NEW_APP_TEMPLATE_ZURICH --zone europe-west6-a --max-unavailable 0
