@@ -79,13 +79,13 @@ create-with-container $NEW_WORKER_TEMPLATE_USWEST \
 echo
 echo "Start rolling update of production app servers in us-west1-a"
 echo "--------------------------------"
-gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-uswest \
+gcloud beta compute instance-groups managed rolling-action start-update docsearch-app-production-uswest \
         --version template=$NEW_APP_TEMPLATE_USWEST --zone us-west1-a
 
 echo
 echo "Start rolling update of production worker servers in us-west1-a"
 echo "--------------------------------"
-gcloud compute instance-groups managed rolling-action start-update docsearch-worker-production-uswest \
+gcloud beta compute instance-groups managed rolling-action start-update docsearch-worker-production-uswest \
         --version template=$NEW_WORKER_TEMPLATE_USWEST --zone us-west1-a
 
 
@@ -119,7 +119,7 @@ create-with-container $NEW_APP_TEMPLATE_USEAST \
 echo
 echo "Start rolling update of production app servers in us-east4-c"
 echo "--------------------------------"
-gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-useast \
+gcloud beta compute instance-groups managed rolling-action start-update docsearch-app-production-useast \
         --version template=$NEW_APP_TEMPLATE_USEAST --zone us-east4-c
 
 
@@ -152,7 +152,7 @@ gcloud compute instance-groups managed rolling-action start-update docsearch-app
  echo
  echo "Start rolling update of production app servers in asia-south1-c"
  echo "--------------------------------"
- gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-mumbai \
+ gcloud beta compute instance-groups managed rolling-action start-update docsearch-app-production-mumbai \
          --version template=$NEW_APP_TEMPLATE_MUMBAI --zone asia-south1-c
 
 
@@ -185,5 +185,5 @@ gcloud compute instance-groups managed rolling-action start-update docsearch-app
  echo
  echo "Start rolling update of production app servers in europe-west6-a"
  echo "--------------------------------"
- gcloud compute instance-groups managed rolling-action start-update docsearch-app-production-europe  \
+ gcloud beta compute instance-groups managed rolling-action start-update docsearch-app-production-europe  \
          --version template=$NEW_APP_TEMPLATE_ZURICH --zone europe-west6-a --max-unavailable 0
