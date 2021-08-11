@@ -90,10 +90,10 @@ LITERAL_TERMS = (
 )
 
 DOCS_PROD = SiteConfiguration(
-    url="https://docs.redislabs.com/latest/",
+    url="https://docs.redis.com/latest/",
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
-    allowed_domains=('docs.redislabs.com',),
+    allowed_domains=('docs.redis.com',),
     search_schema=(
         TextField("title", weight=10),
         TextField("section_title"),
@@ -125,14 +125,14 @@ DOCS_PROD = SiteConfiguration(
 DOCS_STAGING = dataclasses.replace(
     DOCS_PROD,
 
-    url="https://docs.redislabs.com/staging/boost-current-section"
+    url="https://docs.redis.com/staging/boost-current-section"
 )
 
 DEVELOPERS = SiteConfiguration(
-    url="https://developer.redislabs.com",
+    url="https://developer.redis.com",
     synonym_groups=SYNONYMS,
     landing_pages={},
-    allowed_domains=('developer.redislabs.com',),
+    allowed_domains=('developer.redis.com',),
     search_schema=(
         TextField("title", weight=20),
         TextField("section_title"),
@@ -157,7 +157,7 @@ CORPORATE = SiteConfiguration(
     url="https://redislabs.com",
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
-    allowed_domains=('redislabs.com',),
+    allowed_domains=('redis.com',),
     search_schema=(
         TextField("title", weight=10),
         TextField("section_title"),

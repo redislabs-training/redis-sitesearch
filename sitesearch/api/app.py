@@ -9,6 +9,8 @@ def create_app(config=None):
     config = config or AppConfiguration()
 
     origins = [
+        'https://developer.redis.com',
+        'https://docs.redis.com',
         'https://docs.redislabs.com',
         'https://developer.redislabs.com',
         'http://localhost:3000',
