@@ -113,6 +113,37 @@ DOCS_PROD = SiteConfiguration(
     deny=(
         r'\/release-notes\/',
         r'.*\.tgz',
+        r'https:\/\/docs\.redis\.com\/latest\/index\.html'
+    ),
+    allow=(),
+    content_classes=(".main-content",),
+    literal_terms=LITERAL_TERMS
+)
+
+OLD_DOCS_PROD = SiteConfiguration(
+    url="https://docs.redislabs.com/latest/",
+    synonym_groups=SYNONYMS,
+    landing_pages=LANDING_PAGES,
+    allowed_domains=('docs.redislabs.com',),
+    search_schema=(
+        TextField("title", weight=10),
+        TextField("section_title"),
+        TextField("body", weight=1.5),
+        TextField("url"),
+        TextField("s", no_stem=True),
+        TagField("doc_id")
+    ),
+    scorers=(
+        boost_pages,
+        boost_top_level_pages
+    ),
+    validators=(
+        skip_release_notes,
+        skip_404_page
+    ),
+    deny=(
+        r'\/release-notes\/',
+        r'.*\.tgz',
         r'https:\/\/docs\.redislabs\.com\/latest\/index\.html'
     ),
     allow=(),

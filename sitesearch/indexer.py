@@ -33,8 +33,8 @@ DEBOUNCE_SECONDS = 60 * 5  # Five minutes
 SYNUPDATE_COMMAND = 'FT.SYNUPDATE'
 TWO_HOURS = 60*60*2
 INDEXING_LOCK_TIMEOUT = 60*60
-SECTION_ID =  "{url}:section:{hash}"
-PAGE_ID =  "{url}:page:{hash}"
+SECTION_ID = "{url}:section:{hash}"
+PAGE_ID = "{url}:page:{hash}"
 
 Scorer = Callable[[SearchDocument, float], None]
 ScorerList = List[Scorer]
@@ -48,6 +48,28 @@ log = logging.getLogger(__name__)
 def md5(string: str):
     """Return an md5 digest for an input string."""
     return hashlib.md5(string.encode("utf-8")).hexdigest()
+
+
+def page_id(url: str, body: str, title: str) -> str:
+    """
+    Return the document ID for a page document.
+
+    We hash the body text and title of the page to help detect stale
+    page documents after indexing is complete.
+    """
+    doc_hash = md5("".join([body, title]))
+    return PAGE_ID.format(url=url, hash=doc_hash)
+
+
+def section_id(url: str, pos: int, body: str, part_title: str) -> str:
+    """
+    Return the hash of a section document.
+
+    We hash the body, title, and position of the section to help
+    detect stale section documents after indexing is complete.
+    """
+    doc_hash = md5("".join([body, part_title, str(pos)]))
+    return SECTION_ID.format(url=url, hash=doc_hash)
 
 
 class DebounceError(Exception):
@@ -89,6 +111,12 @@ class DocumentParser:
         self.content_classes = site_config.content_classes
         self.escaper = TokenEscaper(site_config.literal_terms)
 
+    def prepare_text(self, text: str, strip_symbols: bool = False) -> str:
+        base = text.strip().strip("\n").replace("\n", " ")
+        if strip_symbols:
+            base = base.replace("#", " ")
+        return self.escaper.escape(base)
+
     def extract_parts(self, doc,
                       h2s: List[element.Tag]) -> List[SearchDocument]:
         """
@@ -120,11 +148,7 @@ class DocumentParser:
             body = self.prepare_text(
                 BeautifulSoup('\n'.join(page), 'html.parser').get_text())
 
-            # Hash the body, title, and position of the section to help
-            # detect stale section documents after indexing is complete.
-            doc_hash = md5("".join([body, part_title, str(i)]))
-
-            doc_id = SECTION_ID.format(url=doc.url, hash=doc_hash)
+            doc_id = section_id(doc.url, i, body, part_title)
 
             docs.append(
                 SearchDocument(doc_id=doc_id,
@@ -138,12 +162,6 @@ class DocumentParser:
                                position=i))
 
         return docs
-
-    def prepare_text(self, text: str, strip_symbols: bool = False) -> str:
-        base = text.strip().strip("\n").replace("\n", " ")
-        if strip_symbols:
-            base = base.replace("#", " ")
-        return self.escaper.escape(base)
 
     def prepare_document(self, url: str, html: str) -> List[SearchDocument]:
         """
@@ -180,12 +198,7 @@ class DocumentParser:
             h2s = content.find_all('h3')
 
         body = self.prepare_text(content.get_text(), True)
-
-        # Hash the body, title, and position of the page to help detect stale
-        # page documents after indexing is complete.
-        doc_hash = md5("".join([body, title]))
-
-        doc_id = PAGE_ID.format(url=url, hash=doc_hash)
+        doc_id = page_id(safe_url, body, title)
 
         doc = SearchDocument(doc_id=doc_id,
                              title=title,
@@ -427,7 +440,7 @@ class Indexer:
 
         Stale Hashes are those whose document IDs exist in the search index but
         not in the latest set of seen IDs after scraping a site.
-        
+
         Every document ID includes both the URL of the page it came from and a
         hash of the page's or section's content. When the content of a page or
         section we're tracking in the index changes on the site, we'll get a new

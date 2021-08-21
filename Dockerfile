@@ -5,6 +5,7 @@ ARG PORT=8081
 
 # Install Python 3.8
 
+RUN apt-get clean
 RUN apt-get update
 RUN apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev git supervisor nginx
 

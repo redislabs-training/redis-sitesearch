@@ -8,13 +8,13 @@ from sitesearch.api.app import create_app
 from sitesearch.config import AppConfiguration
 from sitesearch.connections import get_async_redis_connection
 from sitesearch.indexer import DocumentParser, Indexer
-from sitesearch.sites.redis_labs import DOCS_PROD
+from sitesearch.sites.redis_labs import DOCS_PROD, OLD_DOCS_PROD
 
 DOCS_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "documents")
 FILE_WITH_SECTIONS = "page_with_sections.html"
 TEST_DOC = os.path.join(DOCS_DIR, FILE_WITH_SECTIONS)
-TEST_URL = f"{DOCS_PROD.url}/test"
+TEST_URL = f"{OLD_DOCS_PROD.url}/test"
 
 
 @pytest.fixture(autouse=True)
@@ -34,7 +34,12 @@ async def client(app_config):
 
 
 @pytest.fixture
-def parse_file():
+def site():
+    return OLD_DOCS_PROD
+
+
+@pytest.fixture
+def parse_file(site):
     """
     This fixture parses a file with DocumentParser.
 
@@ -46,14 +51,14 @@ def parse_file():
         with open(file, encoding='utf-8') as f:
             html = f.read()
 
-        return DocumentParser(DOCS_PROD).parse(TEST_URL, html)
+        return DocumentParser(site).parse(TEST_URL, html)
 
     yield fn
 
 
 @pytest.fixture
-def docs(parse_file, app_config):
-    indexer = Indexer(DOCS_PROD, app_config)
+def docs(parse_file, app_config, site):
+    indexer = Indexer(site, app_config)
     docs = parse_file(TEST_DOC)
 
     for doc in docs:

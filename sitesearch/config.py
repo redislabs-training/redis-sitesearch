@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from sitesearch.keys import Keys
 from sitesearch.models import SiteConfiguration
-from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OSS, DOCS_STAGING
+from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OLD_DOCS_PROD, OSS, DOCS_STAGING
 from sitesearch.sites.andrewbrookins import BLOG
 
 load_dotenv()
@@ -17,12 +17,13 @@ IS_DEV = ENV in ('development', 'test')
 
 # The front-end is currently querying with this URL. Temporarily allow it
 # as an alternate for the configured URL.
-ALTERNATE_DOCS_URL = "https://docs.redislabs.com/latest"
+ALTERNATE_DOCS_URL = "https://docs.redis.com/latest"
 
 # Sites to index in development environments.
 DEV_SITES = {
     DOCS_PROD.url: DOCS_PROD,
     ALTERNATE_DOCS_URL: DOCS_PROD,
+    OLD_DOCS_PROD.url: OLD_DOCS_PROD,
     DEVELOPERS.url: DEVELOPERS,
     CORPORATE.url: CORPORATE,
     OSS.url: OSS,

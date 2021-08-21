@@ -1,7 +1,8 @@
 FROM python:3.8
 
+RUN apt-get clean
 RUN apt-get update
-RUN apt-get install -y supervisor nginx
+RUN apt-get install -o Acquire::ForceIPv4=true -y supervisor nginx
 
 # ---------------
 # Install the app
@@ -10,7 +11,7 @@ RUN apt-get install -y supervisor nginx
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.8 get-pip.py
 RUN pip3 install --upgrade pip
 
-WORKDIR /redis-sitesearch
+lORKDIR /redis-sitesearch
 
 # Hack to avoid docker reinstalling every build
 COPY requirements.txt /redis-sitesearch/requirements.txt

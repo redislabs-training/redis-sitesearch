@@ -1,7 +1,8 @@
 FROM python:3.8
 
+RUN apt-get clean
 RUN apt-get update
-RUN apt-get install -y supervisor
+RUN apt-get install -o Acquire::ForceIPv4=true -y supervisor
 
 # ---------------
 # Install the app

@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_query_python(docs, client):
-    result = await client.get('/search?q=*')
+    result = await client.get('/search?q=*&site=https://docs.redislabs.com/latest/')
     assert result.status_code == 200
     assert result.json()['total'] > 0
     titles = [doc['title'] for doc in result.json()['results']]
@@ -11,13 +11,13 @@ async def test_query_python(docs, client):
 
 
 @pytest.mark.asyncio
-async def test_cloud_landing_page(client):
-    result = await client.get('/search?q=cloud')
+async def test_cloud_landing_page(docs, client):
+    result = await client.get('/search?q=cloud&site=https://docs.redislabs.com/latest/')
     assert result.json()['results'][0]['title'] == 'Redis Enterprise Cloud'
     assert result.json()['results'][0]['url'] == 'https://docs.redislabs.com/latest/rc/'
 
 
 @pytest.mark.asyncio
 async def test_escapes_good_symbols(docs, client):
-    result = await client.get('/search?q=active-active')
+    result = await client.get('/search?q=active-active&site=https://docs.redislabs.com/latest/')
     assert "<b>Active</b>-Active" in result.json()['results'][0]['title']
