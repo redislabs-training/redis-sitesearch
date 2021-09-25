@@ -108,7 +108,7 @@ def test_indexer_indexes_page_section_documents(index_file, keys, site):
     """
     indexer = index_file(FILE_WITH_SECTIONS)
     expected_section_docs = [{
-        'doc_id': f'{TEST_URL}:section:299d6e11b67f34e8a0d84347ae5efbd7',
+        'doc_id': f'{TEST_URL}:section:2e1ea4c2dfa16d70a0254f4b00520687',
         'title': 'Database Persistence with Redis Enterprise Software',
         'section_title': 'Options for configuring data persistence',
         'hierarchy': '[]',
@@ -120,7 +120,7 @@ def test_indexer_indexes_page_section_documents(index_file, keys, site):
         'position': 0,
         '__score': 0.75,
     }, {
-        'doc_id': f'{TEST_URL}:section:f62925eb9d8dca6774a8db54459cf716',
+        'doc_id': f'{TEST_URL}:section:68139f8fbbf3f37c1c1a2c0f94ad90f1',
         'title': 'Database Persistence with Redis Enterprise Software',
         'section_title': 'Append only file (AOF) vs snapshot (RDB)',
         'hierarchy': '[]',
@@ -132,7 +132,7 @@ def test_indexer_indexes_page_section_documents(index_file, keys, site):
         'position': 1,
         '__score': 0.75,
     }, {
-        'doc_id': f'{TEST_URL}:section:c63108b05d076d2cdff93c6065bf362e',
+        'doc_id': f'{TEST_URL}:section:948035a214a48ca06ef8e97c392c92b8',
         'title': 'Database Persistence with Redis Enterprise Software',
         'section_title': 'Data persistence and Redis on Flash with Active\\-Active',
         's': 'test',
@@ -193,7 +193,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys, site):
     indexer = index_file(FILE_WITH_H3s)
 
     expected_section_docs = [{
-        'doc_id':  f'{TEST_URL}:section:9cdca677fcae9a73a766d4eb02c2a34e',
+        'doc_id':  f'{TEST_URL}:section:b865fa879111e330b736d9be3e196048',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -204,7 +204,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys, site):
         'position': 0,
         '__score': 0.75
     }, {
-        'doc_id': f'{TEST_URL}:section:cbbb32e419c936958b2fbced6d4fa69c',
+        'doc_id': f'{TEST_URL}:section:23d7ae247e11c7851ce08896040e0922',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -215,7 +215,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys, site):
         'position': 1,
         '__score': 0.75
     }, {
-        'doc_id': f'{TEST_URL}:section:2111e6b1790edac1e9c1ff968db33ea5',
+        'doc_id': f'{TEST_URL}:section:1d42fac7043abe3c7e7debbb7dd14983',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -227,7 +227,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys, site):
         'position': 2,
         '__score': 0.75
     }, {
-        'doc_id': f'{TEST_URL}:section:a1a03fdf9240db29faebbaacb309aafc',
+        'doc_id': f'{TEST_URL}:section:b676e4c351aafb9e89e71a391e9c6209',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',
@@ -239,7 +239,7 @@ def test_indexer_indexes_sections_from_h3s(index_file, keys, site):
         'position': 3,
         '__score': 0.75
     }, {
-        'doc_id': f'{TEST_URL}:section:14094b624de5c096352862568e38516c',
+        'doc_id': f'{TEST_URL}:section:a1854eb001bc4bd83e4edef0dad86c71',
         'title': 'RedisBloom Tutorial',
         'section_title': '',
         'hierarchy': '[]',

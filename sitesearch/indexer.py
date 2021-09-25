@@ -61,14 +61,14 @@ def page_id(url: str, body: str, title: str) -> str:
     return PAGE_ID.format(url=url, hash=doc_hash)
 
 
-def section_id(url: str, pos: int, body: str, part_title: str) -> str:
+def section_id(url: str, pos: int, body: str, page_title: str, part_title: str) -> str:
     """
     Return the hash of a section document.
 
     We hash the body, title, and position of the section to help
     detect stale section documents after indexing is complete.
     """
-    doc_hash = md5("".join([body, part_title, str(pos)]))
+    doc_hash = md5("".join([body, part_title, page_title, str(pos)]))
     return SECTION_ID.format(url=url, hash=doc_hash)
 
 
@@ -148,7 +148,7 @@ class DocumentParser:
             body = self.prepare_text(
                 BeautifulSoup('\n'.join(page), 'html.parser').get_text())
 
-            doc_id = section_id(doc.url, i, body, part_title)
+            doc_id = section_id(doc.url, i, body, doc.title, part_title)
 
             docs.append(
                 SearchDocument(doc_id=doc_id,
