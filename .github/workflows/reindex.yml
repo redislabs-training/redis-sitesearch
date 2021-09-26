@@ -19,8 +19,10 @@ jobs:
           CODE=`curl --write-out '%{http_code}' --silent --output /dev/null -X POST -H "X-API-KEY: $API_TOKEN" -H "Content-Length: 0" https://search-service.redislabs.com/indexer`
           if [ $CODE!="200" ]
           then
+              echo $CODE
               echo "FAILURE"
               exit 1
           else
+              echo $CODE
               echo "SUCCESS"
           fi
