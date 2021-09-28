@@ -1,4 +1,4 @@
-name: Build and Deploy to Google Compute Engine
+name: Deploy
 
 on:
   push:
@@ -95,7 +95,7 @@ jobs:
           deploy_app docsearch-app-production-zurich
 
 
- deploy_useast:
+  deploy_useast:
     needs: setup-build-publish
     name: Deploy US-East
     runs-on: ubuntu-latest
@@ -122,7 +122,7 @@ jobs:
           deploy_app docsearch-app-production-useast
 
 
- deploy_uswest:
+  deploy_uswest:
     needs: setup-build-publish
     name: Deploy US-West
     runs-on: ubuntu-latest
@@ -149,7 +149,7 @@ jobs:
           deploy_app docsearch-app-production-uswest
 
 
- deploy_worker:
+  deploy_worker:
     needs: setup-build-publish
     name: Deploy Worker
     runs-on: ubuntu-latest
@@ -159,18 +159,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@master
-        with:
-          version: '290.0.1'
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: 'redislabs-university'
+        # Setup gcloud CLI
+        - uses: google-github-actions/setup-gcloud@master
+          with:
+            version: '290.0.1'
+            service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+            project_id: 'redislabs-university'
 
-      # Configure Docker to use the gcloud command-line tool as a credential
-      # helper for authentication
-      - run: |-
-          gcloud --quiet auth configure-docker
+        # Configure Docker to use the gcloud command-line tool as a credential
+        # helper for authentication
+        - run: |-
+            gcloud --quiet auth configure-docker
 
-      - name: Deploy Worker Servers
-        run: |-
-          deploy_worker
+        - name: Deploy Worker Servers
+          run: |-
+            deploy_worker
