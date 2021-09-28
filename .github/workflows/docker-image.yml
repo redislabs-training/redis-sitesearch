@@ -1,6 +1,9 @@
-name: Docker Image CI
+name: Test
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - master
 
 jobs:
   test:

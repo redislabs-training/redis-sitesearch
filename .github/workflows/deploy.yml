@@ -17,9 +17,19 @@ env:
   PAGERDUTY_KEY: ${{ secrets.PAGERDUTY_KEY }}
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: cp .env.example .env
+      - run: sed -i 's/remove-if-redis-has-no-password/test/g' .env
+      - run: docker-compose up test
+
   setup-build-publish:
     name: Setup, Build, and Publish
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
     - name: Checkout
