@@ -156,7 +156,7 @@ gcloud beta compute instance-groups managed rolling-action start-update docsearc
          --version template=$NEW_APP_TEMPLATE_MUMBAI --zone asia-south1-c
 
 
- zurich
+ # zurich
  echo "Deploying to ZURICH"
 
  echo "Creating new app instance template $NEW_APP_TEMPLATE_ZURICH from $WORKER_TAG"

@@ -1,0 +1,176 @@
+name: Build and Deploy to Google Compute Engine
+
+on:
+  push:
+    branches:
+    - master
+
+env:
+  PROJECT_ID: ${{ secrets.GCE_PROJECT }}
+  REDIS_PORT: 6379
+  NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+  KEY_PREFIX: "sitesearch:dev"
+  ENV: "production"
+  API_KEY: ${{ secrets.API_KEY }}
+  NEW_RELIC_MONITOR_MODE: "on"
+  SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+  PAGERDUTY_KEY: ${{ secrets.PAGERDUTY_KEY }}
+
+jobs:
+  setup-build-publish:
+    name: Setup, Build, and Publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        project_id: 'redislabs-university'
+
+    # Configure Docker to use the gcloud command-line tool as a credential
+    # helper for authentication
+    - run: |-
+        gcloud --quiet auth configure-docker
+
+    - name: Build and Push Images
+      run: |-
+        build_images
+
+  deploy_mumbai:
+    needs: setup-build-publish
+    name: Deploy Mumbai
+    runs-on: ubuntu-latest
+    environment: mumbai
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: 'redislabs-university'
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Deploy App Servers
+        run: |-
+          deploy_app docsearch-app-production-mumbai
+
+
+  deploy_zurich:
+    needs: setup-build-publish
+    name: Deploy Zurich
+    runs-on: ubuntu-latest
+    environment: zurich
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: 'redislabs-university'
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Deploy App Servers
+        run: |-
+          deploy_app docsearch-app-production-zurich
+
+
+ deploy_useast:
+    needs: setup-build-publish
+    name: Deploy US-East
+    runs-on: ubuntu-latest
+    environment: useast
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: 'redislabs-university'
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Deploy App Servers
+        run: |-
+          deploy_app docsearch-app-production-useast
+
+
+ deploy_uswest:
+    needs: setup-build-publish
+    name: Deploy US-West
+    runs-on: ubuntu-latest
+    environment: uswest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: 'redislabs-university'
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Deploy App Servers
+        run: |-
+          deploy_app docsearch-app-production-uswest
+
+
+ deploy_worker:
+    needs: setup-build-publish
+    name: Deploy Worker
+    runs-on: ubuntu-latest
+    environment: uswest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          project_id: 'redislabs-university'
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Deploy Worker Servers
+        run: |-
+          deploy_worker
