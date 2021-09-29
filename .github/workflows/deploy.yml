@@ -67,6 +67,7 @@ jobs:
     name: Deploy Mumbai
     runs-on: ubuntu-latest
     environment: mumbai
+    concurrency: deploy
 
     steps:
       - name: Checkout
@@ -102,6 +103,7 @@ jobs:
     name: Deploy Zurich
     runs-on: ubuntu-latest
     environment: zurich
+    concurrency: deploy
 
     steps:
       - name: Checkout
@@ -129,7 +131,7 @@ jobs:
 
       - name: Deploy App Servers
         run: |-
-          deploy_app docsearch-app-production-zurich
+          deploy_app docsearch-app-production-europe
 
 
   deploy_useast:
@@ -137,6 +139,7 @@ jobs:
     name: Deploy US-East
     runs-on: ubuntu-latest
     environment: useast
+    concurrency: deploy
 
     steps:
       - name: Checkout
@@ -172,6 +175,7 @@ jobs:
     name: Deploy US-West
     runs-on: ubuntu-latest
     environment: uswest
+    concurrency: deploy
 
     steps:
       - name: Checkout
@@ -207,6 +211,7 @@ jobs:
     name: Deploy Worker
     runs-on: ubuntu-latest
     environment: uswest
+    concurrency: deploy
 
     steps:
       - name: Checkout
