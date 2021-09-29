@@ -105,7 +105,7 @@ def deploy_app(instance_group, machine_type, build, image, disk):
     new_template = f"docsearch-app-production-{HASH}-{RANDOM}-{zone}"
 
     create_instance_template_cmd = f"""
-        gcloud beta compute --project=redislabs-university instance-templates \
+        gcloud --quiet beta compute --project=redislabs-university instance-templates \
             create-with-container {new_template} \
             --machine-type={machine_type} \
             --network=projects/redislabs-university/global/networks/docsearch \
@@ -132,7 +132,7 @@ def deploy_app(instance_group, machine_type, build, image, disk):
     print(message)
     print("-" * len(message))
     rolling_update_cmd = f"""
-        gcloud beta compute instance-groups managed rolling-action start-update {instance_group} \
+        gcloud --quiet beta compute instance-groups managed rolling-action start-update {instance_group} \
                 --version template={new_template} --zone {zone}
     """
     subprocess.run(rolling_update_cmd, shell=True, check=True)
@@ -155,7 +155,7 @@ def deploy_worker(machine_type, build, image, disk):
     zone = "us-west1-a"
 
     create_instance_template_cmd = f"""
-        gcloud beta compute --project=redislabs-university instance-templates \
+        gcloud --quiet beta compute --project=redislabs-university instance-templates \
             create-with-container {new_template} \
             --machine-type={machine_type} \
             --network=projects/redislabs-university/global/networks/docsearch \
@@ -182,7 +182,7 @@ def deploy_worker(machine_type, build, image, disk):
     print(message)
     print("-" * len(message))
     rolling_update_cmd = f"""
-        gcloud beta compute instance-groups managed rolling-action start-update {worker_instance_group} \
+        gcloud --quiet beta compute instance-groups managed rolling-action start-update {worker_instance_group} \
                 --version template={new_template} --zone {zone}
     """
     subprocess.run(rolling_update_cmd, shell=True, check=True)
