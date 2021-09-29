@@ -16,13 +16,4 @@ jobs:
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
-          CODE=`curl --write-out '%{http_code}' --silent --output /dev/null -X POST -H "X-API-KEY: $API_TOKEN" -H "Content-Length: 0" https://search-service.redislabs.com/indexer|xargs`
-          if [ $CODE!="200" ]
-          then
-              echo "Status: " $CODE
-              echo "FAILURE"
-              exit 1
-          else
-              echo "Status: " $CODE
-              echo "SUCCESS"
-          fi
+          curl -X POST -H 'X-API-KEY: $API_TOKEN' -H 'Content-Length: 0' "https://search-service.redislabs.com/indexer"
