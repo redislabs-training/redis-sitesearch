@@ -3,7 +3,12 @@ name: Deploy
 on:
   push:
     branches:
-    - master
+      - master
+    paths-ignore:
+      - '.github/workflows/reindex.yml'
+      - '.github/workflows/test-branch.yml'
+      - 'tests/**'
+      - 'README.md'
 
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
