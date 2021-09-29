@@ -42,6 +42,13 @@ jobs:
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: 'redislabs-university'
 
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - run: |-
+        pip install -e .
+
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
     - run: |-

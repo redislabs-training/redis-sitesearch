@@ -3,6 +3,11 @@ import setuptools
 with open("README.md", "r") as readme:
     long_description = readme.read()
 
+
+with open("requirements.txt", "r") as reqs:
+    requirements = reqs.read()
+
+
 setuptools.setup(
     name="redis-sitesearch",
     version="1.0",
@@ -19,6 +24,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
+    install_requires=requirements,
     entry_points={
         'console_scripts': [
             'index=sitesearch.commands.index:index',
