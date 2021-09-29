@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 REQUIRED_ENV = ('SERVICE_ACCOUNT', 'REDIS_HOST', 'REDIS_PASSWORD', 'NEW_RELIC_LICENSE_KEY', 'API_KEY')
 for key in REQUIRED_ENV:
     if key not in os.environ:
-        print(f"Hold up! Your environment is misconfigured. Please set the {key} environment"
+        print(f"Hold up! Your environment is misconfigured. Please set the {key} environment "
               "variable and try again.", file=sys.stderr)
         exit(1)
 

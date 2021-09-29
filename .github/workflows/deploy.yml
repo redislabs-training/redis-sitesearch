@@ -7,6 +7,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
+  REDIS_HOST: ${{ secrets.REDIS_HOST }}
+  REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
   REDIS_PORT: 6379
   NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
   KEY_PREFIX: "sitesearch:dev"
