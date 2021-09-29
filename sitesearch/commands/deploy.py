@@ -170,7 +170,7 @@ def deploy_worker(machine_type, build, image, disk):
             --boot-disk-size=10GB \
             --boot-disk-type=pd-standard \
             --boot-disk-device-name={disk} \
-            --container-image={APP_TAG} \
+            --container-image={WORKER_TAG} \
             --container-restart-policy=always \
             --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
             --container-env=REDIS_HOST={REDIS_HOST},REDIS_PORT=6379,REDIS_PASSWORD={REDIS_PASSWORD},NEW_RELIC_LICENSE_KEY={NEW_RELIC_LICENSE_KEY},KEY_PREFIX={KEY_PREFIX},ENV={ENV},API_KEY={API_KEY},NEW_RELIC_MONITOR_MODE={NEW_RELIC_MONITOR_MODE} \
