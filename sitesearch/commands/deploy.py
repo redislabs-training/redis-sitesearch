@@ -150,7 +150,7 @@ def deploy_worker(machine_type, build, image, disk):
         build_images()
 
     new_template = f"docsearch-worker-production-{HASH}-{RANDOM}"
-    worker_instance_group = "docsearch-app-production-uswest"
+    worker_instance_group = "docsearch-worker-production-uswest"
     # We only deploy the worker to us-west.
     zone = "us-west1-a"
 
