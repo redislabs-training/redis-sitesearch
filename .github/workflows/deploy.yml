@@ -15,7 +15,7 @@ env:
   ENV: "production"
   API_KEY: ${{ secrets.API_KEY }}
   NEW_RELIC_MONITOR_MODE: "on"
-  SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+  SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
   PAGERDUTY_KEY: ${{ secrets.PAGERDUTY_KEY }}
 
 jobs:
@@ -60,7 +60,6 @@ jobs:
 
     - name: Build and Push Images
       run: |-
-        pip install -e .
         build_images
 
   deploy_mumbai:
