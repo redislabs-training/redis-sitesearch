@@ -24,7 +24,9 @@ def get_redis_connection(password=REDIS_PASSWORD,
                  host=host,
                  port=port,
                  decode_responses=decode_responses,
-                 retry_on_timeout=True)
+                 retry_on_timeout=True,
+                 socket_connect_timeout=1,
+                 socket_timeout=1)
 
 
 def get_async_redis_connection(password=REDIS_PASSWORD,
@@ -35,7 +37,9 @@ def get_async_redis_connection(password=REDIS_PASSWORD,
                       host=host,
                       port=port,
                       decode_responses=decode_responses,
-                      retry_on_timeout=True)
+                      retry_on_timeout=True,
+                      socket_connect_timeout=1,
+                      socket_timeout=1)
 
 
 def get_search_connection(index: str,
