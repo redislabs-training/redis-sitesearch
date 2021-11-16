@@ -20,15 +20,15 @@ There are a few things to note about this:
    a new instance template that points to the new Docker image to use. This means we
    leave behind many stale templates -- and there is no automatic way to clean those up.
 """
-import os
-
-import click
-import subprocess
-import random
 import logging
+import os
+import random
+import subprocess
 import sys
 
+import click
 from dotenv import load_dotenv
+
 load_dotenv()
 
 log = logging.getLogger(__name__)
