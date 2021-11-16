@@ -10,6 +10,7 @@ on:
       - '.github/workflows/test-branch.yml'
       - 'tests/**'
       - 'README.md'
+  workflow_dispatch:
 
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
