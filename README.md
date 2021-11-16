@@ -35,7 +35,7 @@ An example is included, which you should copy from `.env.example` to `.env` from
 
         cp .env.example .env
 
-**Deployment note**: If you deploy redis-sitesearch to Google Cloud Platform using the deploy.sh script, the script expects to configure environment variables from a .env.prod file. If you deploy to Amazon Lightsail, you need to configure environment variables in the Lightsail GUI.
+**Deployment note**: If you deploy redis-sitesearch to Google Cloud Platform using the deploy.sh script, the script expects to configure environment variables from a .env.prod file.
 
 ### Redis Password-protection
 
