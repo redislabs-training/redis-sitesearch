@@ -1,9 +1,10 @@
 """
 Commands to deploy the application.
 
-Deploying involves building and pushing new app and worker images,
+Deploying builds and pushes new app and worker images,
 new instance templates that use the new images, and finally,
-starting a rolling update of several managed instance groups:
+starts a rolling update of several managed instance groups
+in Google Cloud Platform:
 
 1. The docsearch-app-production-uswest instance group deployed in zone us-west1-a
 2. The docsearch-worker-production-uswest instance group deployed in zone us-west1-a

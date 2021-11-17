@@ -21,3 +21,12 @@ async def test_cloud_landing_page(docs, client):
 async def test_escapes_good_symbols(docs, client):
     result = await client.get('/search?q=active-active&site=https://docs.redislabs.com/latest/')
     assert "<b>Active</b>-Active" in result.json()['results'][0]['title']
+
+
+@pytest.mark.asyncio
+async def test_escapes_known_version_numbers(docs, client):
+    result = await client.get('/search?q=v6.2.8&site=https://docs.redislabs.com/latest/')
+    assert "<b>v6</b>.2.8" in result.json()['results'][0]['body']
+    
+    result = await client.get('/search?q=v6.2.4&site=https://docs.redislabs.com/latest/')
+    assert "<b>v6</b>.2.4" in result.json()['results'][0]['body']

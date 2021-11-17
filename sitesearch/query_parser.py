@@ -49,6 +49,9 @@ async def parse(index_alias: str, query: str, section: Optional[str], start: int
     # For queries of a term that should result in an exact match, e.g.
     # "insight" (a synonym of RedisInsight), or "active-active", strip any star
     # postfix to avoid the query becoming a prefix search.
+    #
+    # TODO: Why do we do this, again? Can we support prefix searches on
+    #  queries with escaped tokens?
     if query.endswith('*'):
         exact_match_query = query.rstrip("*")
         if exact_match_query in search_site.all_synonyms:

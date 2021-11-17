@@ -86,7 +86,9 @@ LITERAL_TERMS = (
     'read-only',
     'read-write',
     'redis-cli',
-    'role-based'
+    'role-based',
+    'v6.2.8',
+    'v6.2.4',
 )
 
 DOCS_PROD = SiteConfiguration(
