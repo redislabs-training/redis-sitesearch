@@ -3,7 +3,7 @@ import time
 from typing import Optional
 
 import newrelic
-import redis
+import aioredis
 from fastapi import APIRouter, HTTPException, status
 
 from redisearch import Result
@@ -108,7 +108,7 @@ async def search(q: str,
     start = time.time()
     try:
         raw_result = await redis_client.execute_command("FT.SEARCH", *query)
-    except (redis.exceptions.ResponseError, UnicodeDecodeError) as e:
+    except (aioredis.exceptions.ResponseError, UnicodeDecodeError) as e:
         log.error("Search q failed: %s", e)
         total = 0
         docs = []
