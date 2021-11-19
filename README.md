@@ -51,7 +51,7 @@ In production, the app will use whatever password you configure in the productio
 
 If you want code completion to work in an IDE, or you want to run commands outside of Docker (like `pytest`), create a virtualenv:
 
-        python 3.8 -m venv env
+        python3.8 -m venv env
 
 Then you can run the following to activate your virtualenv:
 
