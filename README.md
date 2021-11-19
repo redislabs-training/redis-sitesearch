@@ -158,13 +158,19 @@ This is well and good -- they are restarting.
 
 To run tests, use this command:
 
-        docker-compose exec app pytest -s
+        docker-compose run test
 
-This runs `pytest` within the app container.
+This runs `pytest` within the test container.
 
-If you have a `.env` file, you can run `pytest` locally (after you've activated your virtualenv), and the tests will pick up the necessary environment variables from your `.env` file.
+You can also run a specific test by passing in the `-k` parameter and the name of the test:
 
-**NOTE**: The .env.example file in this repository configures the app to look at the Docker host for the Redis container, which is `redis`. To run the app and/or tests outside of Docker, you'll need to change the `REDIS_HOST` environment variable to "localhost".
+        docker-compose run test -s -k test_escapes_known_version_numbers
+
+#### Running Tests Locally
+
+If you have a `.env` file, you can run `pytest` locally (after you've activated your virtualenv) instead of through Docker, and the tests will pick up the necessary environment variables from your `.env` file. But I don't recommend this.
+
+If you try to do this, the .env.example file in this repository configures the app to look at the Docker host for the Redis container, which is `redis`. To run the app and/or tests outside of Docker, you'll need to change the `REDIS_HOST` environment variable to "localhost" in your .env file.
 
 ### Local vs. Docker redis
 
