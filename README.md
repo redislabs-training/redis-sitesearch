@@ -57,9 +57,9 @@ Then you can run the following to activate your virtualenv:
 
         source env/bin/activate
 
-Finally, install dependencies:
+Finally, install the package locally, which also installs dependencies:
 
-        pip install -r requirements.txt
+        pip install -e '.[dev]'  
 
 **Note**: This project was built with and is only tested to work on Python 3.8.
 
