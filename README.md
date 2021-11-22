@@ -118,7 +118,7 @@ $ curl -H "X-API-KEY: whatever-you-want" "http://localhost:8080/jobs/d6d418f0-5d
 
 You can also trigger reindexing with the `index` CLI command, like this:
 
-        $ docker-compose exec app index "https://docs.redis.com"
+        $ docker-compose exec app index "https://developer.redis.com"
 
 The `index` command takes the URL of a site that the app is configured to index. The command indexes that site synchronously, without using RQ.
 
