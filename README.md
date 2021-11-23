@@ -2,7 +2,7 @@
 
 ## About
 
-redis-sitesearch is a package that indexes web sites into RediSearch.
+redis-sitesearch is a package that indexes websites into RediSearch.
 
 <img src="images/redisearch.png" width="200">
 
@@ -51,15 +51,15 @@ In production, the app will use whatever password you configure in the productio
 
 If you want code completion to work in an IDE, or you want to run commands outside of Docker (like `pytest`), create a virtualenv:
 
-        python 3.8 -m venv env
+        python3.8 -m venv env
 
 Then you can run the following to activate your virtualenv:
 
         source env/bin/activate
 
-Finally, install dependencies:
+Finally, install the package locally, which also installs dependencies:
 
-        pip install -r requirements.txt
+        pip install -e '.[dev]'  
 
 **Note**: This project was built with and is only tested to work on Python 3.8.
 
@@ -103,7 +103,7 @@ There are two ways to run an indexing job: via the API and the command-line.
 To index via the API, send a POST request to the /indexer endpoint. With curl, the request looks like this:
 
 ```
-$ curl -X POST -H "Authorization: token whatever-you-want" -H "Content-Length: 0" http://localhost:8080/indexer
+$ curl -X POST -H "X-API-KEY: whatever-you-want" -H "Content-Length: 0" "http://localhost:8080/indexer"
 {"jobs": ["f602a492-8c21-4675-9f42-3854db3e6572", "3654c138-3160-4516-8d0f-8dd6f930529a", "d6d418f0-5d89-4589-85d6-ffbfddb1eba7", "a7845451-ec07-4c4f-b672-8fc69c7421e9", "b4e7a11f-03de-4ede-b691-2f7b32e88c01", "3a00af31-e5f1-4f7e-8dd3-9f1142d386b6", "6c0695b3-ea1b-421b-b010-d1e84cb197b3"]}
 ```
 
@@ -112,13 +112,13 @@ Indexing via the API is asynchronous. The /indexer endpoint creates a [Redis Que
 You can make a GET request to the /jobs/<job_id> endpoint to get the status of a job:
 
 ```
-$ curl -H "Authorization: token whatever-you-want" http://localhost:8080/jobs/d6d418f0-5d89-4589-85d6-ffbfddb1eba7 
+$ curl -H "X-API-KEY: whatever-you-want" "http://localhost:8080/jobs/d6d418f0-5d89-4589-85d6-ffbfddb1eba7"
 {"id": "d6d418f0-5d89-4589-85d6-ffbfddb1eba7", "url": "https://developer.redislabs.com", "status": "queued", "created_at": "2021-05-01T00:13:05.263071", "ended_at": null}
 ```
 
 You can also trigger reindexing with the `index` CLI command, like this:
 
-        $ docker-compose exec app index https://developer.redislabs.com
+        $ docker-compose exec app index "https://developer.redis.com"
 
 The `index` command takes the URL of a site that the app is configured to index. The command indexes that site synchronously, without using RQ.
 
@@ -134,11 +134,11 @@ app_1   | 2021-01-12 22:36:16,867 (61/NR-Activate-Session/sitesearch) newrelic.c
 
 The app maps localhost port 8080 to the search API. After you start the app with `docker-compose up`, can search using this URL:
 
-        localhost:8080/search?q=<your search terms>
+        http://localhost:8080/search?q=<your search terms>
 
 For example:
 
-        $ curl localhost:8080/search?q=redis
+        $ curl "http://localhost:8080/search?q=redis"
 
 Every response includes the total number of hits and a configurable number of results.
 
@@ -158,13 +158,19 @@ This is well and good -- they are restarting.
 
 To run tests, use this command:
 
-        docker-compose exec app pytest -s
+        docker-compose run test
 
-This runs `pytest` within the app container.
+This runs `pytest` within the test container.
 
-If you have a `.env` file, you can run `pytest` locally (after you've activated your virtualenv), and the tests will pick up the necessary environment variables from your `.env` file.
+You can also run a specific test by passing in the `-k` parameter and the name of the test:
 
-**NOTE**: The .env.example file in this repository configures the app to look at the Docker host for the Redis container, which is `redis`. To run the app and/or tests outside of Docker, you'll need to change the `REDIS_HOST` environment variable to "localhost".
+        docker-compose run test -s -k test_escapes_known_version_numbers
+
+#### Running Tests Locally
+
+If you have a `.env` file, you can run `pytest` locally (after you've activated your virtualenv) instead of through Docker, and the tests will pick up the necessary environment variables from your `.env` file. But I don't recommend this.
+
+If you try to do this, the .env.example file in this repository configures the app to look at the Docker host for the Redis container, which is `redis`. To run the app and/or tests outside of Docker, you'll need to change the `REDIS_HOST` environment variable to "localhost" in your .env file.
 
 ### Local vs. Docker redis
 
