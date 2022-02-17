@@ -125,6 +125,8 @@ DOCS_PROD = SiteConfiguration(
     ),
     deny=(
         r'\/release-notes\/',
+        r'.*\.pdf',
+        r'\/pdf-gen-.*',
         r'.*\.tgz',
         r'https:\/\/docs\.redis\.com\/latest\/index\.html'
     ),
