@@ -1,4 +1,4 @@
-FROM redislabs/redisearch:latest
+FROM redislabs/redisearch::2.0.13
 
 ARG REDIS_HOST=localhost
 ARG PORT=8081
