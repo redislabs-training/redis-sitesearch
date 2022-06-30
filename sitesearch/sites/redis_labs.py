@@ -240,10 +240,7 @@ OSS = SiteConfiguration(
         TextField("url"),
         TextField("s", no_stem=True),
     ),
-    scorers=(
-        boost_pages,
-        boost_top_level_pages
-    ),
+    scorers=(),
     validators=(
         skip_404_page,
     ),
@@ -252,6 +249,6 @@ OSS = SiteConfiguration(
         r'.*\.tgz',
     ),
     allow=(),
-    content_classes=(".site-content",),
+    content_classes=(".td-content"),
     literal_terms=LITERAL_TERMS
 )
