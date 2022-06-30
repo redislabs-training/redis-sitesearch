@@ -231,7 +231,7 @@ CORPORATE = SiteConfiguration(
 OSS = SiteConfiguration(
     url="https://redis.io",
     synonym_groups=SYNONYMS,
-    landing_pages=LANDING_PAGES,
+    landing_pages={},
     allowed_domains=("redis.io",),
     search_schema=(
         TextField("title", weight=10),
@@ -252,6 +252,6 @@ OSS = SiteConfiguration(
         r'.*\.tgz',
     ),
     allow=(),
-    content_classes=(".site-content",),
+    content_classes=(".site-content", ".Commands", ".navbar"),
     literal_terms=LITERAL_TERMS
 )

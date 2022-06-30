@@ -19,7 +19,8 @@ def create_app(config=None):
         'http://docs-test.redislabs.com.s3-website-us-west-1.amazonaws.com',
         'https://docs-test.redislabs.com.s3-website-us-west-1.amazonaws.com',
         'https://docs-test.redislabs.com',
-        'http://docs-test.redislabs.com'
+        'http://docs-test.redislabs.com',
+        'https://redis.io'
     ]
 
     app = FastAPI()
