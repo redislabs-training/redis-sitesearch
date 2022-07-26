@@ -253,6 +253,6 @@ OSS = SiteConfiguration(
         r'commands\/.*',
     ),
     allow=(),
-    content_classes=(".td-main", ".navbar"),
+    content_classes=(".td-content", ".navbar"),
     literal_terms=LITERAL_TERMS
 )
