@@ -250,8 +250,9 @@ OSS = SiteConfiguration(
     deny=(
         r'.*\.pdf',
         r'.*\.tgz',
+        r'commands\/.*',
     ),
     allow=(),
-    content_classes=(".site-content", ".navbar"),
+    content_classes=(".td-main", ".navbar"),
     literal_terms=LITERAL_TERMS
 )
