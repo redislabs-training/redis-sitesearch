@@ -5,6 +5,7 @@ from sitesearch.models import SiteConfiguration, SynonymGroup
 from sitesearch.scorers import boost_pages, boost_top_level_pages
 from sitesearch.validators import skip_404_page, skip_release_notes
 from sitesearch.sites.redis_labs_landing_pages import LANDING_PAGES
+from sitesearch.sites.redis_io_landing_pages import REDIS_IO_LANDING_PAGES
 
 
 SYNONYMS = [
@@ -231,10 +232,10 @@ CORPORATE = SiteConfiguration(
 OSS = SiteConfiguration(
     url="https://redis.io",
     synonym_groups=SYNONYMS,
-    landing_pages={},
+    landing_pages=REDIS_IO_LANDING_PAGES,
     allowed_domains=("redis.io",),
     search_schema=(
-        TextField("title", weight=10),
+        TextField("title", weight=15),
         TextField("section_title"),
         TextField("body", weight=1.5),
         TextField("url"),
@@ -242,7 +243,6 @@ OSS = SiteConfiguration(
     ),
     scorers=(
         boost_pages,
-        boost_top_level_pages
     ),
     validators=(
         skip_404_page,
@@ -252,6 +252,6 @@ OSS = SiteConfiguration(
         r'.*\.tgz',
     ),
     allow=(),
-    content_classes=(".site-content", ".Commands", ".navbar"),
+    content_classes=(".site-content", ".navbar"),
     literal_terms=LITERAL_TERMS
 )

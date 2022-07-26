@@ -12,3 +12,5 @@ app.yaml
 data
 supervisord.log
 supervisord.pid
+tests/extensions.json
+tests/settings.json
