@@ -15,7 +15,7 @@ def process_commands(command_filename):
                         doc_id=f"redisio://commands/landing/{downcased_key}",
                         title=key,
                         section_title="",
-                        hierarchy=["Redis", "Commands"],
+                        hierarchy=["Commands"],
                         s=downcased_key,
                         url=f"/commands/{downcased_key}/",
                         body=data[key].get('summary', f"Documentation for command '{downcased_key}'"),
