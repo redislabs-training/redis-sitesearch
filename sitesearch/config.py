@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from sitesearch.keys import Keys
 from sitesearch.models import SiteConfiguration
-from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OLD_DOCS_PROD, OSS, DOCS_STAGING
+from sitesearch.sites.redis_labs import CORPORATE, DOCS_PROD, DEVELOPERS, OLD_DOCS_PROD, OSS, DOCS_STAGING, OSS_NEW
 from sitesearch.sites.andrewbrookins import BLOG
 
 load_dotenv()
@@ -37,6 +37,7 @@ PROD_SITES = {
     ALTERNATE_DOCS_URL: DOCS_PROD,
     DEVELOPERS.url: DEVELOPERS,
     OSS.url: OSS,
+    OSS_NEW.url: OSS_NEW,
 }
 
 

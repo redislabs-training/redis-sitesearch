@@ -20,7 +20,8 @@ def create_app(config=None):
         'https://docs-test.redislabs.com.s3-website-us-west-1.amazonaws.com',
         'https://docs-test.redislabs.com',
         'http://docs-test.redislabs.com',
-        'https://redis.io'
+        'https://redis.io',
+        'https://kyle-buildout--redis-io.netlify.app'
     ]
 
     app = FastAPI()

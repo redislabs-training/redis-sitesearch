@@ -256,3 +256,31 @@ OSS = SiteConfiguration(
     content_classes=(".td-content", ".navbar"),
     literal_terms=LITERAL_TERMS
 )
+
+OSS_NEW = SiteConfiguration(
+    url="https://kyle-buildout--redis-io.netlify.app",
+    synonym_groups=SYNONYMS,
+    landing_pages=REDIS_IO_LANDING_PAGES,
+    allowed_domains=("kyle-buildout--redis-io.netlify.app",),
+    search_schema=(
+        TextField("title", weight=15),
+        TextField("section_title"),
+        TextField("body", weight=1.5),
+        TextField("url"),
+        TextField("s", no_stem=True),
+    ),
+    scorers=(
+        boost_pages,
+    ),
+    validators=(
+        skip_404_page,
+    ),
+    deny=(
+        r'.*\.pdf',
+        r'.*\.tgz',
+        r'commands\/.*',
+    ),
+    allow=(),
+    content_classes=(".prose", "nav"),
+    literal_terms=LITERAL_TERMS
+)
