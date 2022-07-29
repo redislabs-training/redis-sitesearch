@@ -49,6 +49,14 @@ SYNONYMS = [
         group_id='cloud',
         synonyms={"cloud", "redis enterprise cloud"}
     ),
+    SynonymGroup(
+        group_id='vss',
+        synonyms={"vector", "vector similarity"}
+    ),
+    SynonymGroup(
+        group_id='vs',
+        synonyms={"vector", "vector similarity"}
+    ),
     # This is to avoid doing a fuzzy search on 'redis' -- the
     # API does exact match searches on synonym terms.
     SynonymGroup(
