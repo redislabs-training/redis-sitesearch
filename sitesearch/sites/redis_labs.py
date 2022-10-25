@@ -289,6 +289,6 @@ OSS_NEW = SiteConfiguration(
         r'commands\/.*',
     ),
     allow=(),
-    content_classes=(".prose", "nav"),
+    content_classes=(".prose", "nav", ".command-name"),
     literal_terms=LITERAL_TERMS
 )
