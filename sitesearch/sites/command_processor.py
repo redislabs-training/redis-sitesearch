@@ -9,7 +9,7 @@ def process_commands(command_filename):
         data = json.load(f)
         keys = data.keys()
         for key in keys:
-            if (' ' not in key):
+            if (' ' not in key) and len(key) < 10:
                 downcased_key = key.lower()
                 page = SearchDocument(
                         doc_id=f"redisio://commands/landing/{downcased_key}",
@@ -22,7 +22,6 @@ def process_commands(command_filename):
                         type=TYPE_PAGE,
                         position=0
                     )
-                pages[key] = page
                 pages[downcased_key] = page
     
     return pages
