@@ -5,6 +5,7 @@ services:
     build:
       context: ./
       dockerfile: docker/redis/Dockerfile
+    platform: linux/amd64
     ports:
       - "16379:6379"
     volumes:
@@ -16,6 +17,7 @@ services:
     build:
       context: ./
       dockerfile: docker/app/Dockerfile
+    platform: linux/amd64
     ports:
       - "8080:8080"
     volumes:
@@ -29,6 +31,7 @@ services:
     build:
       context: ./
       dockerfile: docker/worker/Dockerfile
+    platform: linux/amd64
     volumes:
       - $PWD:/redis-sitesearch
     env_file:
@@ -40,6 +43,7 @@ services:
     build:
       context: ./
       dockerfile: docker/redis/Dockerfile
+    platform: linux/amd64
     ports:
       - "26379:6379"
     env_file:
@@ -49,6 +53,7 @@ services:
     build:
       context: ./
       dockerfile: docker/app/Dockerfile
+    platform: linux/amd64
     volumes:
       - $PWD:/redis-sitesearch
     env_file:
