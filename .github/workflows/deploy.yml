@@ -48,7 +48,7 @@ jobs:
     # Setup gcloud CLI
     - uses: google-github-actions/setup-gcloud@v0
       with:
-        version: '290.0.1'
+        version: '318.0.0'
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: 'redislabs-university'
 
