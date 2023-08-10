@@ -21,14 +21,8 @@ ALTERNATE_DOCS_URL = "https://docs.redis.com/latest"
 
 # Sites to index in development environments.
 DEV_SITES = {
-    DOCS_PROD.url: DOCS_PROD,
-    ALTERNATE_DOCS_URL: DOCS_PROD,
-    OLD_DOCS_PROD.url: OLD_DOCS_PROD,
-    DEVELOPERS.url: DEVELOPERS,
-    CORPORATE.url: CORPORATE,
     OSS.url: OSS,
-    DOCS_STAGING.url: DOCS_STAGING,
-    BLOG.url: BLOG  # Index Andrew's blog!
+    DOCS_PROD.url: DOCS_PROD
 }
 
 # Sites to index in production.
