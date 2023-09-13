@@ -101,4 +101,4 @@ jobs:
 
       - name: Deploy App Servers
         run: |-
-          deploy_app docsearch-staging-app-uswest
+          deploy_app docsearch-staging-app-uswest --network docsearch-staging
