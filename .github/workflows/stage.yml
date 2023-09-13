@@ -68,3 +68,37 @@ jobs:
     - name: Build and Push Images
       run: |-
         build_images
+
+  deploy_staging_uswest:
+    needs: setup-build-publish
+    name: Deploy Staging US-WEST
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
+
+      - uses: google-github-actions/setup-gcloud@v1
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -e .
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Deploy App Servers
+        run: |-
+          deploy_app docsearch-staging-app-uswest

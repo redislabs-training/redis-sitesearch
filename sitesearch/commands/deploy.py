@@ -59,13 +59,13 @@ KEY_PREFIX = 'sitesearch:dev'
 ENV = 'production'
 NEW_RELIC_MONITOR_MODE = 'on'
 INSTANCE_GROUPS = {
+    "docsearch-staging-app-uswest": "us-west1-a",
     "docsearch-app-production-uswest": "us-west1-a",
     "docsearch-worker-production-uswest": "us-west1-a",
     "docsearch-app-production-europe": "europe-west6-a",
     "docsearch-app-production-mumbai": "asia-south1-c",
     "docsearch-app-production-useast": "us-east4-c"
 }
-
 
 @click.command()
 def build_images():
