@@ -91,10 +91,10 @@ def validate_instance_group(ctx, param, value):
 @click.option('--machine-type', default='e2-medium', help="The machine type to use", show_default=True)
 @click.option('--build', default=False, help="Build and push application image?", show_default=False)
 @click.option('--image', default='cos-stable-81-12871-1196-0', help="The GCP container OS image", show_default=True)
-@click.option('--network', default='docsearch', help="The GCP network to use", show_default=True)
 @click.option('--disk', default=DEFAULT_DISK, help="The GCP boot disk to use", show_default=True)
+@click.option('--network', default='docsearch', help="The GCP network to use", show_default=True)
 @click.command()
-def deploy_app(instance_group, machine_type, build, image, disk):
+def deploy_app(instance_group, machine_type, build, image, disk, network):
     print(f"Deploying to {instance_group}")
 
     if build:
