@@ -107,7 +107,7 @@ def deploy_app(instance_group, machine_type, build, image, disk, network):
     new_template = f"docsearch-app-production-{HASH}-{RANDOM}-{zone}"
 
     create_instance_template_cmd = f"""
-        gcloud --quiet beta compute --project=redislabs-university instance-templates \
+        gcloud compute --project=redislabs-university instance-templates \
             create-with-container {new_template} \
             --machine-type={machine_type} \
             --network=projects/redislabs-university/global/networks/{network} \
@@ -134,7 +134,7 @@ def deploy_app(instance_group, machine_type, build, image, disk, network):
     print(message)
     print("-" * len(message))
     rolling_update_cmd = f"""
-        gcloud --quiet beta compute instance-groups managed rolling-action start-update {instance_group} \
+        gcloud compute instance-groups managed rolling-action start-update {instance_group} \
                 --version template={new_template} --zone {zone}
     """
     subprocess.run(rolling_update_cmd, shell=True, check=True)
