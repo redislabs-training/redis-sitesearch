@@ -63,7 +63,7 @@ jobs:
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
     - run: |-
-        gcloud --quiet auth configure-docker
+        gcloud auth configure-docker
 
     - name: Build and Push Images
       run: |-
@@ -97,8 +97,8 @@ jobs:
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-          gcloud --quiet auth configure-docker
+          gcloud auth configure-docker
 
       - name: Deploy App Servers
         run: |-
-          deploy_app docsearch-staging-app-uswest --network docsearch-staging
+          deploy_app docsearch-staging-app-west --network docsearch-staging

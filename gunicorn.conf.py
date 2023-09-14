@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 PORT = os.environ['PORT']
-WORKERS = multiprocessing.cpu_count() * 2 + 1
+WORKERS = multiprocessing.cpu_count()
 
 errorlog = "-"
 accesslog = "-"
-loglevel = 'warning'
+loglevel = 'debug'
 bind = f':{PORT}'
 daemon = False
 worker_temp_dir = '/dev/shm'
