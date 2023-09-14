@@ -140,19 +140,20 @@ def deploy_app(instance_group, machine_type, build, image, disk, network):
     subprocess.run(rolling_update_cmd, shell=True, check=True)
 
 
+@click.argument('worker-instance-group')
 @click.option('--machine-type', default='e2-medium', help="The machine type to use", show_default=True)
 @click.option('--build', default=False, help="Build and push application images?", show_default=False)
-@click.option('--image', default='cos-stable-81-12871-1196-0', help="The GCP container OS image", show_default=True)
+@click.option('--image', default='cos-97-16919-353-44', help="The GCP container OS image", show_default=True)
 @click.option('--disk', default=DEFAULT_DISK, help="The GCP boot disk to use", show_default=True)
+@click.option('--network', default='docsearch', help="The GCP network to use", show_default=True)
 @click.command()
-def deploy_worker(machine_type, build, image, disk):
+def deploy_worker(worker_instance_group, machine_type, build, image, disk, network):
     print(f"Deploying worker")
 
     if build:
         build_images()
 
     new_template = f"docsearch-worker-production-{HASH}-{RANDOM}"
-    worker_instance_group = "docsearch-worker-production-uswest"
     # We only deploy the worker to us-west.
     zone = "us-west1-a"
 
@@ -160,7 +161,7 @@ def deploy_worker(machine_type, build, image, disk):
         gcloud --quiet beta compute --project=redislabs-university instance-templates \
             create-with-container {new_template} \
             --machine-type={machine_type} \
-            --network=projects/redislabs-university/global/networks/docsearch \
+            --network=projects/redislabs-university/global/networks/{network} \
             --network-tier=PREMIUM \
             --metadata=google-logging-enabled=false \
             --can-ip-forward \
@@ -176,7 +177,7 @@ def deploy_worker(machine_type, build, image, disk):
             --container-restart-policy=always \
             --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
             --container-env=REDIS_HOST={REDIS_HOST},REDIS_PORT=6379,REDIS_PASSWORD={REDIS_PASSWORD},NEW_RELIC_LICENSE_KEY={NEW_RELIC_LICENSE_KEY},KEY_PREFIX={KEY_PREFIX},ENV={ENV},API_KEY={API_KEY},NEW_RELIC_MONITOR_MODE={NEW_RELIC_MONITOR_MODE} \
-            --labels=container-vm=cos-stable-81-12871-1196-0
+            --labels=container-vm=cos-97-16919-353-44
     """
     subprocess.run(create_instance_template_cmd, shell=True, check=True)
 

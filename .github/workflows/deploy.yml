@@ -240,4 +240,4 @@ jobs:
 
       - name: Deploy Worker Servers
         run: |-
-          deploy_worker
+          deploy_worker docsearch-worker-production-uswest

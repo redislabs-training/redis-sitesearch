@@ -71,7 +71,7 @@ jobs:
 
   deploy_staging_uswest:
     needs: setup-build-publish
-    name: Deploy Staging US-WEST
+    name: Deploy Staging App and Worker US-WEST
     runs-on: ubuntu-latest
     environment: staging
 
@@ -102,3 +102,4 @@ jobs:
       - name: Deploy App Servers
         run: |-
           deploy_app docsearch-staging-app-west --network docsearch-staging
+          deploy_worker docsearch-staging-worker-west --network docsearch-staging
