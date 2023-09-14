@@ -59,7 +59,7 @@ KEY_PREFIX = 'sitesearch:dev'
 ENV = 'production'
 NEW_RELIC_MONITOR_MODE = 'on'
 INSTANCE_GROUPS = {
-    "docsearch-staging-app-uswest": "us-west1-a",
+    "docsearch-staging-app-west": "us-west1-a",
     "docsearch-app-production-uswest": "us-west1-a",
     "docsearch-worker-production-uswest": "us-west1-a",
     "docsearch-app-production-europe": "europe-west6-a",
