@@ -90,7 +90,7 @@ def validate_instance_group(ctx, param, value):
 @click.argument('instance-group', callback=validate_instance_group)
 @click.option('--machine-type', default='e2-medium', help="The machine type to use", show_default=True)
 @click.option('--build', default=False, help="Build and push application image?", show_default=False)
-@click.option('--image', default='cos-stable-81-12871-1196-0', help="The GCP container OS image", show_default=True)
+@click.option('--image', default='cos-97-16919-353-44', help="The GCP container OS image", show_default=True)
 @click.option('--disk', default=DEFAULT_DISK, help="The GCP boot disk to use", show_default=True)
 @click.option('--network', default='docsearch', help="The GCP network to use", show_default=True)
 @click.command()
@@ -126,7 +126,7 @@ def deploy_app(instance_group, machine_type, build, image, disk, network):
             --container-restart-policy=always \
             --container-mount-host-path=mount-path=/data,host-path=/var/data/redis,mode=rw \
             --container-env=REDIS_HOST={REDIS_HOST},REDIS_PORT=6379,REDIS_PASSWORD={REDIS_PASSWORD},NEW_RELIC_LICENSE_KEY={NEW_RELIC_LICENSE_KEY},KEY_PREFIX={KEY_PREFIX},ENV={ENV},API_KEY={API_KEY},NEW_RELIC_MONITOR_MODE={NEW_RELIC_MONITOR_MODE} \
-            --labels=container-vm=cos-89-16108-470-1
+            --labels=container-vm=cos-97-16919-353-44
     """
     subprocess.run(create_instance_template_cmd, shell=True, check=True)
 
