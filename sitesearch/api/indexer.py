@@ -35,4 +35,18 @@ async def indexer(apiKey: APIKey = Depends(get_api_key),
                             job_timeout=tasks.INDEXING_TIMEOUT)
         jobs.append(job.id)
 
-    return {"jobs": jobs}
+    return {"jobs": jobs, "job_count": len(queue)}
+
+@router.post("/indexer/clear")
+async def indexer(apiKey: APIKey = Depends(get_api_key),
+                  config: AppConfiguration = Depends(get_config)):
+
+    queue.delete(delete_jobs=True)
+
+    return {"job_count": len(queue)}
+
+@router.get("/indexer/count")
+async def indexer(apiKey: APIKey = Depends(get_api_key),
+                  config: AppConfiguration = Depends(get_config)):
+
+    return {"job_count": len(queue)}
