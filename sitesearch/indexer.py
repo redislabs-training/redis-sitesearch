@@ -547,6 +547,8 @@ class Indexer:
         # Set a lock per URL while indexing.
         self.redis.set(self.lock, 1, ex=INDEXING_LOCK_TIMEOUT)
 
+        log.info("[Starting] indexing for site %s", self.site.url)
+
         docs_to_process = Queue()
         Spider = type(
             'Spider', (DocumentationSpiderBase, ), {"site_config": self.site})
@@ -600,7 +602,7 @@ class Indexer:
                 'CONCURRENT_REQUESTS_PER_DOMAIN': 100,
                 'HTTP_CACHE_ENABLED': True,
                 'REACTOR_THREADPOOL_MAXSIZE': 30,
-                'LOG_LEVEL': 'ERROR'
+                'LOG_LEVEL': 'INFO'
             })
 
         log.info("Started crawling")
