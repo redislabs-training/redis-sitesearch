@@ -112,7 +112,7 @@ LITERAL_TERMS = (
 )
 
 DOCS_PROD = SiteConfiguration(
-    url="https://docs.redis.com/latest/",
+    url="https://docs.redis.com/latest",
     synonym_groups=SYNONYMS,
     landing_pages=LANDING_PAGES,
     allowed_domains=('docs.redis.com',),
