@@ -32,7 +32,7 @@ MAX_THREADS = multiprocessing.cpu_count() * 5
 DEBOUNCE_SECONDS = 60 * 5  # Five minutes
 SYNUPDATE_COMMAND = 'FT.SYNUPDATE'
 TWO_HOURS = 60*60*2
-INDEXING_LOCK_TIMEOUT = 60*60
+INDEXING_LOCK_TIMEOUT = 60*60*2
 SECTION_ID = "{url}:section:{hash}"
 PAGE_ID = "{url}:page:{hash}"
 
