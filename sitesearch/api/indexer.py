@@ -45,6 +45,21 @@ async def indexer(apiKey: APIKey = Depends(get_api_key),
 
     return {"job_count": len(queue)}
 
+@router.post("/queue/clear")
+async def indexer(apiKey: APIKey = Depends(get_api_key),
+                  config: AppConfiguration = Depends(get_config)):
+
+    deleted_count = 0
+    for s in redis_client.scan_iter(match="{rq}*", count=500):
+        redis_client.delete(s)
+        deleted_count += 1
+
+    redis_client.delete("{{rq}}:queue:clean_registries:high")
+    redis_client.delete("{{rq}}:queue:clean_registries:low")
+    redis_client.delete("{{rq}}:queue:clean_registries:default")
+
+    return {"delete_count": deleted_count}
+
 @router.get("/indexer/count")
 async def indexer(apiKey: APIKey = Depends(get_api_key),
                   config: AppConfiguration = Depends(get_config)):
