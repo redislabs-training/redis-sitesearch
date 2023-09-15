@@ -57,6 +57,10 @@ SYNONYMS = [
         group_id='vs',
         synonyms={"vector", "vector similarity"}
     ),
+    SynonymGroup(
+        group_id='triggers',
+        synonyms={"triggers"}
+    ),
     # This is to avoid doing a fuzzy search on 'redis' -- the
     # API does exact match searches on synonym terms.
     SynonymGroup(
@@ -96,11 +100,18 @@ LITERAL_TERMS = (
     'read-write',
     'redis-cli',
     'role-based',
+    '7.2',
+    'v7.2',
+    '7.0',
+    'v7.0',
+    '6.2.8',
     'v6.2.8',
+    '6.2.4',
     'v6.2.4',
     'v6.0.20',
     'v6.0.12',
     'v6.0.8',
+    '6.0',
     'v6.0',
     'v5.6.0',
     'v5.4.14',
