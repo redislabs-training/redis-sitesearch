@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: cp .env.example .env
       - run: sed -i 's/remove-if-redis-has-no-password/test/g' .env
       - run: docker-compose up test
@@ -43,15 +43,16 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    # Setup gcloud CLI
-    - uses: google-github-actions/setup-gcloud@v0
+    - name: Authenticate
+      uses: google-github-actions/auth@v1
       with:
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-        project_id: 'redislabs-university'
+        credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-    - uses: actions/setup-python@v2
+    - uses: google-github-actions/setup-gcloud@v1
+
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.8'
 
@@ -62,7 +63,7 @@ jobs:
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
     - run: |-
-        gcloud --quiet auth configure-docker
+        gcloud auth configure-docker
 
     - name: Build and Push Images
       run: |-
@@ -76,20 +77,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - run: |
-          sudo apt-get install python2.7
-          export CLOUDSDK_PYTHON="/usr/bin/python2"
-
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@v0
+      - name: Authenticate
+        uses: google-github-actions/auth@v1
         with:
-          version: '290.0.1'
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: 'redislabs-university'
+          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-      - uses: actions/setup-python@v2
+      - uses: google-github-actions/setup-gcloud@v1
+
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
 
@@ -100,12 +97,11 @@ jobs:
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-          gcloud --quiet auth configure-docker
+          gcloud auth configure-docker
 
       - name: Deploy App Servers
         run: |-
           deploy_app docsearch-app-production-mumbai
-
 
   deploy_zurich:
     needs: setup-build-publish
@@ -115,15 +111,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@v0
+      - name: Authenticate
+        uses: google-github-actions/auth@v1
         with:
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: 'redislabs-university'
+          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-      - uses: actions/setup-python@v2
+      - uses: google-github-actions/setup-gcloud@v1
+
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
 
@@ -149,15 +146,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@v0
+      - name: Authenticate
+        uses: google-github-actions/auth@v1
         with:
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: 'redislabs-university'
+          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-      - uses: actions/setup-python@v2
+      - uses: google-github-actions/setup-gcloud@v1
+
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
 
@@ -174,7 +172,6 @@ jobs:
         run: |-
           deploy_app docsearch-app-production-useast
 
-
   deploy_uswest:
     needs: setup-build-publish
     name: Deploy US-West
@@ -183,15 +180,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@v0
+      - name: Authenticate
+        uses: google-github-actions/auth@v1
         with:
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: 'redislabs-university'
+          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-      - uses: actions/setup-python@v2
+      - uses: google-github-actions/setup-gcloud@v1
+
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
 
@@ -208,7 +206,6 @@ jobs:
         run: |-
           deploy_app docsearch-app-production-uswest
 
-
   deploy_worker:
     needs: setup-build-publish
     name: Deploy Worker
@@ -217,15 +214,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@v0
+      - name: Authenticate
+        uses: google-github-actions/auth@v1
         with:
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          project_id: 'redislabs-university'
+          credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-      - uses: actions/setup-python@v2
+      - uses: google-github-actions/setup-gcloud@v1
+
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
 
