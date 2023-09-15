@@ -141,7 +141,7 @@ def deploy_app(instance_group, machine_type, build, image, disk, network):
 
 
 @click.argument('worker-instance-group')
-@click.option('--machine-type', default='e2-medium', help="The machine type to use", show_default=True)
+@click.option('--machine-type', default='e2-highcpu-4', help="The machine type to use", show_default=True)
 @click.option('--build', default=False, help="Build and push application images?", show_default=False)
 @click.option('--image', default='cos-97-16919-353-44', help="The GCP container OS image", show_default=True)
 @click.option('--disk', default=DEFAULT_DISK, help="The GCP boot disk to use", show_default=True)
