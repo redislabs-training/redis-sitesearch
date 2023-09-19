@@ -1,4 +1,4 @@
-name: Reindex
+name: Reindex Production
 
 on:
   schedule:

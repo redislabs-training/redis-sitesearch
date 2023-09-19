@@ -1,7 +1,15 @@
-name: Worker
-concurrency: worker
+name: Deploy Staging All
+concurrency: deploy_staging
 
 on:
+  push:
+    branches:
+      - staging
+    paths-ignore:
+      - '.github/workflows/reindex.yml'
+      - '.github/workflows/test-branch.yml'
+      - 'tests/**'
+      - 'README.md'
   workflow_dispatch:
 
 env:
@@ -25,7 +33,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: cp .env.example .env
       - run: sed -i 's/remove-if-redis-has-no-password/test/g' .env
-      - run: docker-compose up test
+      - run: docker compose up test
 
   setup-build-publish:
     name: Setup, Build, and Publish
@@ -61,11 +69,11 @@ jobs:
       run: |-
         build_images
 
-  deploy_worker:
+  deploy_staging_uswest:
     needs: setup-build-publish
-    name: Deploy Worker
+    name: Deploy Staging App and Worker US-WEST
     runs-on: ubuntu-latest
-    environment: uswest
+    environment: staging
 
     steps:
       - name: Checkout
@@ -89,8 +97,9 @@ jobs:
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-          gcloud --quiet auth configure-docker
+          gcloud auth configure-docker
 
-      - name: Deploy Worker Servers
+      - name: Deploy App Servers
         run: |-
-          deploy_worker docsearch-worker-production-uswest
+          deploy_app docsearch-staging-app-west --network docsearch-staging
+          deploy_worker docsearch-staging-worker-west --network docsearch-staging
