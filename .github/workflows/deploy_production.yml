@@ -1,15 +1,7 @@
-name: Deploy
-concurrency: deploy
+name: Deploy Production
+concurrency: deploy_production
 
 on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - '.github/workflows/reindex.yml'
-      - '.github/workflows/test-branch.yml'
-      - 'tests/**'
-      - 'README.md'
   workflow_dispatch:
 
 env:

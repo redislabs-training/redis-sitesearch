@@ -1,5 +1,5 @@
-name: Stage
-concurrency: deploy
+name: Deploy Staging
+concurrency: deploy_staging
 
 on:
   push:
